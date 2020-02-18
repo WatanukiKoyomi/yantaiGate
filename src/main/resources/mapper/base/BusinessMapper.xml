@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huadong.hdgate.jobManagement.mapper.BusinessMapper">
+    <sql id="Base_Column_List" >
+        VISIT_GUID,STATION,MSG,ARRIVE_TIME,ENTER_TIME,LANE_CODE,RFID,WEIGHT,CNTR_SIZE,OCR_PLATE_NO,PLATE_COLOR,PLATE_NO,
+        OCR_FRONT_CNTR_NO,OCR_FRONT_CONF,OCR_FRONT_DIRECTION,OCR_FRONT_ISO,OCR_FRONT_ISO_CONF,OCR_FRONT_DAMAGE,OCR_FRONT_EFID,
+        OCR_BACK_CNTR_NO,OCR_BACK_CONF,OCR_BACK_DIRECTION,OCR_BACK_ISO,OCR_BACK_ISO_CONF,OCR_BACK_DAMAGE,OCR_BACK_EFID,
+        FRONT_CNTR_NO,BACK_CNTR_NO,IMG_FOLDER,IMG_PATH,IMG_NAMES,UPDATE_USER
+    </sql>
+
+    <resultMap id="GateLaneBusinessMap" type="com.huadong.hdgate.jobManagement.entity.cdiEntity.BusinessEntity">
+        <id column="VISIT_GUID" property="visitGuid" />
+        <result column="STATION" property="station" />
+        <result column="MSG" property="msg" />
+        <result column="ARRIVE_TIME" property="arriveTime" />
+        <result column="ENTER_TIME" property="enterTime" />
+        <result column="LANE_CODE" property="generalInfo.laneCode" />
+        <result column="RFID" property="generalInfo.rfid" />
+        <result column="WEIGHT" property="generalInfo.weight" />
+        <result column="CNTR_SIZE" property="generalInfo.cntrSize" />
+        <result column="OCR_PLATE_NO" property="ocrCarPlate.ocrPlate" />
+        <result column="PLATE_COLOR" property="ocrCarPlate.plateColor" />
+        <result column="PLATE_NO" property="carPlate.ocrPlate" />
+        <result column="OCR_FRONT_CNTR_NO" property="ocrFrontContainer.ocrContainerNo" />
+        <result column="OCR_FRONT_CONF" property="ocrFrontContainer.ocrContainerConf" />
+        <result column="OCR_FRONT_DIRECTION" property="ocrFrontContainer.ocrContainerDirection" />
+        <result column="OCR_FRONT_ISO" property="ocrFrontContainer.ocrContainerISO" />
+        <result column="OCR_FRONT_ISO_CONF" property="ocrFrontContainer.ocrIsoConf" />
+        <result column="OCR_FRONT_DAMAGE" property="ocrFrontContainer.ocrDamage" />
+        <result column="OCR_FRONT_EFID" property="ocrFrontContainer.efid" />
+        <result column="OCR_BACK_CNTR_NO" property="ocrAfterContainer.ocrContainerNo" />
+        <result column="OCR_BACK_CONF" property="ocrAfterContainer.ocrContainerConf" />
+        <result column="OCR_BACK_DIRECTION" property="ocrAfterContainer.ocrContainerDirection" />
+        <result column="OCR_BACK_ISO" property="ocrAfterContainer.ocrContainerISO" />
+        <result column="OCR_BACK_ISO_CONF" property="ocrAfterContainer.ocrIsoConf" />
+        <result column="OCR_BACK_DAMAGE" property="ocrAfterContainer.ocrDamage" />
+        <result column="OCR_BACK_EFID" property="ocrAfterContainer.efid" />
+        <result column="FRONT_CNTR_NO" property="frontContainer.ocrContainerNo" />
+        <result column="BACK_CNTR_NO" property="afterContainer.ocrContainerNo" />
+        <result column="IMG_FOLDER" property="ftpImages.folder" />
+        <result column="IMG_PATH" property="ftpImages.imagePath" />
+        <result column="IMG_NAMES" property="ftpImages.imageName" />
+        <result column="UPDATE_USER" property="account" />
+    </resultMap>
+
+    <select id="queryHistoryDataByParam" resultMap="GateLaneBusinessMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        GATE_BUSINESS
+        where ARRIVE_TIME &gt;= #{beginTime} and ARRIVE_TIME &lt;= #{endTime}
+        <if test="laneCode != null and laneCode.length()>0">
+            and LANE_CODE like '%${laneCode}%'
+        </if>
+        <if test="truckNo != null and truckNo.length()>0">
+            and ( PLATE_NO like '%${truckNo}%' || OCR_PLATE_NO like '%${truckNo}%' )
+        </if>
+        <if test="cntrNo != null and cntrNo.length()>0">
+            and ( OCR_FRONT_CNTR_NO like '%${cntrNo}%' || OCR_BACK_CNTR_NO like '%${cntrNo}%' || FRONT_CNTR_NO like '%${cntrNo}%' || BACK_CNTR_NO like '%${cntrNo}%' )
+        </if>
+    </select>
+
+    <insert id="insertBusiness" >
+        insert into GATE_BUSINESS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            VISIT_GUID,
+            <if test="station !=null">
+                STATION,
+            </if>
+            <if test="msg !=null">
+                MSG,
+            </if>
+            <if test="arriveTime !=null">
+                ARRIVE_TIME,
+            </if>
+            <if test="enterTime !=null">
+                ENTER_TIME,
+            </if>
+            <if test="laneCode !=null">
+                LANE_CODE,
+            </if>
+            <if test="rfid !=null">
+                RFID,
+            </if>
+            <if test="weight !=null">
+                WEIGHT,
+            </if>
+            <if test="cntrSize !=null">
+                CNTR_SIZE,
+            </if>
+            <if test="ocrPlate !=null">
+                OCR_PLATE_NO,
+            </if>
+            <if test="plateColor !=null">
+                PLATE_COLOR,
+            </if>
+            <if test="aOcrContainerNo !=null">
+                OCR_FRONT_CNTR_NO,
+            </if>
+            <if test="aOcrContainerConf !=null">
+                OCR_FRONT_CONF,
+            </if>
+            <if test="aOcrContainerDirection !=null">
+                OCR_FRONT_DIRECTION,
+            </if>
+            <if test="aOcrContainerISO !=null">
+                OCR_FRONT_ISO,
+            </if>
+            <if test="aOcrIsoConf !=null">
+                OCR_FRONT_ISO_CONF,
+            </if>
+            <if test="aOcrDamage !=null">
+                OCR_FRONT_DAMAGE,
+            </if>
+            <if test="aEfId !=null">
+                OCR_FRONT_EFID,
+            </if>
+            <if test="bOcrContainerNo !=null">
+                OCR_BACK_CNTR_NO,
+            </if>
+            <if test="bOcrContainerConf !=null">
+                OCR_BACK_CONF,
+            </if>
+            <if test="bOcrContainerDirection !=null">
+                OCR_BACK_DIRECTION,
+            </if>
+            <if test="bOcrContainerISO !=null">
+                OCR_BACK_ISO,
+            </if>
+            <if test="bOcrIsoConf !=null">
+                OCR_BACK_ISO_CONF,
+            </if>
+            <if test="bOcrDamage !=null">
+                OCR_BACK_DAMAGE,
+            </if>
+            <if test="bEfId !=null">
+                OCR_BACK_EFID,
+            </if>
+            <if test="folder !=null">
+                IMG_FOLDER,
+            </if>
+            <if test="imagePath !=null">
+                IMG_PATH,
+            </if>
+            <if test="imageName !=null">
+                IMG_NAMES,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{visitGuid},
+            <if test="station !=null">
+                #{station},
+            </if>
+            <if test="msg !=null">
+                #{msg},
+            </if>
+            <if test="arriveTime !=null">
+                #{arriveTime},
+            </if>
+            <if test="enterTime !=null">
+                #{enterTime},
+            </if>
+            <if test="laneCode !=null">
+                #{laneCode},
+            </if>
+            <if test="rfid !=null">
+                #{rfid},
+            </if>
+            <if test="weight !=null">
+                #{weight},
+            </if>
+            <if test="cntrSize !=null">
+                #{cntrSize},
+            </if>
+            <if test="ocrPlate !=null">
+                #{ocrPlate},
+            </if>
+            <if test="plateColor !=null">
+                #{plateColor},
+            </if>
+            <if test="aOcrContainerNo !=null">
+                #{aOcrContainerNo},
+            </if>
+            <if test="aOcrContainerConf !=null">
+                #{aOcrContainerConf},
+            </if>
+            <if test="aOcrContainerDirection !=null">
+                #{aOcrContainerDirection},
+            </if>
+            <if test="aOcrContainerISO !=null">
+                #{aOcrContainerISO},
+            </if>
+            <if test="aOcrIsoConf !=null">
+                #{aOcrIsoConf},
+            </if>
+            <if test="aOcrDamage !=null">
+                #{aOcrDamage},
+            </if>
+            <if test="aEfId !=null">
+                #{aEfId},
+            </if>
+            <if test="bOcrContainerNo !=null">
+                #{bOcrContainerNo},
+            </if>
+            <if test="bOcrContainerConf !=null">
+                #{bOcrContainerConf},
+            </if>
+            <if test="bOcrContainerDirection !=null">
+                #{bOcrContainerDirection},
+            </if>
+            <if test="bOcrContainerISO !=null">
+                #{bOcrContainerISO},
+            </if>
+            <if test="bOcrIsoConf !=null">
+                #{bOcrIsoConf},
+            </if>
+            <if test="bOcrDamage !=null">
+                #{bOcrDamage},
+            </if>
+            <if test="bEfId !=null">
+                #{bEfId},
+            </if>
+            <if test="folder !=null">
+                #{folder},
+            </if>
+            <if test="imagePath !=null">
+                #{imagePath},
+            </if>
+            <if test="imageName !=null">
+                #{imageName},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBusiness" >
+        update GATE_BUSINESS
+        <set >
+            <if test="station !=null">
+                STATION = #{station},
+            </if>
+            <if test="msg !=null">
+                MSG = #{msg},
+            </if>
+            <if test="arriveTime !=null">
+                ARRIVE_TIME = #{arriveTime},
+            </if>
+            <if test="enterTime !=null">
+                ENTER_TIME = #{enterTime},
+            </if>
+            <if test="laneCode !=null">
+                LANE_CODE = #{laneCode},
+            </if>
+            <if test="rfid !=null">
+                RFID = #{rfid},
+            </if>
+            <if test="cntrSize !=null">
+                CNTR_SIZE = #{cntrSize},
+            </if>
+            <if test="ocrPlate !=null">
+                OCR_PLATE_NO = #{ocrPlate},
+            </if>
+            <if test="plateColor !=null">
+                PLATE_COLOR = #{plateColor},
+            </if>
+            <if test="aOcrContainerNo !=null">
+                OCR_FRONT_CNTR_NO = #{aOcrContainerNo},
+            </if>
+            <if test="aOcrContainerConf !=null">
+                OCR_FRONT_CONF = #{aOcrContainerConf},
+            </if>
+            <if test="aOcrContainerDirection !=null">
+                OCR_FRONT_DIRECTION = #{aOcrContainerDirection},
+            </if>
+            <if test="aOcrContainerISO !=null">
+                OCR_FRONT_ISO = #{aOcrContainerISO},
+            </if>
+            <if test="aOcrIsoConf !=null">
+                OCR_FRONT_ISO_CONF = #{aOcrIsoConf},
+            </if>
+            <if test="aOcrDamage !=null">
+                OCR_FRONT_DAMAGE = #{aOcrDamage},
+            </if>
+            <if test="aEfId !=null">
+                OCR_FRONT_EFID = #{aEfId},
+            </if>
+            <if test="bOcrContainerNo !=null">
+                OCR_BACK_CNTR_NO = #{bOcrContainerNo},
+            </if>
+            <if test="bOcrContainerConf !=null">
+                OCR_BACK_CONF = #{bOcrContainerConf},
+            </if>
+            <if test="bOcrContainerDirection !=null">
+                OCR_BACK_DIRECTION = #{bOcrContainerDirection},
+            </if>
+            <if test="bOcrContainerISO !=null">
+                OCR_BACK_ISO = #{bOcrContainerISO},
+            </if>
+            <if test="bOcrIsoConf !=null">
+                OCR_BACK_ISO_CONF = #{bOcrIsoConf},
+            </if>
+            <if test="bOcrDamage !=null">
+                OCR_BACK_DAMAGE = #{bOcrDamage},
+            </if>
+            <if test="bEfId !=null">
+                OCR_BACK_EFID = #{bEfId},
+            </if>
+            <if test="folder !=null">
+                IMG_FOLDER = #{folder},
+            </if>
+            <if test="imagePath !=null">
+                IMG_PATH = #{imagePath},
+            </if>
+            <if test="imageName !=null">
+                IMG_NAMES = #{imageName},
+            </if>
+            <if test="updatePlate !=null">
+                PLATE_NO = #{updatePlate},
+            </if>
+            <if test="updateFrontNo !=null">
+                FRONT_CNTR_NO = #{updateFrontNo},
+            </if>
+            <if test="updateBackNo !=null">
+                BACK_CNTR_NO = #{updateBackNo},
+            </if>
+            <if test="weight !=null">
+                WEIGHT = #{weight},
+            </if>
+        </set>
+        where VISIT_GUID = #{visitGuid}
+    </update>
+
+</mapper>

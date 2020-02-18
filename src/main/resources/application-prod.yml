@@ -1,0 +1,24 @@
+spring:
+  redis:
+    database: 1
+    host: localhost
+    port: 6379
+    password: 123
+    timeout: 3000
+
+main:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/yantai?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: root
+    initialSize: 5
+    minIdle: 5
+    maxActive: 8
+
+web:
+  img-path: D:/logTest/
+
+xijing:
+  ip: 127.0.0.1
+  port: 9000

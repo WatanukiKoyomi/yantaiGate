@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huadong.hdgate.systemManagement.mapper.SysResourceMapper">
+    <sql id="Base_Column_List" >
+        p.PARENT_RESOURCE_ID as pid,p.RESOURCE_ID as id ,p.RESOURCE_EN_NAME as resourceEnName,
+        p.RESOURCE_NAME as label,p.DESCRIBE,p.SORT_NO as sortNo,p.STATE,p.HASCHILD,p.ICON,p.RESOURCE_TYPE as resourceType,p.MENU_NAME as name
+    </sql>
+
+    <!-- 根据用户查询菜单 -->
+    <select id="findUsersMenu" resultType="com.huadong.hdgate.systemManagement.entity.SysResourceEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        SYS_ROLE r,SYS_RESOURCE p,SYS_ROLE_RESOURCE rp
+        <where>
+         r.role_id=rp.role_id and p.RESOURCE_ID=rp.RESOURCE_ID
+        and p.state = 'open' and p.RESOURCE_TYPE = 'm'
+        and r.role_id in (select ur.role_id from SYS_USER_ROLE ur where ur.user_Id = #{userId})
+        order by SORT_NO
+        </where>
+    </select>
+
+    <!-- 根据用户查询按钮 -->
+    <select id="findUsersBtns" resultType="com.huadong.hdgate.systemManagement.entity.SysResourceEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        SYS_ROLE r,SYS_RESOURCE p,SYS_ROLE_RESOURCE rp
+        <where>
+            r.role_id=rp.role_id and p.RESOURCE_ID=rp.RESOURCE_ID
+            and p.state = 'open' and p.RESOURCE_TYPE = 'b'
+            and r.role_id in (select ur.role_id from SYS_USER_ROLE ur where ur.user_Id = #{userId})
+            order by SORT_NO
+        </where>
+    </select>
+
+    <!-- 根据角色查询菜单 -->
+    <select id="queryMenusByRoleId" resultType="com.huadong.hdgate.systemManagement.entity.SysResourceEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        SYS_ROLE r,SYS_RESOURCE p,SYS_ROLE_RESOURCE rp
+        <where>
+            r.role_id=rp.role_id and p.RESOURCE_ID=rp.RESOURCE_ID
+            and p.state = 'open' and p.RESOURCE_TYPE = 'm'
+            and r.role_id = #{roleId}
+            order by SORT_NO
+        </where>
+    </select>
+
+    <!-- 根据角色,菜单id查询按钮信息 -->
+    <select id="findBtnsByRoleAndMenuId" resultType="com.huadong.hdgate.systemManagement.entity.SysResourceEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        sys_role_resource srr,sys_resource p
+        <where>
+            srr.RESOURCE_ID=p.resource_id AND srr.ROLE_ID = #{roleId}
+            AND p.resource_type ='b' AND p.PARENT_RESOURCE_ID = #{menuId}
+        </where>
+    </select>
+
+</mapper>

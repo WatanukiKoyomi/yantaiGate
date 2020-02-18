@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huadong.hdgate.systemManagement.mapper.SysRoleMapper">
+
+    <sql id="Base_Column_List" >
+       r.ROLE_ID as roleId,r.ROLE_NAME as roleName,r.ROLE_DESCRIPTION as description,r.IS_ADMIN as isAdmin
+    </sql>
+
+    <select id="findRoleIdsByUserId"  resultType="String">
+        select
+        role_id
+        from
+        SYS_USER_ROLE
+        where user_Id = #{userId}
+    </select>
+
+    <!--查询该用户是否是管理员-->
+    <select id="findAdminByUserId"  resultType="String">
+        select
+        r.role_id
+        from
+        SYS_ROLE r join SYS_USER_ROLE u on u.ROLE_ID=r.ROLE_ID
+        where u.USER_ID = #{userId}
+        and r.IS_ADMIN='1'
+    </select>
+
+    <select id="queryRolesByUserId" resultType="com.huadong.hdgate.systemManagement.entity.SysRoleEntity">
+        select
+        <include refid="Base_Column_List" />
+        from
+        SYS_ROLE r,SYS_USER_ROLE ur
+        where r.role_id = ur.role_id
+        and ur.user_id = #{userId}
+    </select>
+
+</mapper>
