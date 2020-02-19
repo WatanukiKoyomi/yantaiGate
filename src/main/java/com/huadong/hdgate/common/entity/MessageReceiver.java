@@ -21,4 +21,13 @@ public class MessageReceiver {
 		log.info("redis收到数据："+message);
 		businessService.insertOrUpdateBusinessData(message);
 	}
+
+	/**
+	 * 2.19 新增加对接redis，数据推送从api改为redis推送
+	 * @param message
+	 */
+	public void receiveRedisMessage(String message){
+		System.out.println("receiveRedisMessage:"+message);
+		log.info("receiveRedisMessage接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",message);
+	}
 }

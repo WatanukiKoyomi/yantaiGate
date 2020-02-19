@@ -62,12 +62,12 @@ public class RedisConfig {
 	}
 
 	/**redis 读取内容的template */
-	@Bean
+	@Bean(name="template")
 	StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
 		return new StringRedisTemplate(connectionFactory);
 	}
 
-	@Bean
+	@Bean(name="redisPoolFactory")
 	public JedisPool redisPoolFactory()  throws Exception{
 		logger.info("JedisPool注入成功！！");
 		logger.info("redis地址：" + host + ":" + port);
@@ -78,7 +78,7 @@ public class RedisConfig {
 		//jedisPoolConfig.setBlockWhenExhausted(blockWhenExhausted);
 		// 是否启用pool的jmx管理功能, 默认true
 		jedisPoolConfig.setJmxEnabled(true);
-		JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000, password, 1);
+		JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000, password, 0);
 		return jedisPool;
 	}
 

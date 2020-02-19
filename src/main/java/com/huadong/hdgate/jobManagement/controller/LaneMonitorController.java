@@ -3,6 +3,7 @@ package com.huadong.hdgate.jobManagement.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.huadong.hdgate.common.entity.FtpEntity;
 import com.huadong.hdgate.common.utils.CommonUtils;
+import com.huadong.hdgate.common.utils.Lane1RedisUtils;
 import com.huadong.hdgate.common.utils.RedisUtils;
 import com.huadong.hdgate.common.utils.webapi.HttpsUtils;
 import com.huadong.hdgate.jobManagement.entity.XijingParamsEntity;
@@ -16,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
@@ -35,10 +33,19 @@ import java.sql.Timestamp;
 @Slf4j
 public class LaneMonitorController {
 
-	@Autowired
+	@Resource(name="template")
 	private StringRedisTemplate stringRedisTemplate;
 	@Resource
 	private BusinessService businessService;
+	@Autowired
+	Lane1RedisUtils redisUtils1;
+
+	@ApiOperation(value = "redis测试", notes = "redis")
+	@RequestMapping(value = "/testRedis", method = RequestMethod.POST)
+	public String testRedis(@RequestBody String message){
+		redisUtils1.lpushQueue("run", message);
+		return "ok";
+	}
 
 	@ApiOperation(value = "车道监控api", notes = "车道监控api"  )
 	@RequestMapping(value = "/laneMonitorApi" , method = RequestMethod.POST)

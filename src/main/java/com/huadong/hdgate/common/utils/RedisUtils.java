@@ -7,13 +7,14 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Component
 public class RedisUtils {
 	private static final Logger logger = LoggerFactory.getLogger(RedisUtils.class);
 
-	@Autowired
+	@Resource(name = "redisPoolFactory")
 	private JedisPool jedisPool;
 
 	public void brpopQueue(String queueName){
