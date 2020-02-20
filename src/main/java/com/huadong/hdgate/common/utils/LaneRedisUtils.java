@@ -17,8 +17,8 @@ import java.util.List;
  * @date 2020/2/19 10:59
  */
 @Component
-public class Lane1RedisUtils {
-    private static final Logger logger = LoggerFactory.getLogger(Lane1RedisUtils.class);
+public class LaneRedisUtils {
+    private static final Logger logger = LoggerFactory.getLogger(LaneRedisUtils.class);
 
     @Resource(name = "redisPoolFactory1")
     private JedisPool jedisPool;
@@ -34,9 +34,25 @@ public class Lane1RedisUtils {
         }
     }
 
-    public void lpushQueue(String queueName,String dbData){
+    public String rpopQueue(String queueName){
+        StringBuffer result = new StringBuffer();
+        try{
+            Jedis jedis = jedisPool.getResource();
+            result.append(jedis.rpop(queueName));
+            returnResource(jedisPool, jedis);
+        } catch (Exception e){
+            logger.error(e.getMessage());
+        } finally {
+            return result.toString();
+        }
+
+    }
+
+    public void lpushQueue(String queueName,String dbData,int index){
         Jedis jedis = jedisPool.getResource();
+        jedis.select(index);
         jedis.lpush(queueName, dbData);
+        returnResource(jedisPool, jedis);
     }
 
     public String set(String key, String value) {
@@ -87,4 +103,6 @@ public class Lane1RedisUtils {
             jedisPool.returnResource(jedis);
         }
     }
+
+
 }

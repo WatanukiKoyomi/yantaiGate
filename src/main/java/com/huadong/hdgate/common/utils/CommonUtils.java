@@ -60,25 +60,45 @@ public class CommonUtils {
 	// 转换对象的字符串
 	public static String cdiEntity2ShowEntityStr(BusinessEntity businessEntity){
 		ShowBusinessEntity showEntity = new ShowBusinessEntity(
-				businessEntity.getVisitGuid(),businessEntity.getStation(),businessEntity.getMsg(),businessEntity.getArriveTime(),businessEntity.getEnterTime());
+				businessEntity.getVisitGuid(),
+				businessEntity.getStation(),
+				businessEntity.getMsg(),
+				businessEntity.getArriveTime(),
+				businessEntity.getEnterTime());
 		GeneralInfoEntity showInfoEntity = new GeneralInfoEntity(
-				businessEntity.getGeneralInfo().getLaneCode(),businessEntity.getGeneralInfo().getRfid(),businessEntity.getGeneralInfo().getWeight(),businessEntity.getGeneralInfo().getCntrSize());
+				businessEntity.getGeneralInfo().getLaneCode(),
+				businessEntity.getGeneralInfo().getRfid(),
+				businessEntity.getGeneralInfo().getWeight(),
+				businessEntity.getGeneralInfo().getCntrSize());
 		showEntity.setGeneralInfo(showInfoEntity);
-		CarPlateEntity showCarEntity = new CarPlateEntity(businessEntity.getOcrCarPlate().getOcrPlate(),businessEntity.getOcrCarPlate().getPlateColor());
+		CarPlateEntity showCarEntity = new CarPlateEntity(
+				businessEntity.getOcrCarPlate().getOcrPlate(),
+				businessEntity.getOcrCarPlate().getPlateColor());
 		showEntity.setOcrCarPlate(showCarEntity);
 		ContainerEntity frontCntrEntity = new ContainerEntity(
-				businessEntity.getOcrFrontContainer().getOcrContainerNo(),businessEntity.getOcrFrontContainer().getOcrContainerConf(),
-				businessEntity.getOcrFrontContainer().getOcrContainerDirection(), businessEntity.getOcrFrontContainer().getOcrContainerISO(),
-				businessEntity.getOcrFrontContainer().getOcrIsoConf(),businessEntity.getOcrFrontContainer().getOcrDamage(),businessEntity.getOcrFrontContainer().getEfid(),
+				businessEntity.getOcrFrontContainer().getOcrContainerNo(),
+				businessEntity.getOcrFrontContainer().getOcrContainerConf(),
+				businessEntity.getOcrFrontContainer().getOcrContainerDirection(),
+				businessEntity.getOcrFrontContainer().getOcrContainerISO(),
+				businessEntity.getOcrFrontContainer().getOcrIsoConf(),
+				businessEntity.getOcrFrontContainer().getOcrDamage(),
+				businessEntity.getOcrFrontContainer().getEfid(),
 				businessEntity.getOcrFrontContainer().getIsProvideForOneself());
 		showEntity.setOcrFrontContainer(frontCntrEntity);
 		ContainerEntity afterCntrEntity = new ContainerEntity(
-				businessEntity.getOcrAfterContainer().getOcrContainerNo(),businessEntity.getOcrAfterContainer().getOcrContainerConf(),
-				businessEntity.getOcrAfterContainer().getOcrContainerDirection(), businessEntity.getOcrAfterContainer().getOcrContainerISO(),
-				businessEntity.getOcrAfterContainer().getOcrIsoConf(),businessEntity.getOcrAfterContainer().getOcrDamage(),businessEntity.getOcrAfterContainer().getEfid(),
+				businessEntity.getOcrAfterContainer().getOcrContainerNo(),
+				businessEntity.getOcrAfterContainer().getOcrContainerConf(),
+				businessEntity.getOcrAfterContainer().getOcrContainerDirection(),
+				businessEntity.getOcrAfterContainer().getOcrContainerISO(),
+				businessEntity.getOcrAfterContainer().getOcrIsoConf(),
+				businessEntity.getOcrAfterContainer().getOcrDamage(),
+				businessEntity.getOcrAfterContainer().getEfid(),
 				businessEntity.getOcrAfterContainer().getIsProvideForOneself());
 		showEntity.setOcrAfterContainer(afterCntrEntity);
-		FtpImagesEntity ftpEntity = new FtpImagesEntity(businessEntity.getFtpImages().getFolder(),businessEntity.getFtpImages().getImageName(),businessEntity.getFtpImages().getImagePath());
+		FtpImagesEntity ftpEntity = new FtpImagesEntity(
+				businessEntity.getFtpImages().getFolder(),
+				businessEntity.getFtpImages().getImageName(),
+				businessEntity.getFtpImages().getImagePath());
 		showEntity.setFtpImages(ftpEntity);
 		return JSONObject.toJSONString(showEntity);
 	}

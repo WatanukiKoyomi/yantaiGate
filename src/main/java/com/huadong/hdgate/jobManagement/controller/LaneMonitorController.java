@@ -3,7 +3,7 @@ package com.huadong.hdgate.jobManagement.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.huadong.hdgate.common.entity.FtpEntity;
 import com.huadong.hdgate.common.utils.CommonUtils;
-import com.huadong.hdgate.common.utils.Lane1RedisUtils;
+import com.huadong.hdgate.common.utils.LaneRedisUtils;
 import com.huadong.hdgate.common.utils.RedisUtils;
 import com.huadong.hdgate.common.utils.webapi.HttpsUtils;
 import com.huadong.hdgate.jobManagement.entity.XijingParamsEntity;
@@ -38,12 +38,12 @@ public class LaneMonitorController {
 	@Resource
 	private BusinessService businessService;
 	@Autowired
-	Lane1RedisUtils redisUtils1;
+	LaneRedisUtils redisUtils1;
 
 	@ApiOperation(value = "redis测试", notes = "redis")
 	@RequestMapping(value = "/testRedis", method = RequestMethod.POST)
 	public String testRedis(@RequestBody String message){
-		redisUtils1.lpushQueue("run", message);
+		redisUtils1.lpushQueue("test", message,2);
 		return "ok";
 	}
 

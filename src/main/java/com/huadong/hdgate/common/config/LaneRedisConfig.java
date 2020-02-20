@@ -21,7 +21,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @date 2020/2/19 9:45
  */
 @Configuration
-public class Lane1RedisConfig {
+public class LaneRedisConfig {
 
     @Value("${spring.redis.host}")
     private String host;
@@ -30,7 +30,7 @@ public class Lane1RedisConfig {
     @Value("${spring.redis.password}")
     private String password;
 
-    private static final Logger logger = LoggerFactory.getLogger(Lane1RedisConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(LaneRedisConfig.class);
 
     /**
      * redis消息监听器容器
@@ -42,7 +42,7 @@ public class Lane1RedisConfig {
      */
     @Bean
     //相当于xml中的bean
-    RedisMessageListenerContainer lane1container(RedisConnectionFactory connectionFactory,
+    RedisMessageListenerContainer lanecontainer(RedisConnectionFactory connectionFactory,
                                             MessageListenerAdapter lane1listenerAdapter) {
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();

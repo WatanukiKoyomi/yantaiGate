@@ -78,7 +78,7 @@ public class RedisConfig {
 		//jedisPoolConfig.setBlockWhenExhausted(blockWhenExhausted);
 		// 是否启用pool的jmx管理功能, 默认true
 		jedisPoolConfig.setJmxEnabled(true);
-		JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000, password, 0);
+		JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000, password);
 		return jedisPool;
 	}
 

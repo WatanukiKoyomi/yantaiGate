@@ -40,16 +40,35 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 
 		String redisData = redisUtils.get(businessEntity.getVisitGuid());
 		if(redisData == null || "".equals(redisData)){
-			businessMapper.insertBusiness(businessEntity.getVisitGuid(),businessEntity.getStation(),businessEntity.getMsg(),businessEntity.getArriveTime(),businessEntity.getEnterTime(),
-					businessEntity.getGeneralInfo().getLaneCode(),businessEntity.getGeneralInfo().getRfid(),businessEntity.getGeneralInfo().getWeight(),businessEntity.getGeneralInfo().getCntrSize(),
-					businessEntity.getOcrCarPlate().getOcrPlate(),businessEntity.getOcrCarPlate().getPlateColor(),
+			businessMapper.insertBusiness(
+					businessEntity.getVisitGuid(),
+					businessEntity.getStation(),
+					businessEntity.getMsg(),
+					businessEntity.getArriveTime(),
+					businessEntity.getEnterTime(),
+					businessEntity.getGeneralInfo().getLaneCode(),
+					businessEntity.getGeneralInfo().getRfid(),
+					businessEntity.getGeneralInfo().getWeight(),
+					businessEntity.getGeneralInfo().getCntrSize(),
+					businessEntity.getOcrCarPlate().getOcrPlate(),
+					businessEntity.getOcrCarPlate().getPlateColor(),
 					businessEntity.getOcrFrontContainer().getOcrContainerNo(),
-					businessEntity.getOcrFrontContainer().getOcrContainerConf(),businessEntity.getOcrFrontContainer().getOcrContainerDirection(),businessEntity.getOcrFrontContainer().getOcrContainerISO(),
-					businessEntity.getOcrFrontContainer().getOcrIsoConf(),businessEntity.getOcrFrontContainer().getOcrDamage(),businessEntity.getOcrFrontContainer().getEfid(),
+					businessEntity.getOcrFrontContainer().getOcrContainerConf(),
+					businessEntity.getOcrFrontContainer().getOcrContainerDirection(),
+					businessEntity.getOcrFrontContainer().getOcrContainerISO(),
+					businessEntity.getOcrFrontContainer().getOcrIsoConf(),
+					businessEntity.getOcrFrontContainer().getOcrDamage(),
+					businessEntity.getOcrFrontContainer().getEfid(),
 					businessEntity.getOcrAfterContainer().getOcrContainerNo(),
-					businessEntity.getOcrAfterContainer().getOcrContainerConf(),businessEntity.getOcrAfterContainer().getOcrContainerDirection(),businessEntity.getOcrAfterContainer().getOcrContainerISO(),
-					businessEntity.getOcrAfterContainer().getOcrIsoConf(),businessEntity.getOcrAfterContainer().getOcrDamage(),businessEntity.getOcrAfterContainer().getEfid(),
-					businessEntity.getFtpImages().getFolder(),businessEntity.getFtpImages().getImagePath(),businessEntity.getFtpImages().getImageName().toString()
+					businessEntity.getOcrAfterContainer().getOcrContainerConf(),
+					businessEntity.getOcrAfterContainer().getOcrContainerDirection(),
+					businessEntity.getOcrAfterContainer().getOcrContainerISO(),
+					businessEntity.getOcrAfterContainer().getOcrIsoConf(),
+					businessEntity.getOcrAfterContainer().getOcrDamage(),
+					businessEntity.getOcrAfterContainer().getEfid(),
+					businessEntity.getFtpImages().getFolder(),
+					businessEntity.getFtpImages().getImagePath(),
+					businessEntity.getFtpImages().getImageName().toString()
 			);
 			redisUtils.setex(businessEntity.getVisitGuid(),3600*5,businessDataStr);
 		}else{

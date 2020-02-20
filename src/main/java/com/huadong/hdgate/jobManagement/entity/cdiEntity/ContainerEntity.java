@@ -43,6 +43,21 @@ public class ContainerEntity {
 	 */
 	@JSONField(name="EFID")
 	private String efid;
+	/**
+	 * 铅封状态
+	 */
+	@JSONField(name="leadsealstate")
+	private String leadsealstate;
+	/**
+	 * 铅封号
+	 */
+	@JSONField(name="leadsealno")
+	private String leadsealno;
+	/**
+	 * 箱属
+	 */
+	@JSONField(name="property")
+	private String property;
 
 	/**
 	 * 是否自备箱
