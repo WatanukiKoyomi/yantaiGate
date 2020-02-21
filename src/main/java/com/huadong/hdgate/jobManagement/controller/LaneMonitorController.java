@@ -1,20 +1,16 @@
 package com.huadong.hdgate.jobManagement.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.huadong.hdgate.common.entity.FtpEntity;
 import com.huadong.hdgate.common.utils.CommonUtils;
-import com.huadong.hdgate.common.utils.LaneRedisUtils;
 import com.huadong.hdgate.common.utils.RedisUtils;
 import com.huadong.hdgate.common.utils.webapi.HttpsUtils;
 import com.huadong.hdgate.jobManagement.entity.XijingParamsEntity;
 import com.huadong.hdgate.jobManagement.entity.cdiEntity.BusinessEntity;
-import com.huadong.hdgate.jobManagement.entity.showEntity.ShowBusinessEntity;
 import com.huadong.hdgate.jobManagement.service.BusinessService;
 import com.huadong.hdgate.laneManagement.entity.EquipmentStatusEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +29,17 @@ import java.sql.Timestamp;
 @Slf4j
 public class LaneMonitorController {
 
-	@Resource(name="template")
+	@Resource
 	private StringRedisTemplate stringRedisTemplate;
 	@Resource
 	private BusinessService businessService;
-	@Autowired
-	LaneRedisUtils redisUtils1;
+	@Resource
+	private RedisUtils redisUtils;
 
 	@ApiOperation(value = "redis测试", notes = "redis")
 	@RequestMapping(value = "/testRedis", method = RequestMethod.POST)
 	public String testRedis(@RequestBody String message){
-		redisUtils1.lpushQueue("test", message,2);
+		redisUtils.lpushQueue("test", message,2);
 		return "ok";
 	}
 
@@ -117,8 +113,6 @@ public class LaneMonitorController {
 		log.info("车道{}，抬杆操作，\n调用地址:{},参数:{}",laneCode,url,sb.toString());
 		HttpsUtils.doPost(url,sb.toString(),"urf-8");
 	}
-	@Resource
-	private RedisUtils redisUtils;
 
 	/**
 	 * 接收设备状态，将设备状态存入redis

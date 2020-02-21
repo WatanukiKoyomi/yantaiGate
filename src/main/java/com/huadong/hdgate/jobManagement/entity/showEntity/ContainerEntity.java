@@ -1,5 +1,6 @@
 package com.huadong.hdgate.jobManagement.entity.showEntity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
@@ -41,10 +42,37 @@ public class ContainerEntity {
 	 */
 	private String isProvideForOneself;
 
+	/**
+	 * 铅封状态
+	 */
+	private String leadSealState;
+
+	/**
+	 * 铅封号
+	 */
+	private String leadSealNo;
+
+	/**
+	 * 箱属
+	 */
+	private String property;
+
 	public ContainerEntity() {
 	}
 
-	public ContainerEntity(String ocrContainerNo, String ocrContainerConf, String ocrContainerDirection, String ocrContainerISO, String ocrIsoConf, String ocrDamage, String efid, String isProvideForOneself) {
+	public ContainerEntity(
+			String ocrContainerNo,
+			String ocrContainerConf,
+			String ocrContainerDirection,
+			String ocrContainerISO,
+			String ocrIsoConf,
+			String ocrDamage,
+			String efid,
+			String isProvideForOneself,
+			String leadSealState,
+			String leadSealNo,
+			String property
+			) {
 		this.ocrContainerNo = ocrContainerNo;
 		this.ocrContainerConf = ocrContainerConf;
 		this.ocrContainerDirection = ocrContainerDirection;
@@ -53,5 +81,8 @@ public class ContainerEntity {
 		this.ocrDamage = ocrDamage;
 		this.efid = efid;
 		this.isProvideForOneself = isProvideForOneself;
+		this.leadSealNo = leadSealNo;
+		this.leadSealState = leadSealState;
+		this.property = property;
 	}
 }

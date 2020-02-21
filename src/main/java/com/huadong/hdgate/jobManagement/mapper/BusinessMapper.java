@@ -36,7 +36,14 @@ public interface BusinessMapper extends BaseMapper<BusinessEntity>{
 							   @Param("bEfId") String bEfId,
 							   @Param("folder") String folder,
 							   @Param("imagePath") String imagePath,
-							   @Param("imageName") String imageName);
+							   @Param("imageName") String imageName,
+							   @Param("aLeadsealState") String aLeadsealState,
+							   @Param("aLeadsealNo") String aLeadsealNo,
+							   @Param("aProperty") String aProperty,
+							   @Param("bLeadsealState") String bLeadsealState,
+							   @Param("bLeadsealNo") String bLeadsealNo,
+							   @Param("bProperty") String bProperty
+							   );
 
 	public void updateBusiness(@Param("visitGuid") String visitGuid,
 							   @Param("station") String station,
@@ -68,7 +75,14 @@ public interface BusinessMapper extends BaseMapper<BusinessEntity>{
 							   @Param("updatePlate") String updatePlate,
 							   @Param("updateFrontNo") String updateFrontNo,
 							   @Param("updateBackNo") String updateBackNo,
-							   @Param("weight") String weight);
+							   @Param("weight") String weight,
+							   @Param("aLeadsealState") String aLeadsealState,
+							   @Param("aLeadsealNo") String aLeadsealNo,
+							   @Param("aProperty") String aProperty,
+							   @Param("bLeadsealState") String bLeadsealState,
+							   @Param("bLeadsealNo") String bLeadsealNo,
+							   @Param("bProperty") String bProperty
+							   );
 
 	public List<BusinessEntity> queryHistoryDataByParam(@Param("laneCode")String laneCode,
 														@Param("truckNo")String truckNo,

@@ -47,12 +47,12 @@ public class ContainerEntity {
 	 * 铅封状态
 	 */
 	@JSONField(name="leadsealstate")
-	private String leadsealstate;
+	private String leadSealState;
 	/**
 	 * 铅封号
 	 */
 	@JSONField(name="leadsealno")
-	private String leadsealno;
+	private String leadSealNo;
 	/**
 	 * 箱属
 	 */

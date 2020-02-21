@@ -6,7 +6,8 @@
         VISIT_GUID,STATION,MSG,ARRIVE_TIME,ENTER_TIME,LANE_CODE,RFID,WEIGHT,CNTR_SIZE,OCR_PLATE_NO,PLATE_COLOR,PLATE_NO,
         OCR_FRONT_CNTR_NO,OCR_FRONT_CONF,OCR_FRONT_DIRECTION,OCR_FRONT_ISO,OCR_FRONT_ISO_CONF,OCR_FRONT_DAMAGE,OCR_FRONT_EFID,
         OCR_BACK_CNTR_NO,OCR_BACK_CONF,OCR_BACK_DIRECTION,OCR_BACK_ISO,OCR_BACK_ISO_CONF,OCR_BACK_DAMAGE,OCR_BACK_EFID,
-        FRONT_CNTR_NO,BACK_CNTR_NO,IMG_FOLDER,IMG_PATH,IMG_NAMES,UPDATE_USER
+        FRONT_CNTR_NO,BACK_CNTR_NO,IMG_FOLDER,IMG_PATH,IMG_NAMES,UPDATE_USER,OCR_FRONT_LEADSEALSTATE,OCR_FRONT_LEADSEALNO,
+        OCR_FRONT_PROPERTY,OCR_BACK_LEADSEALSTATE,OCR_BACK_LEADSEALNO,OCR_BACK_PROPERTY
     </sql>
 
     <resultMap id="GateLaneBusinessMap" type="com.huadong.hdgate.jobManagement.entity.cdiEntity.BusinessEntity">
@@ -42,6 +43,12 @@
         <result column="IMG_PATH" property="ftpImages.imagePath" />
         <result column="IMG_NAMES" property="ftpImages.imageName" />
         <result column="UPDATE_USER" property="account" />
+        <result column="OCR_FRONT_LEADSEALSTATE" property="ocrFrontContainer.leadSealState"/>
+        <result column="OCR_FRONT_LEADSEALNO" property="ocrFrontContainer.leadSealNo"/>
+        <result column="OCR_FRONT_PROPERTY" property="ocrFrontContainer.property"/>
+        <result column="OCR_BACK_LEADSEALSTATE" property="ocrAfterContainer.leadSealState"/>
+        <result column="OCR_BACK_LEADSEALNO" property="ocrAfterContainer.leadSealNo"/>
+        <result column="OCR_BACK_PROPERTY" property="ocrAfterContainer.property"/>
     </resultMap>
 
     <select id="queryHistoryDataByParam" resultMap="GateLaneBusinessMap">
@@ -146,6 +153,25 @@
             <if test="imageName !=null">
                 IMG_NAMES,
             </if>
+            <if test="aLeadsealState !=null">
+                OCR_FRONT_LEADSEALSTATE,
+            </if>
+            <if test="aLeadsealNo !=null">
+                OCR_FRONT_LEADSEALNO,
+            </if>
+            <if test="aProperty !=null">
+                OCR_FRONT_PROPERTY,
+            </if>
+            <if test="bLeadsealState !=null">
+                OCR_BACK_LEADSEALSTATE,
+            </if>
+            <if test="bLeadsealNo !=null">
+                OCR_BACK_LEADSEALNO,
+            </if>
+            <if test="bProperty !=null">
+                OCR_BACK_PROPERTY,
+            </if>
+
         </trim>
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -230,6 +256,24 @@
             </if>
             <if test="imageName !=null">
                 #{imageName},
+            </if>
+            <if test="aLeadsealState !=null">
+                #{aLeadsealState},
+            </if>
+            <if test="aLeadsealNo !=null">
+                #{aLeadsealNo},
+            </if>
+            <if test="aProperty !=null">
+                #{aProperty},
+            </if>
+            <if test="bLeadsealState !=null">
+                #{bLeadsealState},
+            </if>
+            <if test="bLeadsealNo !=null">
+                #{bLeadsealNo},
+            </if>
+            <if test="bProperty !=null">
+                #{bProperty},
             </if>
         </trim>
     </insert>
@@ -326,6 +370,24 @@
             </if>
             <if test="weight !=null">
                 WEIGHT = #{weight},
+            </if>
+            <if test="aLeadsealState !=null">
+                OCR_FRONT_LEADSEALSTATE = #{aLeadsealState},
+            </if>
+            <if test="aLeadsealNo !=null">
+                OCR_FRONT_LEADSEALNO = #{aLeadsealNo},
+            </if>
+            <if test="aProperty !=null">
+                OCR_FRONT_PROPERTY = #{aProperty},
+            </if>
+            <if test="bLeadsealState !=null">
+                OCR_BACK_LEADSEALSTATE = #{bLeadsealState},
+            </if>
+            <if test="bLeadsealNo !=null">
+                OCR_BACK_LEADSEALNO = #{bLeadsealNo},
+            </if>
+            <if test="bProperty !=null">
+                OCR_BACK_PROPERTY = #{bProperty},
             </if>
         </set>
         where VISIT_GUID = #{visitGuid}

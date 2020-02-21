@@ -7,14 +7,13 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Component
 public class RedisUtils {
 	private static final Logger logger = LoggerFactory.getLogger(RedisUtils.class);
 
-	@Resource(name = "redisPoolFactory")
+	@Autowired
 	private JedisPool jedisPool;
 
 	public void brpopQueue(String queueName){
@@ -28,22 +27,42 @@ public class RedisUtils {
 		}
 	}
 
-	public void lpushQueue(String queueName,String dbData){
-		Jedis jedis = jedisPool.getResource();
-		jedis.lpush(queueName, dbData);
+	public String rpopQueue(String queueName,int index){
+		StringBuffer result = new StringBuffer();
+		try{
+			Jedis jedis = jedisPool.getResource();
+			jedis.select(index);
+			result.append(jedis.rpop(queueName));
+			jedis.close();
+		} catch (Exception e){
+			logger.error(e.getMessage());
+		} finally {
+			return result.toString();
+		}
+
+	}
+
+	public void lpushQueue(String queueName,String dbData,int index){
+		try{
+			Jedis jedis = jedisPool.getResource();
+			jedis.select(index);
+			jedis.lpush(queueName, dbData);
+			jedis.close();
+		} catch (Exception e){
+			logger.error(e.getMessage());
+		}
 	}
 
 	public String set(String key, String value) {
 		Jedis jedis = null;
 		try {
 			jedis = jedisPool.getResource();
-			//jedis.select(indexdb);
 			return jedis.set(key, value);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return "0";
 		} finally {
-			returnResource(jedisPool, jedis);
+			jedis.close();
 		}
 	}
 
@@ -57,7 +76,7 @@ public class RedisUtils {
 			logger.error(e.getMessage());
 			return "0";
 		} finally {
-			returnResource(jedisPool, jedis);
+			jedis.close();
 		}
 	}
 
@@ -71,15 +90,10 @@ public class RedisUtils {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		} finally {
-			returnResource(jedisPool, jedis);
+			jedis.close();
 		}
 		return value;
 	}
 
-	public static void returnResource(JedisPool jedisPool, Jedis jedis) {
-		if (jedis != null) {
-			jedisPool.returnResource(jedis);
-		}
-	}
 
 }
