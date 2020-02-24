@@ -19,7 +19,7 @@
             </div>
             <div class="box-panel-icon-image icon-box" v-if="lane.data">
 <!--              <img v-if="lane.data.ftpImages.imagePath" src="lane.data.ftpImages.imagePath + '/Plate.jpg?random=' + Math.random()" style="width: 124px;height:46px;" />-->
-              <img v-if="plateImage" :src="plateImage" style="width: 124px;height:46px;" />
+              <img v-if="lane.plate" :src="lane.plate" style="width: 124px;height:46px;" />
             </div>
           </div>
           <!--中间业务数据-->
@@ -177,21 +177,23 @@
                 plateImage: ''
             }
         },
-        mounted () {
-            var that = this
+        mounted: function () {
+            var that = this;
             // 监听重新选中车道后的车道信息
             bus.$on('changeUserCheckedShowLane', function (msg) {
-                that.initLaneChecked()
-            })
-            this.initLaneChecked()
+                that.initLaneChecked();
+                that.pickPlateImage()
+            });
+            this.initLaneChecked();
             this.pickPlateImage()
         },
         watch: {
         },
         methods: {
             //给出车牌图片地址方法
-            pickPlateImage(){
-                data.ftpImages.imageName.split(',').forEach(function (imgName) {
+            pickPlateImage(lane){
+                lane.data.ftpImages.imageName.split(',').forEach(function (imgName) {
+                    console.log('imgName:'+imgName)
                     if(imgName.indexOf('plate.jpg') != -1){
                         this.plateImage = imgName
                     }
@@ -237,9 +239,17 @@
                         that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
                             {params: { 'laneCode': element.laneCode }}).then(data => {
                             if (data === null || data === '') {
-                                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData}) // 查询到最新数据赋值到对应车道上
+                                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
                             } else {
-                                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data}) // 查询到最新数据赋值到对应车道上
+                                var plate;
+                                data.ftpImages.imageName.split(',').forEach(function (imgName) {
+                                    console.log('imgName:'+imgName)
+                                    if(imgName.indexOf('plate.jpg') != -1){
+                                        plate = imgName;
+                                        console.log('plate:'+plate)
+                                    }
+                                })
+                                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
                             }
                         }, response => {
                             console.log('queryLatestDataByLane error')

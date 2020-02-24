@@ -62,12 +62,12 @@ public class RedisConfig {
 	}
 
 	/**redis 读取内容的template */
-	@Bean
+	@Bean(name="template")
 	StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
 		return new StringRedisTemplate(connectionFactory);
 	}
 
-	@Bean
+	@Bean(name="redisPoolFactory")
 	public JedisPool redisPoolFactory()  throws Exception{
 		logger.info("JedisPool注入成功！！");
 		logger.info("redis地址：" + host + ":" + port);

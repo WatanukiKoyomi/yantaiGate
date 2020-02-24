@@ -1,10 +1,13 @@
 package com.huadong.hdgate.common.task;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.huadong.hdgate.common.utils.CommonUtils;
 import com.huadong.hdgate.common.utils.RedisUtils;
 import com.huadong.hdgate.jobManagement.entity.cdiEntity.*;
 import com.huadong.hdgate.jobManagement.service.BusinessService;
+import com.huadong.hdgate.laneManagement.entity.EquipmentStatusEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,15 +41,18 @@ public class ScheduledTask {
     @Resource
     private BusinessService businessService;
 
+    /**
+     * 接收识别数据 1号道
+     */
     @Async
     @Scheduled(fixedDelayString = "2000")
-    public void getTask1() {
-        String autoGateBusiness = redisUtils.rpopQueue("test",1);
+    public void getOcrTask1() {
+        String autoGateBusiness = redisUtils.rpopQueue("ocr",1);
         if(autoGateBusiness!=null && !autoGateBusiness.equals("null") && !autoGateBusiness.equals("")){
             Map<String,Object> maps = (Map)JSON.parse(autoGateBusiness);
             log.info("laneMonitorApi接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",autoGateBusiness);
 
-            BusinessEntity businessEntity = packageData(maps,"YT-1");
+            BusinessEntity businessEntity = packageOcrData(maps);
 
             autoGateBusiness = CommonUtils.cdiEntity2ShowEntityStr(businessEntity);
             System.out.println("++++++++++++++++++"+autoGateBusiness);
@@ -56,16 +64,34 @@ public class ScheduledTask {
         }
     }
 
-    public BusinessEntity packageData(Map<String,Object> maps, String laneNum){
+    @Async
+    @Scheduled(fixedDelayString = "2000")
+    public void getDeviceTask(){
+        String statusEntity = redisUtils.rpopQueue("device",1);
+        if(statusEntity !=null && !statusEntity.equals("null") && !statusEntity.equals("")){
+            JSONArray json = JSONArray.parseArray(statusEntity);
+            log.info("device:"+json.toString());
+        }else{
+            log.info("device error");
+        }
+    }
+
+    /**
+     * 识别数据对应封装
+     * @param maps
+     * @return
+     */
+    public BusinessEntity packageOcrData(Map<String,Object> maps){
         BusinessEntity businessEntity = new BusinessEntity();
         businessEntity.setVisitGuid(maps.get("uuid").toString());
         businessEntity.setStation(maps.get("station").toString());
         businessEntity.setArriveTime(maps.get("starttime").toString());
         businessEntity.setEnterTime(maps.get("endtime").toString());
+        businessEntity.setMsg(maps.get("message").toString());
 
         GeneralInfoEntity generalInfoEntity = new GeneralInfoEntity();
         generalInfoEntity.setWeight(maps.get("weight").toString());
-        generalInfoEntity.setLaneCode(laneNum);//车道号与redis和定时任务对应
+        generalInfoEntity.setLaneCode(maps.get("lanecode").toString());//车道号与redis和定时任务对应
         generalInfoEntity.setCntrSize(maps.get("containersize").toString());
         businessEntity.setGeneralInfo(generalInfoEntity);
 
@@ -81,6 +107,7 @@ public class ScheduledTask {
         ocrFrontContainer.setLeadSealNo(((Map) maps.get("containerahead")).get("leadsealno").toString());
         ocrFrontContainer.setProperty(((Map) maps.get("containerahead")).get("property").toString());
         ocrFrontContainer.setLeadSealState(((Map) maps.get("containerahead")).get("leadsealstate").toString());
+        ocrFrontContainer.setEfid(((Map) maps.get("containerahead")).get("efid").toString());
         businessEntity.setOcrFrontContainer(ocrFrontContainer);
 
         ContainerEntity ocrAfterContainer = new ContainerEntity();
@@ -90,6 +117,7 @@ public class ScheduledTask {
         ocrAfterContainer.setLeadSealNo(((Map) maps.get("containerbehind")).get("leadsealno").toString());
         ocrAfterContainer.setProperty(((Map) maps.get("containerbehind")).get("property").toString());
         ocrAfterContainer.setLeadSealState(((Map) maps.get("containerbehind")).get("leadsealstate").toString());
+        ocrFrontContainer.setEfid(((Map) maps.get("containerbehind")).get("efid").toString());
         businessEntity.setOcrAfterContainer(ocrAfterContainer);
 
         FtpImagesEntity ftpImagesEntity = new FtpImagesEntity();
@@ -102,6 +130,10 @@ public class ScheduledTask {
         ftpImagesEntity.setImageName(images.toString());
         businessEntity.setFtpImages(ftpImagesEntity);
         return businessEntity;
+    }
+
+    public EquipmentStatusEntity packageDeviceData(JSONArray array){
+        return null;
     }
 
 }

@@ -21,13 +21,12 @@ spring:
   jpa:
     show-sql: true
   profiles: #设置采用哪个配置文件
-        active: prod
+    active: prod
   mvc:
     static-path-pattern: /**  #表示所有的访问都经过静态资源路径
   resources:
     static-locations: /static/**,classpath:/static/,file:${web.img-path} #本地图片存放路径在相应application-dev/application-prod.yml中设置
 
 mybatis:
-    mapperLocations: classpath:mapper/*.xml
-
+  mapperLocations: classpath:mapper/*.xml
 

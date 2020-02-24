@@ -39,6 +39,12 @@
             </el-switch>
           </el-form-item>
         </el-col>
+        <el-col :span="8" :xs="16">
+          <el-form-item label="redis编号" prop="laneDB"
+                        :rules="[{ max: 255, message: '输入非法', trigger: 'blur' }]">
+            <el-input type="number" v-model="laneForm.laneDB"></el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -69,39 +75,40 @@
     },
     methods: {
       show (biaozhi, row) { // 换为本表主键
-        this.visible = true // 不管新增还是修改，都设置true显示窗体
-        console.log('新增或修改标志:' + biaozhi)
+        this.visible = true; // 不管新增还是修改，都设置true显示窗体
+        console.log('新增或修改标志:' + biaozhi);
         if (biaozhi === 'add') {
-          this.flag = 'add'
+          this.flag = 'add';
           this.laneForm.showFlag = 'Y'
         } else {
-          this.flag = 'update'
-          this.laneForm = JSON.parse(JSON.stringify(row)) // 避免双向绑定
-          this.laneForm.oldLaneCode = this.laneForm.laneCode
-          this.laneForm.oldLaneDirection = this.laneForm.laneDirection
-          this.laneForm.oldLaneIp = this.laneForm.laneIp
-          this.laneForm.oldLanePort = this.laneForm.lanePort
+          this.flag = 'update';
+          this.laneForm = JSON.parse(JSON.stringify(row)); // 避免双向绑定
+          this.laneForm.oldLaneCode = this.laneForm.laneCode;
+          this.laneForm.oldLaneDirection = this.laneForm.laneDirection;
+          this.laneForm.oldLaneIp = this.laneForm.laneIp;
+          this.laneForm.oldLanePort = this.laneForm.lanePort;
+          this.laneForm.oldLaneDB = this.laneForm.oldLaneDB;
         }
       },
       submit () {
         // 提交后台，进行数据更新
         this.$axios.get('/hdGate/laneManagement/insertOrUpdateLane',
           {params: { laneForm: this.laneForm }}).then(data => {
-          console.log('insertOrUpdateLane ', data)
-          this.visible = false // 关闭窗口
+          console.log('insertOrUpdateLane ', data);
+          this.visible = false; // 关闭窗口
           bus.$emit('initAllGateLanes', data)
         }, response => {
           console.log('insertOrUpdateLane error')
         })
       },
       cancle () {
-        this.visible = false
-        this.laneForm = {}
+        this.visible = false;
+        this.laneForm = {};
         this.flag = 'init'
       },
       switchShowFlagChange (showFlag) {
-        console.log('switchShowFlagChange', showFlag)
-        this.laneForm.showFlag = 'Y'
+        console.log('switchShowFlagChange', showFlag);
+        this.laneForm.showFlag = 'Y';
         if (showFlag === 'Y') {
           this.laneForm.showFlag = 'N'
         }

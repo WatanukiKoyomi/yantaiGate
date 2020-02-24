@@ -42,14 +42,14 @@
 
 
 {
-	"uuid":"0fde0d435da74f40af077ff607ec8d79",
+	"uuid":"5fde0d435da74f40af077ff607ec8d79",
 	"station":"huadong",
 	"weight":"100",
 	"starttime":"2020-02-06 15:32:30",
 	"endtime":"2020-02-06 15:32:35",
 	"containersize":"2",
 	"lorry":{
-		"plate":"鲁Y88888",
+		"plate":"鲁Y88885",
 		"color":"Blue"
 	},
 	"containerahead":{
@@ -82,3 +82,5 @@
 		"right":"http://127.0.0.1:9527/right.jpg",
 	}
 }
+
+http://127.0.0.1:9527/right.jpg,http://127.0.0.1:9527/right.jpg,http://127.0.0.1/laneno/ymdhms/top.jpg,http://127.0.0.1/laneno/ymdhms/right1.jpg,http://127.0.0.1/laneno/ymdhms/left.jpg,http://127.0.0.1:9527/right.jpg,http://127.0.0.1/laneno/ymdhms/right2.jpg,http://127.0.0.1:9527/plate.jpg,http://127.0.0.1/laneno/ymdhms/left2.jpg,http://127.0.0.1/laneno/ymdhms/left1.jpg,http://127.0.0.1:9527/right.jpg

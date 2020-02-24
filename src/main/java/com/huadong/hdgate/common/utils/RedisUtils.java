@@ -7,14 +7,18 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Component
 public class RedisUtils {
 	private static final Logger logger = LoggerFactory.getLogger(RedisUtils.class);
 
-	@Autowired
+	@Resource(name="redisPoolFactory")
 	private JedisPool jedisPool;
+
+	@Resource(name="laneRedisPoolFactory")
+	private JedisPool laneJedisPool;
 
 	public void brpopQueue(String queueName){
 		Jedis jedis = null;
@@ -27,12 +31,12 @@ public class RedisUtils {
 		}
 	}
 
-	public String rpopQueue(String queueName,int index){
+	public String rpopQueue(String key,int index){
 		StringBuffer result = new StringBuffer();
 		try{
-			Jedis jedis = jedisPool.getResource();
+			Jedis jedis = laneJedisPool.getResource();
 			jedis.select(index);
-			result.append(jedis.rpop(queueName));
+			result.append(jedis.rpop(key));
 			jedis.close();
 		} catch (Exception e){
 			logger.error(e.getMessage());
@@ -44,7 +48,7 @@ public class RedisUtils {
 
 	public void lpushQueue(String queueName,String dbData,int index){
 		try{
-			Jedis jedis = jedisPool.getResource();
+			Jedis jedis = laneJedisPool.getResource();
 			jedis.select(index);
 			jedis.lpush(queueName, dbData);
 			jedis.close();

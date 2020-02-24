@@ -65,4 +65,7 @@ public class GateLane {
 	@TableField(value = "SHOW_FLAG")
 	private String showFlag;
 
+	@TableField(value = "LANE_DB")
+	private Integer laneDB;
+
 }
