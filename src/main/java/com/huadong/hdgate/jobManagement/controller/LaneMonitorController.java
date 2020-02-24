@@ -80,6 +80,12 @@ public class LaneMonitorController {
 		String laneCode = request.getParameter("laneCode");
 		String account = request.getParameter("account");
 		String todoUpdateData = request.getParameter("todoUpdateData");
+		//新加推送redis ocr_data
+		BusinessEntity businessEntity = JSONObject.parseObject(todoUpdateData,BusinessEntity.class);
+		StringBuffer redisData = new StringBuffer();
+		redisData.append("{\"lanecode\":\"");
+		redisData.append(businessEntity.get)
+
 		log.info("updateBusinessData,参数laneCode：{},account：{},todoUpateData：{}",laneCode,account,todoUpdateData);
 		String finalBusinessData = businessService.updateBusinessData(laneCode,account,todoUpdateData);
 		stringRedisTemplate.convertAndSend("hd_gate_business_data_db",finalBusinessData);// redis频道
