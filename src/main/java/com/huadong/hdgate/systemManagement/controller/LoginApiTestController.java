@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Resource;
+
 @ApiIgnore
 @RestController
 @RequestMapping(value = "/test")
@@ -32,7 +34,7 @@ public class LoginApiTestController {
 		return sb.toString();
 	}
 
-	@Autowired
+	@Resource(name="template")
 	RedisTemplate redisTemplate;
 
 	@RequestMapping(value = "/redisTest",method = RequestMethod.GET)

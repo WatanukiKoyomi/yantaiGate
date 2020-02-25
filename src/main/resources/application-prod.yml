@@ -6,7 +6,7 @@ spring:
     password: 123
     timeout: 3000
   laneredis:
-    host: localhost
+    host: 10.18.13.202
     port: 6379
     password: 123
     timeout: 3000

@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.huadong.hdgate.common.filter.MyWebsocketHandler;
 import com.huadong.hdgate.common.utils.DateUtils;
+import com.huadong.hdgate.common.utils.LaneDBUtils;
 import com.huadong.hdgate.common.utils.RedisUtils;
 import com.huadong.hdgate.common.utils.webapi.HttpsUtils;
 import com.huadong.hdgate.jobManagement.entity.StatisticsRationEntity;
@@ -32,6 +33,8 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 	private RedisUtils redisUtils;
 	@Resource
 	private SysUserService sysUserService;
+	@Resource
+	private LaneDBUtils laneDBUtils;
 
 	public boolean insertOrUpdateBusinessData(String businessDataStr){
 		BusinessEntity businessEntity = JSONObject.parseObject(businessDataStr,BusinessEntity.class);
@@ -225,10 +228,129 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		String finalBusinessDataStr = JSONObject.toJSONString(oldBusinessData);
 		redisUtils.set(laneCode,finalBusinessDataStr);
 
-		String url = "http://"+xijingParamsEntity.getIp()+":"+xijingParamsEntity.getPort()+"/xijing/monitor/sendUpdateData";
-		log.info("车道{}，操作员人工识别修正后，调用西井接收端口，url:{},data:{}",laneCode,url,finalBusinessDataStr);
-		HttpsUtils.doPost(url,finalBusinessDataStr,"urf-8");
+		redisUtils.lpushQueue("ocr_data",BusinessDataToJson(oldBusinessData,laneCode), laneDBUtils.getLaneDB(laneCode));
+
+//		String url = "http://"+xijingParamsEntity.getIp()+":"+xijingParamsEntity.getPort()+"/xijing/monitor/sendUpdateData";
+//		log.info("车道{}，操作员人工识别修正后，调用西井接收端口，url:{},data:{}",laneCode,url,finalBusinessDataStr);
+//		HttpsUtils.doPost(url,finalBusinessDataStr,"urf-8");
 		return finalBusinessDataStr;
+	}
+
+	private String BusinessDataToJson(BusinessEntity oldBusinessData, String laneCode){
+		StringBuffer redisData = new StringBuffer();
+		redisData.append("{\"lanecode\": \"");
+		redisData.append(laneCode);
+		redisData.append("\", \"uuid\": \"");
+		redisData.append(oldBusinessData.getVisitGuid());
+		redisData.append("\", \"station\": \"");
+		redisData.append("web");
+		redisData.append("\", \"message\": \"");
+		redisData.append(oldBusinessData.getMsg());
+		redisData.append("\", \"starttime\": \"");
+		redisData.append(oldBusinessData.getArriveTime());
+		redisData.append("\", \"endtime\": \"");
+		redisData.append(oldBusinessData.getEnterTime());
+		redisData.append("\", \"containersize\": \"");
+		redisData.append(oldBusinessData.getGeneralInfo().getCntrSize());
+		redisData.append("\", \"weight\": \"");
+		redisData.append(oldBusinessData.getGeneralInfo().getWeight());
+		redisData.append("\", \"lorry\": { \"Plate\": \"");
+		redisData.append(oldBusinessData.getCarPlate().getOcrPlate());
+		redisData.append("\", \"Color\": \"");
+		redisData.append(oldBusinessData.getCarPlate().getPlateColor());
+		redisData.append("\"}, \"containerahead\": { \"number\": \"");
+		if(oldBusinessData.getFrontContainer().getOcrContainerNo() == null || oldBusinessData.getFrontContainer().getOcrContainerNo().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getOcrContainerNo());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getOcrContainerNo());
+		}
+		redisData.append("\", \"iso\": \"");
+		if(oldBusinessData.getFrontContainer().getOcrContainerISO() == null || oldBusinessData.getFrontContainer().getOcrContainerISO().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getOcrContainerISO());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getOcrContainerISO());
+		}
+		redisData.append("\", \"direction\": \"");
+		if(oldBusinessData.getFrontContainer().getOcrContainerDirection() ==null || oldBusinessData.getFrontContainer().getOcrContainerDirection().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getOcrContainerDirection());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getOcrContainerDirection());
+		}
+		redisData.append("\", \"leadsealstate\": \"");
+		if(oldBusinessData.getFrontContainer().getLeadSealState() == null || oldBusinessData.getFrontContainer().getLeadSealState().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getLeadSealState());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getLeadSealState());
+		}
+		redisData.append("\", \"leadsealno\": \"");
+		if(oldBusinessData.getFrontContainer().getLeadSealNo() == null || oldBusinessData.getFrontContainer().getLeadSealNo().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getLeadSealNo());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getLeadSealNo());
+		}
+		redisData.append("\", \"property\": \"");
+		if(oldBusinessData.getFrontContainer().getProperty() == null || oldBusinessData.getFrontContainer().getProperty().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getProperty());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getProperty());
+		}
+		redisData.append("\", \"efid\": \"");
+		if(oldBusinessData.getFrontContainer().getEfid() == null || oldBusinessData.getFrontContainer().getEfid().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getEfid());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getEfid());
+		}
+		redisData.append("\"}, \"containerbehind\": { \"number\": \"");
+		if(oldBusinessData.getAfterContainer().getOcrContainerNo() == null || oldBusinessData.getAfterContainer().getOcrContainerNo().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getOcrContainerNo());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getOcrContainerNo());
+		}
+		redisData.append("\", \"iso\": \"");
+		if(oldBusinessData.getAfterContainer().getOcrContainerISO() == null || oldBusinessData.getAfterContainer().getOcrContainerISO().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getOcrContainerISO());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getOcrContainerISO());
+		}
+		redisData.append("\", \"direction\": \"");
+		if(oldBusinessData.getAfterContainer().getOcrContainerDirection() == null || oldBusinessData.getAfterContainer().getOcrContainerDirection().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getOcrContainerDirection());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getOcrContainerDirection());
+		}
+		redisData.append("\", \"leadsealstate\": \"");
+		if(oldBusinessData.getAfterContainer().getLeadSealState() == null || oldBusinessData.getAfterContainer().getLeadSealState().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getLeadSealState());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getLeadSealState());
+		}
+		redisData.append("\", \"leadsealno\": \"");
+		if(oldBusinessData.getAfterContainer().getLeadSealNo() == null || oldBusinessData.getAfterContainer().getLeadSealNo().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getLeadSealNo());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getLeadSealNo());
+		}
+		redisData.append("\", \"property\": \"");
+		if(oldBusinessData.getAfterContainer().getProperty() == null || oldBusinessData.getAfterContainer().getProperty().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getProperty());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getProperty());
+		}
+		redisData.append("\", \"efid\": \"");
+		if(oldBusinessData.getAfterContainer().getEfid() == null || oldBusinessData.getAfterContainer().getEfid().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getEfid());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getEfid());
+		}
+		redisData.append("\"}, \"images\": {");
+		for(String s:oldBusinessData.getFtpImages().getImageName().split(",")){
+			redisData.append("\"")
+					.append(s, s.lastIndexOf("/")+1, s.length()-4)
+					.append("\": \"").append(s).append("\",");
+		}
+		redisData.deleteCharAt(redisData.length()-1);
+		redisData.append("} }");
+		return redisData.toString();
 	}
 
 	// 分页查询

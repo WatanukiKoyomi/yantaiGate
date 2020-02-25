@@ -40,7 +40,7 @@ public class LaneRedisConfig {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setJmxEnabled(true);
         jedisPoolConfig.setMaxTotal(20);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000, password);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000);
         return jedisPool;
     }
 }

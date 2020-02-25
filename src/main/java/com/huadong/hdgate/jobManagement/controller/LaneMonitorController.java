@@ -29,12 +29,14 @@ import java.sql.Timestamp;
 @Slf4j
 public class LaneMonitorController {
 
-	@Resource
+	@Resource(name="template")
 	private StringRedisTemplate stringRedisTemplate;
 	@Resource
 	private BusinessService businessService;
 	@Resource
 	private RedisUtils redisUtils;
+	@Autowired
+	private XijingParamsEntity xijingParamsEntity;
 
 	@ApiOperation(value = "redis测试", notes = "redis")
 	@RequestMapping(value = "/testRedis", method = RequestMethod.POST)
@@ -86,8 +88,6 @@ public class LaneMonitorController {
 		return true;
 	}
 
-	@Autowired
-	private XijingParamsEntity xijingParamsEntity;
 	/**
 	 * 打印小票
 	 */
@@ -119,7 +119,9 @@ public class LaneMonitorController {
 	 */
 	@RequestMapping(value = "/laneEquipmentStatus",method = RequestMethod.POST)
 	public String laneEquipmentStatus(@RequestBody String equipmentStatus) {
+		System.out.println("接收设备状态，将设备状态存入redis");
 		EquipmentStatusEntity statusEntity = JSONObject.parseObject(equipmentStatus,EquipmentStatusEntity.class);
+		System.out.println(statusEntity.toString());
 		String laneCode = statusEntity.getLaneCode();
 		long oldTime = Timestamp.valueOf(redisUtils.get("receiveMsgTime"+laneCode)).getTime();
 		long curTime = System.currentTimeMillis();
@@ -132,7 +134,8 @@ public class LaneMonitorController {
 		EquipmentStatusEntity oldEntity = JSONObject.parseObject(receiveStatus,EquipmentStatusEntity.class);
 
 		if (!statusEntity.equals(oldEntity)){
-			redisUtils.set("receiveStatus"+laneCode,equipmentStatus); // 与存储状态不一致，重复赋值后台存储状态，将该次数据推送前台
+			System.out.println("redis存入设备状态返回信息："+redisUtils.set("receiveStatus"+laneCode,equipmentStatus));
+			 // 与存储状态不一致，重复赋值后台存储状态，将该次数据推送前台
 			String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
 			String retMsg = HttpsUtils.doPost(url,equipmentStatus,"utf-8");
 			log.info("调用api："+url+"，返回值："+retMsg);
