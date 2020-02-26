@@ -55,7 +55,7 @@ public class TimeScheduleEntity {
 	/**
 	 * 2秒一次心跳检测是否收到中控发送来的数据,之后新增岸桥，加入新的定时器即可 XXX
 	 */
-	@Scheduled(cron = "*/3 * * * * ?") //每天凌晨1点 0 0 1 * * ? 执行一次，处理缓存 // 每5秒一次 */5 * * * * ?
+	@Scheduled(cron = "*/30 * * * * ?") //每天凌晨1点 0 0 1 * * ? 执行一次，处理缓存 // 每5秒一次 */5 * * * * ?
 	public void heartbeat(){
 		String queryShowGateUrl = "http://localhost:8085/hdGate/laneManagement/queryShowGateLanes";
 		String retGateListMsg = HttpsUtils.doGet(queryShowGateUrl,"utf-8"); // 查询所有启用车道
@@ -66,8 +66,8 @@ public class TimeScheduleEntity {
 			long oldTime = Timestamp.valueOf(redisUtils.get("receiveMsgTime"+laneCode)).getTime();
 			long curTime = System.currentTimeMillis();
 			long subTime = curTime - oldTime;
-			if (subTime > 10*1000){ // 大于10秒默认是工控机链接断开 // 自己增加定时器，来进行时间判断
-				// log.info("上次时间与本次时间间隔："+subTime+"已经超时");
+			if (subTime > 3*1000){ // 大于10秒默认是工控机链接断开 // 自己增加定时器，来进行时间判断//
+				log.info("上次时间与本次时间间隔："+subTime+"已经超时");
 				int counts = Integer.parseInt(redisUtils.get("receiveCountsN"+laneCode));
 				if (counts == 0){
 					log.info(laneCode+"上次时间与本次时间间隔："+subTime+"已经超时，第一次发送数据");
@@ -80,9 +80,21 @@ public class TimeScheduleEntity {
 					// 设置pc为0，异常
 					EquipmentStatusEntity entity = new EquipmentStatusEntity();
 					entity.setPc("0");
+					entity.setPrint("0");
+					entity.setPlc("0");
+					entity.setTruckScales("0");
+					entity.setBackCamera("0");
+					entity.setAfterRightOcrCamera("0");
+					entity.setFrontRightOcrCamera("0");
+					entity.setAfterLeftOcrCamera("0");
+					entity.setFrontLeftOcrCamera("0");
+					entity.setTopCdiCamera("0");
+					entity.setRightCdiCamera("0");
+					entity.setLeftCdiCamera("0");
+					entity.setTruckNoCamera("0");
 					redisUtils.set("receiveStatus"+laneCode, JSONObject.toJSONString(entity));
 				}else{
-					// log.info("已经发送过数据");
+					log.info("已经发送过数据");
 				}
 				counts = counts - 1;
 				redisUtils.set("receiveCountsN"+laneCode,counts+"");

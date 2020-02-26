@@ -35,12 +35,12 @@ public class LaneRedisConfig {
 
     @Bean(name="laneRedisPoolFactory")
     public JedisPool laneRedisPoolFactory()  throws Exception{
-        logger.info("JedisPool注入成功！！");
-        logger.info("redis地址：" + host + ":" + port);
+        logger.info("laneRedisPoolFactory注入成功！！");
+        logger.info("laneRedis地址：" + host + ":" + port);
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setJmxEnabled(true);
         jedisPoolConfig.setMaxTotal(20);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000,password);
         return jedisPool;
     }
 }

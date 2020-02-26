@@ -92,7 +92,16 @@
 [
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
+"time": "2020-02-24 09:43:56",
+"devno": "pc",
+"devname": "工控机",
+"detail": "正常",
+"ip": "127.0.0.1"
+},
+{
+"uuid": "",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "truckNoCamera",
 "devname": "车牌相机",
@@ -101,7 +110,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "leftCdiCamera",
 "devname": "左侧验残相机",
@@ -110,7 +119,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "rightCdiCamera",
 "devname": "右侧验残相机",
@@ -119,7 +128,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "topCdiCamera",
 "devname": "顶部验残相机",
@@ -128,7 +137,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "frontLeftOcrCamera",
 "devname": "前方左侧箱号相机",
@@ -137,7 +146,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "afterLeftOcrCamera",
 "devname": "后方左侧箱号相机",
@@ -146,7 +155,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "frontRightOcrCamera",
 "devname": "前方右侧箱号相机",
@@ -155,7 +164,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "afterRightOcrCamera",
 "devname": "后方右侧箱号相机",
@@ -164,7 +173,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "backCamera",
 "devname": "后相机",
@@ -173,7 +182,7 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "truckScales",
 "devname": "地磅",
@@ -182,10 +191,19 @@
 },
 {
 "uuid": "",
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "time": "2020-02-24 09:43:56",
 "devno": "plc",
 "devname": "plc",
+"detail": "异常",
+"ip": "127.0.0.1"
+},
+{
+"uuid": "",
+"lanecode": "HD_1",
+"time": "2020-02-24 09:43:56",
+"devno": "print",
+"devname": "打印机",
 "detail": "异常",
 "ip": "127.0.0.1"
 }
@@ -194,7 +212,7 @@
 
 
 {
-"lanecode": "YT-1",
+"lanecode": "HD_1",
 "uuid": "4fde0d435da74f40af077ff607ec8d79",
 "station": "huadong",
 "message": "未找到车辆信息",
@@ -241,8 +259,8 @@
 
 
 {
-"lanecode": "YT-1",
-"uuid": "1fde0d435da74f40af077ff607ec8d79",
+"lanecode": "HD_1",
+"uuid": "6fde0d435da74f40af077ff607ec8d79",
 "station": "huadong",
 "message": "未找到车辆信息",
 "starttime": "2020-02-06 15:32:30",
@@ -250,7 +268,7 @@
 "containersize": "2",
 "weight": "0",
 "lorry": {
-"plate": "鲁Y88881",
+"plate": "鲁Y88886",
 "color": "Blue"
 },
 "containerahead": {
@@ -290,4 +308,4 @@
 
 
 
-[{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "truckNoCamera","devname": "车牌相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "leftCdiCamera","devname": "左侧验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "rightCdiCamera","devname": "右侧验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "topCdiCamera","devname": "顶部验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "frontLeftOcrCamera","devname": "前方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "afterLeftOcrCamera","devname": "后方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "frontRightOcrCamera","devname": "前方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "afterRightOcrCamera","devname": "后方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "backCamera","devname": "后相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "truckScales","devname": "地磅","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "YT-1","time": "2020-02-24 09:43:56","devno": "plc","devname": "plc","detail": "异常","ip": "127.0.0.1"}]
+[{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "truckNoCamera","devname": "车牌相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "leftCdiCamera","devname": "左侧验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "rightCdiCamera","devname": "右侧验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "topCdiCamera","devname": "顶部验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "frontLeftOcrCamera","devname": "前方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "afterLeftOcrCamera","devname": "后方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "frontRightOcrCamera","devname": "前方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "afterRightOcrCamera","devname": "后方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "backCamera","devname": "后相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "truckScales","devname": "地磅","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "HD_1","time": "2020-02-24 09:43:56","devno": "plc","devname": "plc","detail": "异常","ip": "127.0.0.1"}]
