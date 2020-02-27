@@ -42,12 +42,14 @@
 
 
 {
+	"lanecode":"",
 	"uuid":"5fde0d435da74f40af077ff607ec8d79",
 	"station":"huadong",
 	"weight":"100",
 	"starttime":"2020-02-06 15:32:30",
 	"endtime":"2020-02-06 15:32:35",
 	"containersize":"2",
+	"message":"",
 	"lorry":{
 		"plate":"鲁Y88885",
 		"color":"Blue"
@@ -58,7 +60,8 @@
 		"direction":"F",
 		"leadsealstate":"Y",
 		"leadsealno":"1138908",
-		"property":"危品"
+		"property":"危品",
+		"efid":""
 	},
 	"containerbehind":{
 		"number":"CCLU1234567",
@@ -66,7 +69,8 @@
 		"direction":"A",
 		"leadsealstate":"Y",
 		"leadsealno":"1138909",
-		"property":"冷藏"
+		"property":"冷藏",
+		"efid":""
 	},
 	"images":{
 		"lorry":"http://127.0.0.1:9527/right.jpg",

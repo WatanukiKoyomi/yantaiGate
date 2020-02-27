@@ -10,6 +10,7 @@ import com.huadong.hdgate.laneManagement.mapper.GateLaneMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service("gateLaneService")
 public class GateLaneService extends ServiceImpl<GateLaneMapper,GateLane> {
@@ -72,4 +73,5 @@ public class GateLaneService extends ServiceImpl<GateLaneMapper,GateLane> {
 		wrapper.eq(GateLane.LANE_CODE,lane.getLaneCode());
 		return super.delete(wrapper);
 	}
+
 }
