@@ -7,12 +7,6 @@
           <!--车道名称-->
           <el-table-column align="center" prop="laneDirection" label="进出方向"></el-table-column>
           <!--进出方向-->
-          <el-table-column align="center" label="中间层">
-            <template slot-scope="scope">
-              <span v-if="scope.row.data.pc === '0'" style="color: red;">异常</span>
-              <span v-else style="color: green;">正常</span>
-            </template>
-          </el-table-column>
           <el-table-column align="center" label="前相机">
             <template slot-scope="scope">
               <span v-if="scope.row.data.frontCamera === '0'" style="color: red;">异常</span>
@@ -114,7 +108,7 @@ export default {
   data() {
     return {
       emptyData: {
-        pc: "",
+        laneCode: "",
         frontCamera: "",
         backCamera: "",
         leftCamera: "",
@@ -136,7 +130,7 @@ export default {
           laneCode: "",
           laneDirection: "",
           data: {
-            pc: "",
+            laneCode: "",
             frontCamera: "",
             backCamera: "",
             leftCamera: "",
@@ -160,27 +154,25 @@ export default {
     };
   },
   created() {
-    this.initAllGateLanesStatus();
+    this.initAllGateLanesStatus(false);
     var that = this;
     window.setInterval(function() {
-      that.initAllGateLanesStatus();
+      that.initAllGateLanesStatus(true);
     }, 3 * 1000); // 3秒查询一次
   },
   methods: {
     // 获取车道设备状态
-    initAllGateLanesStatus: function() {
+    initAllGateLanesStatus: function(flag) {
       var that = this;
       this.$axios.get("/hdGate/laneManagement/queryShowGateLanes").then(
-        data => {
-          console.log("queryShowGateLanes", data);
-          data.map(v => {
-            // 每个车道增加状态data字段
+        result => {
+          result.map(v => {
             v.data = that.emptyData;
             return v;
           });
-          data.forEach(function(laneData) {
-            that.$axios
-              .get("/hdGate/monitor/queryLaneEquipmentStatus", {
+          console.log('queryShowGateLanes', result);
+          result.forEach( function(laneData) {
+            that.$axios.get("/hdGate/monitor/queryLaneEquipmentStatus", {
                 params: { laneCode: laneData.laneCode }
               })
               .then(
@@ -191,61 +183,19 @@ export default {
                   } else {
                     laneData.data = d;
                   }
+                  console.log('lanedata:',laneData.data);
                 },
                 response => {
                   console.log("queryLaneEquipmentStatus error");
                 }
               );
           });
-          console.log('compare:'+that.compareObj(that.tableData,data,true));
-          if(!that.compareObj(that.tableData,data,true)){
-            that.tableData = data;
-          }
+          that.tableData = result;
         },
         response => {
           console.log("queryShowGateLanes error");
         }
       );
-    },
-    isArray: function(object) {
-      return object && typeof object == "object" && object.constructor == Array;
-    },
-    compareObj: function(objA, objB, flag) {
-      var that = this;
-      for (var key in objA) {
-        if (!flag)
-          //跳出整个循环
-          break;
-        if (!objB.hasOwnProperty(key)) {
-          flag = false;
-          break;
-        }
-        if (!that.isArray(objA[key])) {
-          //子级不是数组时,比较属性值
-          if (objB[key] != objA[key]) {
-            flag = false;
-            break;
-          }
-        } else {
-          if (!that.isArray(objB[key])) {
-            flag = false;
-            break;
-          }
-          var oA = objA[key],
-            oB = objB[key];
-          if (oA.length != oB.length) {
-            flag = false;
-            break;
-          }
-          for (var k in oA) {
-            if (!flag)
-              //这里跳出循环是为了不让递归继续
-              break;
-            flag = compareObj(oA[k], oB[k], flag);
-          }
-        }
-      }
-      return flag;
     }
   }
 };
