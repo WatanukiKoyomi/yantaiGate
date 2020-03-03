@@ -76,48 +76,58 @@ export default {
       }
     },
     initWebsocket: function () {
-      var s = window.location.host.split(':')[0] // + ':' + window.location.port
+      var s = window.location.host.split(':')[0];// + ':' + window.location.port
       // console.log('sessionStorage.user:', sessionStorage.user)
-      var user = JSON.parse(sessionStorage.user)
-      var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/user:' + user.username)
+      var user = JSON.parse(sessionStorage.user);
+      var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/user:' + user.username);
       // const ws = new SockJS('http://localhost:8085/hdGate/webSocketServer')
       ws.onopen = () => {
         // Web Socket 已连接上，使用 send() 方法发送数据
         console.log(user.username + '主页的websocket链接成功...')
-      }
+      };
       ws.onerror = function () {
         console.log('主页的websocket链接失败')
-      }
+      };
       ws.onmessage = evt => {
-        var msg = evt.data
+        var msg = evt.data;
         // console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkk', msg)
         if (msg === 'kickout') {
           this.$alert('该用户已在其他地方登录', '消息', {
             confirmButtonText: '确定',
             callback: action => {
-              this.$router.push({name: 'login'})
+              this.$router.push({name: 'login'});
               location.reload()
             }
           })
         } else {
-          console.log('提示信息：', msg)
-          var index = msg.indexOf(',')
-          var beginStr = msg.substring(0, index)
-          var endStr = msg.substring(index)
-          console.log(beginStr, endStr)
-          endStr = endStr.replace(/"0"/g, '异常').replace(/0/g, '异常')
-          endStr = endStr.replace(/"1"/g, '正常').replace(/1/g, '正常')
+          console.log('提示信息：', msg);
+          msg = msg.replace(/"0"/g, '异常').replace(/异常/g, '<span style="color: red;">异常</span>')
+          msg = msg.replace(/"1"/g, '正常');
           // 将英文转换成中文
-          endStr = endStr.replace(/"laneCode"/g, '车道').replace(/"truckNoCamera"/g, '车牌相机').replace(/"leftCdiCamera"/g, '左侧验残相机')
-            .replace(/"rightCdiCamera"/g, '右侧验残相机').replace(/"topCdiCamera"/g, '顶部验残相机')
-            .replace(/"frontLeftOcrCamera"/g, '前方左侧箱号相机').replace(/"afterLeftOcrCamera"/g, '后方左侧箱号相机')
-            .replace(/"frontRightOcrCamera"/g, '前方右侧箱号相机').replace(/"afterRightOcrCamera"/g, '后方右侧箱号相机')
-            .replace(/"backCamera"/g, '后相机').replace(/"truckScales"/g, '地磅').replace(/"plc"/g, 'PLC').replace(/"print"/g, '打印机')
-          var alterMsg = beginStr + endStr.replace(/异常/g, '<span style="color: red;">异常</span>')
-          console.log('更改后msg:', alterMsg)
-          this.$alert(alterMsg, '提示', {
-            dangerouslyUseHTMLString: true, // 启用页面代码
-            confirmButtonText: '确定'
+          msg = msg.replace(/"laneCode"/g, '车道')
+            .replace(/"frontCamera"/g, '前相机')
+            .replace(/"backCamera"/g, '后相机')
+            .replace(/"leftCamera"/g, '左相机')
+            .replace(/"rightCamera"/g, '右相机')
+            .replace(/"leftCdiCamera"/g, '左验残相机')
+            .replace(/"rightCdiCamera"/g, '右验残相机')
+            .replace(/"topCdiCamera"/g, '上验残相机')
+            .replace(/"truckNoCamera"/g, '车牌相机')
+            .replace(/"truckCamera"/g, '车架相机')
+            .replace(/"led"/g, 'led')
+            .replace(/"plc"/g, 'plc')
+            .replace(/"printer"/g, '打印机')
+            .replace(/"intercom"/g, '对讲终端')
+            .replace(/"workstation"/g, '识别工作站')
+            .replace(/"comServer"/g, '串口服务器');
+          console.log('更改后msg:', msg);
+          this.$notify.info({
+            title:'提示',
+            position: 'bottom-right',
+            message: msg,
+            dangerouslyUseHTMLString: true,
+            duration: 2000,
+            type: 'warning'
           })
         }
       }

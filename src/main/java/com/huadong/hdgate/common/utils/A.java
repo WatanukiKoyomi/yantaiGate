@@ -8,8 +8,10 @@ package com.huadong.hdgate.common.utils;
  */
 public class A {
     private static int flag;
+    private static String m;
     static{
         flag = 1;
+        m = "异常";
     }
 
     public static int getFlag() {
@@ -18,5 +20,13 @@ public class A {
 
     public static void setFlag(int flag) {
         A.flag = flag;
+    }
+
+    public static String getM() {
+        return m;
+    }
+
+    public static void setM(String m) {
+        A.m = m;
     }
 }

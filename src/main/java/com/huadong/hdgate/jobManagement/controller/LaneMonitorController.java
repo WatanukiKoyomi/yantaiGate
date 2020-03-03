@@ -43,137 +43,15 @@ public class LaneMonitorController {
     @ApiOperation(value = "定时开关", notes = "redis")
     @RequestMapping(value = "/osSchedule", method = RequestMethod.POST)
     public String osSchedule(@RequestBody String message) {
-        if(A.getFlag() == 1) {
-            A.setFlag(0);
-        }else{
-            A.setFlag(1);
-        }
+        A.setM(message);
         return "success";
     }
 
     @ApiOperation(value = "redis测试", notes = "redis")
     @RequestMapping(value = "/testRedis", method = RequestMethod.POST)
+    @ResponseBody
     public String testRedis(@RequestBody String message) {
-        redisUtils.lpushQueue("device_data", "[\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"pc\",\n" +
-                "\"devname\": \"工控机\",\n" +
-                "\"detail\": \"正常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"truckNoCamera\",\n" +
-                "\"devname\": \"车牌相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"leftCdiCamera\",\n" +
-                "\"devname\": \"左侧验残相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"rightCdiCamera\",\n" +
-                "\"devname\": \"右侧验残相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"topCdiCamera\",\n" +
-                "\"devname\": \"顶部验残相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"frontLeftOcrCamera\",\n" +
-                "\"devname\": \"前方左侧箱号相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"afterLeftOcrCamera\",\n" +
-                "\"devname\": \"后方左侧箱号相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"frontRightOcrCamera\",\n" +
-                "\"devname\": \"前方右侧箱号相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"afterRightOcrCamera\",\n" +
-                "\"devname\": \"后方右侧箱号相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"backCamera\",\n" +
-                "\"devname\": \"后相机\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"truckScales\",\n" +
-                "\"devname\": \"地磅\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"plc\",\n" +
-                "\"devname\": \"plc\",\n" +
-                "\"detail\": \"异常\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"uuid\": \"\",\n" +
-                "\"lanecode\": \"HD_1\",\n" +
-                "\"time\": \"2020-02-24 09:43:56\",\n" +
-                "\"devno\": \"print\",\n" +
-                "\"devname\": \"打印机\",\n" +
-                "\"detail\": \"" + message + "\",\n" +
-                "\"ip\": \"127.0.0.1\"\n" +
-                "}\n" +
-                "]", 0);
-        return "ok";
+        return redisUtils.rpopQueue("device_data",2);
     }
 
     @ApiOperation(value = "车道监控api", notes = "车道监控api")

@@ -1,0 +1,137 @@
+[
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:20:56",
+    "devno": "frontCamera",
+    "devname": "前相机",
+    "detail": "异常",
+    "ip": "10.23.3.171"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:20:57",
+    "devno": "backCamera",
+    "devname": "后相机",
+    "detail": "异常",
+    "ip": "10.23.3.172"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:20:57",
+    "devno": "leftCamera",
+    "devname": "左相机",
+    "detail": "异常",
+    "ip": "10.23.3.173"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:20:58",
+    "devno": "rightCamera",
+    "devname": "右相机",
+    "detail": "异常",
+    "ip": "10.23.3.174"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:20:58",
+    "devno": "leftCdiCamera",
+    "devname": "左验残相机",
+    "detail": "异常",
+    "ip": "10.23.3.175"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:20:59",
+    "devno": "rightCdiCamera",
+    "devname": "右验残相机",
+    "detail": "异常",
+    "ip": "10.23.3.176"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:20:59",
+    "devno": "topCdiCamera",
+    "devname": "上验残相机",
+    "detail": "异常",
+    "ip": "10.23.3.177"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:00",
+    "devno": "truckNoCamera",
+    "devname": "车牌相机",
+    "detail": "异常",
+    "ip": "10.23.3.178"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:00",
+    "devno": "truckCamera",
+    "devname": "车架相机",
+    "detail": "异常",
+    "ip": "10.23.3.179"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:01",
+    "devno": "led",
+    "devname": "led",
+    "detail": "异常",
+    "ip": "10.23.3.180"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:01",
+    "devno": "plc",
+    "devname": "plc",
+    "detail": "异常",
+    "ip": "10.23.3.181"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:02",
+    "devno": "printer",
+    "devname": "打印机",
+    "detail": "异常",
+    "ip": "10.23.3.182"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:02",
+    "devno": "intercom",
+    "devname": "对讲终端",
+    "detail": "异常",
+    "ip": "10.23.3.183"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:03",
+    "devno": "comServer",
+    "devname": "串口服务器",
+    "detail": "异常",
+    "ip": "10.23.3.184"
+  },
+  {
+    "uuid": "",
+    "lanecode": "01",
+    "time": "2020-03-02 08:21:03",
+    "devno": "workstation",
+    "devname": "识别工作站",
+    "detail": "异常",
+    "ip": "10.23.3.185"
+  }
+]

@@ -1,20 +1,27 @@
 package com.huadong.hdgate.common.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.huadong.hdgate.common.utils.MyCacheUtils;
-import com.huadong.hdgate.common.utils.RedisUtils;
+import com.huadong.hdgate.common.utils.*;
 import com.huadong.hdgate.common.utils.webapi.HttpsUtils;
+import com.huadong.hdgate.jobManagement.entity.cdiEntity.*;
+import com.huadong.hdgate.jobManagement.entity.xijingEntity.DeviceEntity;
+import com.huadong.hdgate.jobManagement.service.BusinessService;
 import com.huadong.hdgate.laneManagement.entity.EquipmentStatusEntity;
 import com.huadong.hdgate.laneManagement.entity.GateLane;
 import com.huadong.hdgate.systemManagement.entity.SysUserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,9 +35,16 @@ import java.util.Map;
 @Order(value = 3)
 @Component
 @Slf4j
+@EnableAsync
 public class TimeScheduleEntity {
 	@Autowired
 	private RedisUtils redisUtils;
+	@Resource
+	private LaneDBUtils laneDBUtils;
+	@Resource(name="template")
+	private StringRedisTemplate stringRedisTemplate;
+	@Resource
+	private BusinessService businessService;
 
 	@Scheduled(cron = "0 0 1 * * ?") //每天凌晨1点 0 0 1 * * ? 执行一次，处理缓存 // 每5秒一次 */5 * * * * ?
 	public void sendMessage(){
@@ -53,9 +67,10 @@ public class TimeScheduleEntity {
 	}
 
 	/**
-	 * 2秒一次心跳检测是否收到中控发送来的数据,之后新增岸桥，加入新的定时器即可 XXX
+	 * 每3秒一次心跳检测设备
 	 */
-	@Scheduled(cron = "*/30 * * * * ?") //每天凌晨1点 0 0 1 * * ? 执行一次，处理缓存 // 每5秒一次 */5 * * * * ?
+	//@Async
+	//@Scheduled(cron = "*/3 * * * * ?") //每天凌晨1点 0 0 1 * * ? 执行一次，处理缓存 // 每5秒一次 */5 * * * * ?
 	public void heartbeat(){
 		String queryShowGateUrl = "http://localhost:8085/hdGate/laneManagement/queryShowGateLanes";
 		String retGateListMsg = HttpsUtils.doGet(queryShowGateUrl,"utf-8"); // 查询所有启用车道
@@ -79,19 +94,7 @@ public class TimeScheduleEntity {
 					// 断开链接默认岸桥数据异常 TODO 设置设备状态
 					// 设置pc为0，异常
 					EquipmentStatusEntity entity = new EquipmentStatusEntity();
-					entity.setPc("0");
-					entity.setPrint("0");
-					entity.setPlc("0");
-					entity.setTruckScales("0");
-					entity.setBackCamera("0");
-					entity.setAfterRightOcrCamera("0");
-					entity.setFrontRightOcrCamera("0");
-					entity.setAfterLeftOcrCamera("0");
-					entity.setFrontLeftOcrCamera("0");
-					entity.setTopCdiCamera("0");
-					entity.setRightCdiCamera("0");
-					entity.setLeftCdiCamera("0");
-					entity.setTruckNoCamera("0");
+
 					redisUtils.set("receiveStatus"+laneCode, JSONObject.toJSONString(entity));
 				}else{
 					log.info("已经发送过数据");
@@ -116,5 +119,269 @@ public class TimeScheduleEntity {
 				}
 			}
 		}
+	}
+
+	@Async
+	@Scheduled(cron = "*/3 * * * * ?")
+	public void deviceTask(){
+		for(int i : laneDBUtils.getAllLaneDB()) {
+			String statusEntity = redisUtils.rpopQueue("device_data", i);
+			String laneCode = laneDBUtils.getLaneCode(i);
+			if (statusEntity != null && !statusEntity.equals("null") && !statusEntity.equals("")) {
+				List<DeviceEntity> list = JSONArray.parseArray(statusEntity,DeviceEntity.class);
+				log.info("device:" + list.toString());
+				EquipmentStatusEntity equipmentStatusEntity = new EquipmentStatusEntity(list, laneCode);
+				System.out.println("接收设备状态，将设备状态存入redis");
+				String receiveStatus = redisUtils.get("receiveStatus" + laneCode);
+				System.out.println("receiveStatus:" + receiveStatus);
+				EquipmentStatusEntity oldEntity = JSONObject.parseObject(receiveStatus, EquipmentStatusEntity.class);
+				System.out.println("oldEntity:" + JSONObject.toJSONString(oldEntity));
+				if(!equipmentStatusEntity.equals(oldEntity)){
+					String equipmentStatus = JSONObject.toJSONString(equipmentStatusEntity);
+					redisUtils.set("receiveStatus" + laneCode, equipmentStatus);
+					String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
+					//String retMsg = HttpsUtils.doPost(url, equipmentStatus, "utf-8");
+					String retMsg = HttpsUtils.doPost(url, laneCode+"设备出现异常，请及时处理", "utf-8");
+					log.info("调用api：" + url + "，返回值：" + retMsg);
+				}
+			} else {
+				//设备异常
+				EquipmentStatusEntity entity = new EquipmentStatusEntity();
+				redisUtils.set("receiveStatus"+laneCode, JSONObject.toJSONString(entity));
+				String retData = "与车道"+laneCode+"工控机链接超时，确认后如果长时间没有弹框提示网络恢复，请联系相关人员请查看网络情况或工控机情况";
+				String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
+				String retMsg = HttpsUtils.doPost(url,retData,"utf-8");
+			}
+		}
+	}
+
+	/**
+	 * 识别数据对应封装
+	 * @param maps
+	 * @return
+	 */
+	public BusinessEntity packageOcrData(Map<String,Object> maps){
+		BusinessEntity businessEntity = new BusinessEntity();
+		businessEntity.setVisitGuid(maps.get("uuid").toString());
+		businessEntity.setStation(maps.get("station").toString());
+		businessEntity.setArriveTime(maps.get("starttime").toString());
+		businessEntity.setEnterTime(maps.get("endtime").toString());
+		businessEntity.setMsg(maps.get("message").toString());
+
+		GeneralInfoEntity generalInfoEntity = new GeneralInfoEntity();
+		generalInfoEntity.setWeight(maps.get("weight").toString());
+		generalInfoEntity.setLaneCode(maps.get("lanecode").toString());//车道号与redis和定时任务对应
+		generalInfoEntity.setCntrSize(maps.get("containersize").toString());
+		businessEntity.setGeneralInfo(generalInfoEntity);
+
+		CarPlateEntity carPlateEntity = new CarPlateEntity();
+		carPlateEntity.setOcrPlate(((Map) maps.get("lorry")).get("plate").toString());
+		carPlateEntity.setPlateColor(((Map) maps.get("lorry")).get("color").toString());
+		businessEntity.setOcrCarPlate(carPlateEntity);
+
+		ContainerEntity ocrFrontContainer = new ContainerEntity();
+		ocrFrontContainer.setOcrContainerNo(((Map) maps.get("containerahead")).get("number").toString());
+		ocrFrontContainer.setOcrContainerISO(((Map) maps.get("containerahead")).get("iso").toString());
+		ocrFrontContainer.setOcrContainerDirection(((Map) maps.get("containerahead")).get("direction").toString());
+		ocrFrontContainer.setLeadSealNo(((Map) maps.get("containerahead")).get("leadsealno").toString());
+		ocrFrontContainer.setProperty(((Map) maps.get("containerahead")).get("property").toString());
+		ocrFrontContainer.setLeadSealState(((Map) maps.get("containerahead")).get("leadsealstate").toString());
+		ocrFrontContainer.setEfid(((Map) maps.get("containerahead")).get("efid").toString());
+		businessEntity.setOcrFrontContainer(ocrFrontContainer);
+
+		ContainerEntity ocrAfterContainer = new ContainerEntity();
+		ocrAfterContainer.setOcrContainerNo(((Map) maps.get("containerbehind")).get("number").toString());
+		ocrAfterContainer.setOcrContainerISO(((Map) maps.get("containerbehind")).get("iso").toString());
+		ocrAfterContainer.setOcrContainerDirection(((Map) maps.get("containerbehind")).get("direction").toString());
+		ocrAfterContainer.setLeadSealNo(((Map) maps.get("containerbehind")).get("leadsealno").toString());
+		ocrAfterContainer.setProperty(((Map) maps.get("containerbehind")).get("property").toString());
+		ocrAfterContainer.setLeadSealState(((Map) maps.get("containerbehind")).get("leadsealstate").toString());
+		ocrFrontContainer.setEfid(((Map) maps.get("containerbehind")).get("efid").toString());
+		businessEntity.setOcrAfterContainer(ocrAfterContainer);
+
+		FtpImagesEntity ftpImagesEntity = new FtpImagesEntity();
+		StringBuffer images = new StringBuffer();
+		Map<String, Object> imageList =(Map) maps.get("images");
+		for(String key: imageList.keySet()){
+			images.append(imageList.get(key)).append(",");
+		}
+		images.deleteCharAt(images.length()-1);
+		ftpImagesEntity.setImageName(images.toString());
+		businessEntity.setFtpImages(ftpImagesEntity);
+		return businessEntity;
+	}
+
+	/**
+	 * 接收识别数据
+	 */
+//	@Scheduled(fixedDelayString = "3000")
+	@Async
+	@Scheduled(cron = "*/3 * * * * ?")
+	public void getOcrTask() {
+		for(int i:laneDBUtils.getAllLaneDB()){
+			String autoGateBusiness = redisUtils.rpopQueue("web_data",i);
+			if(autoGateBusiness!=null && !autoGateBusiness.equals("null") && !autoGateBusiness.equals("")){
+				Map<String,Object> maps = (Map) JSON.parse(autoGateBusiness);
+				log.info("laneMonitorApi接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",autoGateBusiness);
+
+				BusinessEntity businessEntity = packageOcrData(maps);
+
+				autoGateBusiness = CommonUtils.cdiEntity2ShowEntityStr(businessEntity);
+				System.out.println("++++++++++++++++++"+autoGateBusiness);
+				stringRedisTemplate.convertAndSend("hd_gate_business_data_db",autoGateBusiness);// redis频道
+				businessService.sendData2Html(businessEntity.getGeneralInfo().getLaneCode(),autoGateBusiness); // 推送数据到页面
+
+			}else{
+				//log.info("lane{}:ocr为空",i);
+			}
+		}
+	}
+
+	@Scheduled(cron = "*/3 * * * * ?")
+	public void getTest(){
+		String data = "[\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:20:56\",\n" +
+				"    \"devno\": \"frontCamera\",\n" +
+				"    \"devname\": \"前相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.171\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:20:57\",\n" +
+				"    \"devno\": \"backCamera\",\n" +
+				"    \"devname\": \"后相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.172\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:20:57\",\n" +
+				"    \"devno\": \"leftCamera\",\n" +
+				"    \"devname\": \"左相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.173\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:20:58\",\n" +
+				"    \"devno\": \"rightCamera\",\n" +
+				"    \"devname\": \"右相机\",\n" +
+				"    \"detail\": \""+A.getM()+"\",\n" +
+				"    \"ip\": \"10.23.3.174\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:20:58\",\n" +
+				"    \"devno\": \"leftCdiCamera\",\n" +
+				"    \"devname\": \"左验残相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.175\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:20:59\",\n" +
+				"    \"devno\": \"rightCdiCamera\",\n" +
+				"    \"devname\": \"右验残相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.176\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:20:59\",\n" +
+				"    \"devno\": \"topCdiCamera\",\n" +
+				"    \"devname\": \"上验残相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.177\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:00\",\n" +
+				"    \"devno\": \"truckNoCamera\",\n" +
+				"    \"devname\": \"车牌相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.178\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:00\",\n" +
+				"    \"devno\": \"truckCamera\",\n" +
+				"    \"devname\": \"车架相机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.179\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:01\",\n" +
+				"    \"devno\": \"led\",\n" +
+				"    \"devname\": \"led\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.180\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:01\",\n" +
+				"    \"devno\": \"plc\",\n" +
+				"    \"devname\": \"plc\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.181\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:02\",\n" +
+				"    \"devno\": \"printer\",\n" +
+				"    \"devname\": \"打印机\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.182\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:02\",\n" +
+				"    \"devno\": \"intercom\",\n" +
+				"    \"devname\": \"对讲终端\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.183\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:03\",\n" +
+				"    \"devno\": \"comServer\",\n" +
+				"    \"devname\": \"串口服务器\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.184\"\n" +
+				"  },\n" +
+				"  {\n" +
+				"    \"uuid\": \"\",\n" +
+				"    \"lanecode\": \"01\",\n" +
+				"    \"time\": \"2020-03-02 08:21:03\",\n" +
+				"    \"devno\": \"workstation\",\n" +
+				"    \"devname\": \"识别工作站\",\n" +
+				"    \"detail\": \"正常\",\n" +
+				"    \"ip\": \"10.23.3.185\"\n" +
+				"  }\n" +
+				"]";
+
+			redisUtils.lpushQueue("device_data", data, 1);
+			redisUtils.lpushQueue("device_data", data, 0);
+			redisUtils.lpushQueue("device_data", data, 2);
+
+
+
 	}
 }

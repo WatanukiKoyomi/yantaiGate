@@ -64,7 +64,6 @@ public class SysUserController {
 		SysUserEntity user = JSONObject.parseObject(userForm,SysUserEntity.class);
 		//SysDeptEntity parentDept = JSONObject.parseObject(parentDeptStr,SysDeptEntity.class);
 		user.setOrgnId(parentDeptId);//设置用户所在部门
-
 		sysUserService.addOrUpdateUser(user,flag);
 	}
 
