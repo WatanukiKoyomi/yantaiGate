@@ -1,6 +1,10 @@
 package com.huadong.hdgate.laneManagement.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.huadong.hdgate.common.entity.CommonsEntity;
+import com.huadong.hdgate.common.utils.LaneDBUtils;
+import com.huadong.hdgate.common.utils.RedisUtils;
+import com.huadong.hdgate.laneManagement.entity.ControlEntity;
 import com.huadong.hdgate.laneManagement.entity.GateLane;
 import com.huadong.hdgate.laneManagement.service.GateLaneService;
 import com.huadong.hdgate.systemManagement.entity.SysUserEntity;
@@ -9,6 +13,7 @@ import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -29,6 +34,10 @@ public class LaneController {
 	private GateLaneService gateLaneService;
 	@Resource
 	private SysUserService sysUserService;
+	@Resource
+	private RedisUtils redisUtils;
+	@Resource
+	private LaneDBUtils laneDBUtils;
 
 	/**
 	 * 获取所有车道信息
@@ -125,4 +134,70 @@ public class LaneController {
 		String laneFormStr = request.getParameter("laneForm");
 		return gateLaneService.deleteLane(laneFormStr);
 	}
+
+	@ApiIgnore
+	@RequestMapping(value = "/lightOn",method = RequestMethod.GET)
+	public boolean lightOn(HttpServletRequest request) {
+		String laneCode = request.getParameter("laneCode");
+		ControlEntity controlEntity = new ControlEntity();
+		controlEntity.setLanecode(laneCode);
+		controlEntity.setStation("light");
+		controlEntity.setDetail("1");
+		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		if(result == null){
+			return false;
+		}
+		return true;
+	}
+
+	@ApiIgnore
+	@RequestMapping(value = "/lightOff",method = RequestMethod.GET)
+	public boolean lightOff(HttpServletRequest request) {
+		String laneCode = request.getParameter("laneCode");
+		ControlEntity controlEntity = new ControlEntity();
+		controlEntity.setLanecode(laneCode);
+		controlEntity.setStation("light");
+		controlEntity.setDetail("0");
+		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		if(result == null){
+			return false;
+		}
+		return true;
+	}
+
+	@ApiIgnore
+	@RequestMapping(value = "/liftRod",method = RequestMethod.GET)
+	public boolean liftRod(HttpServletRequest request) {
+		String laneCode = request.getParameter("laneCode");
+		ControlEntity controlEntity = new ControlEntity();
+		controlEntity.setLanecode(laneCode);
+		controlEntity.setStation("lift");
+		controlEntity.setDetail("1");
+		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		if(result == null){
+			return false;
+		}
+		return true;
+	}
+
+	@ApiIgnore
+	@RequestMapping(value = "/lightSet",method = RequestMethod.GET)
+	public boolean lightSet(HttpServletRequest request){
+		String lightOnTime = Integer.valueOf(request.getParameter("lightOnTime").substring(0,2)).toString();
+		String lightOffTime = Integer.valueOf(request.getParameter("lightOffTime").substring(0,2)).toString();
+		String laneCode = request.getParameter("laneCode");
+		ControlEntity controlEntity = new ControlEntity();
+		controlEntity.setTime_on(lightOnTime);
+		controlEntity.setTime_off(lightOffTime);
+		controlEntity.setLanecode(laneCode);
+		controlEntity.setStation("light");
+		controlEntity.setDetail("1");
+		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		System.out.println("result:"+result);
+		if(result == null){
+			return false;
+		}
+		return true;
+	}
+
 }

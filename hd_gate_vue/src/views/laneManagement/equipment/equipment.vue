@@ -103,100 +103,100 @@
   </el-container>
 </template>
 <script>
-export default {
-  components: {},
-  data() {
-    return {
-      emptyData: {
-        laneCode: "",
-        frontCamera: "",
-        backCamera: "",
-        leftCamera: "",
-        rightCamera: "",
-        leftCdiCamera: "",
-        rightCdiCamera: "",
-        topCdiCamera: "",
-        truckNoCamera: "",
-        truckCamera: "",
-        led: "",
-        plc: "",
-        printer: "",
-        intercom: "",
-        comServer: "",
-        workstation: ""
-      },
-      tableData: [
-        {
-          laneCode: "",
-          laneDirection: "",
-          data: {
-            laneCode: "",
-            frontCamera: "",
-            backCamera: "",
-            leftCamera: "",
-            rightCamera: "",
-            leftCdiCamera: "",
-            rightCdiCamera: "",
-            topCdiCamera: "",
-            truckNoCamera: "",
-            truckCamera: "",
-            led: "",
-            plc: "",
-            printer: "",
-            intercom: "",
-            comServer: "",
-            workstation: ""
-          }
-        }
-      ],
-      listLoading: true,
-      websockets: []
-    };
-  },
-  created() {
-    this.initAllGateLanesStatus(false);
-    var that = this;
-    window.setInterval(function() {
-      that.initAllGateLanesStatus(true);
-    }, 3 * 1000); // 3秒查询一次
-  },
-  methods: {
-    // 获取车道设备状态
-    initAllGateLanesStatus: function(flag) {
-      var that = this;
-      this.$axios.get("/hdGate/laneManagement/queryShowGateLanes").then(
-        result => {
-          result.map(v => {
-            v.data = that.emptyData;
-            return v;
-          });
-          console.log('queryShowGateLanes', result);
-          result.forEach( function(laneData) {
-            that.$axios.get("/hdGate/monitor/queryLaneEquipmentStatus", {
-                params: { laneCode: laneData.laneCode }
-              })
-              .then(
-                d => {
-                  // console.log('queryLaneEquipmentStatus', d)
-                  if (d === "" || d === null || d === undefined) {
-                    laneData.data = that.emptyData;
-                  } else {
-                    laneData.data = d;
-                  }
-                  console.log('lanedata:',laneData.data);
+    export default {
+        components: {},
+        data() {
+            return {
+                emptyData: {
+                    laneCode: "",
+                    frontCamera: "",
+                    backCamera: "",
+                    leftCamera: "",
+                    rightCamera: "",
+                    leftCdiCamera: "",
+                    rightCdiCamera: "",
+                    topCdiCamera: "",
+                    truckNoCamera: "",
+                    truckCamera: "",
+                    led: "",
+                    plc: "",
+                    printer: "",
+                    intercom: "",
+                    comServer: "",
+                    workstation: ""
                 },
-                response => {
-                  console.log("queryLaneEquipmentStatus error");
-                }
-              );
-          });
-          that.tableData = result;
+                tableData: [
+                    {
+                        laneCode: "",
+                        laneDirection: "",
+                        data: {
+                            laneCode: "",
+                            frontCamera: "",
+                            backCamera: "",
+                            leftCamera: "",
+                            rightCamera: "",
+                            leftCdiCamera: "",
+                            rightCdiCamera: "",
+                            topCdiCamera: "",
+                            truckNoCamera: "",
+                            truckCamera: "",
+                            led: "",
+                            plc: "",
+                            printer: "",
+                            intercom: "",
+                            comServer: "",
+                            workstation: ""
+                        }
+                    }
+                ],
+                listLoading: true,
+                websockets: []
+            };
         },
-        response => {
-          console.log("queryShowGateLanes error");
+        created() {
+            this.initAllGateLanesStatus(false);
+            var that = this;
+            window.setInterval(function() {
+                that.initAllGateLanesStatus(true);
+            }, 3 * 1000); // 3秒查询一次
+        },
+        methods: {
+            // 获取车道设备状态
+            initAllGateLanesStatus: function(flag) {
+                var that = this;
+                this.$axios.get("/hdGate/laneManagement/queryShowGateLanes").then(
+                    data => {
+                        data.map(v => {
+                            v.data = that.emptyData;
+                            return v;
+                        })
+                        console.log('queryShowGateLanes', data);
+                        data.forEach( function(laneData) {
+                            that.$axios.get("/hdGate/monitor/queryLaneEquipmentStatus", {
+                                params: { laneCode: laneData.laneCode }
+                            })
+                                .then(
+                                    d => {
+                                        // console.log('queryLaneEquipmentStatus', d)
+                                        if (d === "" || d === null || d === undefined) {
+                                            laneData.data = that.emptyData;
+                                        } else {
+                                            laneData.data = d;
+                                        }
+                                        console.log('lanedata:',laneData.data);
+                                    },
+                                    response => {
+                                        console.log("queryLaneEquipmentStatus error");
+                                    }
+                                );
+                        });
+                        that.tableData = data;
+                    },
+                    response => {
+                        console.log("queryShowGateLanes error");
+                    }
+                )
+            }
         }
-      );
-    }
-  }
-};
+    };
 </script>

@@ -46,15 +46,17 @@ public class RedisUtils {
 
 	}
 
-	public void lpushQueue(String queueName,String dbData,int index){
+	public Long lpushQueue(String queueName,String dbData,int index){
+		Long result = null;
 		try{
 			Jedis jedis = laneJedisPool.getResource();
 			jedis.select(index);
-			jedis.lpush(queueName, dbData);
+			result = jedis.lpush(queueName, dbData);
 			jedis.close();
 		} catch (Exception e){
 			logger.error(e.getMessage());
 		}
+		return result;
 	}
 
 	public String set(String key, String value) {

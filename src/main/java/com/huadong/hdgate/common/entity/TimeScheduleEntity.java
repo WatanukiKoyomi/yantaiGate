@@ -141,7 +141,7 @@ public class TimeScheduleEntity {
 					redisUtils.set("receiveStatus" + laneCode, equipmentStatus);
 					String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
 					//String retMsg = HttpsUtils.doPost(url, equipmentStatus, "utf-8");
-					String retMsg = HttpsUtils.doPost(url, laneCode+"设备出现异常，请及时处理", "utf-8");
+					String retMsg = HttpsUtils.doPost(url, laneCode+"设备状态改变，请及时处理", "utf-8");
 					log.info("调用api：" + url + "，返回值：" + retMsg);
 				}
 			} else {
@@ -214,7 +214,6 @@ public class TimeScheduleEntity {
 	/**
 	 * 接收识别数据
 	 */
-//	@Scheduled(fixedDelayString = "3000")
 	@Async
 	@Scheduled(cron = "*/3 * * * * ?")
 	public void getOcrTask() {
@@ -236,8 +235,8 @@ public class TimeScheduleEntity {
 			}
 		}
 	}
-
-	//@Scheduled(cron = "*/3 * * * * ?")
+//模拟中间层信息发送
+//	@Scheduled(cron = "*/3 * * * * ?")
 //	public void getTest(){
 //		String data = "[\n" +
 //				"  {\n" +

@@ -20,18 +20,18 @@
             <el-input type="text" v-model="laneForm.laneDirection"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" :xs="16">
-          <el-form-item label="socket的ip" prop="apiServiceUrl"
-                        :rules="[{ max: 255, message: '输入非法', trigger: 'blur' }]">
-            <el-input type="text" v-model="laneForm.laneIp"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8" :xs="16">
-          <el-form-item label="socket的端口" prop="apiServiceUrl"
-                        :rules="[{ max: 255, message: '输入非法', trigger: 'blur' }]">
-            <el-input type="text" v-model="laneForm.lanePort"></el-input>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="8" :xs="16">-->
+<!--          <el-form-item label="socket的ip" prop="apiServiceUrl"-->
+<!--                        :rules="[{ max: 255, message: '输入非法', trigger: 'blur' }]">-->
+<!--            <el-input type="text" v-model="laneForm.laneIp"></el-input>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="8" :xs="16">-->
+<!--          <el-form-item label="socket的端口" prop="apiServiceUrl"-->
+<!--                        :rules="[{ max: 255, message: '输入非法', trigger: 'blur' }]">-->
+<!--            <el-input type="text" v-model="laneForm.lanePort"></el-input>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="8" :xs="16">
           <el-form-item label="是否启用" prop="showFlag"
                         :rules="[{ max: 255, message: '输入非法', trigger: 'blur' }]">
