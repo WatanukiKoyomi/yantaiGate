@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 角色相关信息
  */
-@TableName("SYS_ROLE")
+@TableName("GATE_ROLE")
 public class SysRoleEntity implements Serializable {
 	public static final String ROLE_ID = "ROLE_ID";
 	public static final String RESOURCE_ID = "RESOURCE_ID";

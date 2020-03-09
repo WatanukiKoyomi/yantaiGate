@@ -21,7 +21,7 @@ spring:
   jpa:
     show-sql: true
   profiles: #设置采用哪个配置文件
-    active: prod
+    active: dev
   mvc:
     static-path-pattern: /**  #表示所有的访问都经过静态资源路径
   resources:

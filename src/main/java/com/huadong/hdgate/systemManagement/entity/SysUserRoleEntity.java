@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 角色资源中间表实体类
  */
-@TableName("SYS_USER_ROLE")
+@TableName("GATE_USER_ROLE")
 @Data
 public class SysUserRoleEntity implements Serializable {
 

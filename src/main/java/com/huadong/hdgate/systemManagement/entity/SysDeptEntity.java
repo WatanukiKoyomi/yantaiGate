@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 部门
  */
-@TableName("SYS_DEPT")
+@TableName("GATE_DEPT")
 @Data
 public class SysDeptEntity implements Serializable {
 

@@ -131,11 +131,8 @@ public class TimeScheduleEntity {
 				List<DeviceEntity> list = JSONArray.parseArray(statusEntity,DeviceEntity.class);
 				log.info("device:" + list.toString());
 				EquipmentStatusEntity equipmentStatusEntity = new EquipmentStatusEntity(list, laneCode);
-				System.out.println("接收设备状态，将设备状态存入redis");
 				String receiveStatus = redisUtils.get("receiveStatus" + laneCode);
-				System.out.println("receiveStatus:" + receiveStatus);
 				EquipmentStatusEntity oldEntity = JSONObject.parseObject(receiveStatus, EquipmentStatusEntity.class);
-				System.out.println("oldEntity:" + JSONObject.toJSONString(oldEntity));
 				if(!equipmentStatusEntity.equals(oldEntity)){
 					String equipmentStatus = JSONObject.toJSONString(equipmentStatusEntity);
 					redisUtils.set("receiveStatus" + laneCode, equipmentStatus);

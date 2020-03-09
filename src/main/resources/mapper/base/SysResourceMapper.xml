@@ -12,11 +12,11 @@
         select
         <include refid="Base_Column_List"/>
         from
-        SYS_ROLE r,SYS_RESOURCE p,SYS_ROLE_RESOURCE rp
+        GATE_ROLE r,GATE_RESOURCE p,GATE_ROLE_RESOURCE rp
         <where>
          r.role_id=rp.role_id and p.RESOURCE_ID=rp.RESOURCE_ID
         and p.state = 'open' and p.RESOURCE_TYPE = 'm'
-        and r.role_id in (select ur.role_id from SYS_USER_ROLE ur where ur.user_Id = #{userId})
+        and r.role_id in (select ur.role_id from GATE_USER_ROLE ur where ur.user_Id = #{userId})
         order by SORT_NO
         </where>
     </select>
@@ -26,11 +26,11 @@
         select
         <include refid="Base_Column_List"/>
         from
-        SYS_ROLE r,SYS_RESOURCE p,SYS_ROLE_RESOURCE rp
+        GATE_ROLE r,GATE_RESOURCE p,GATE_ROLE_RESOURCE rp
         <where>
             r.role_id=rp.role_id and p.RESOURCE_ID=rp.RESOURCE_ID
             and p.state = 'open' and p.RESOURCE_TYPE = 'b'
-            and r.role_id in (select ur.role_id from SYS_USER_ROLE ur where ur.user_Id = #{userId})
+            and r.role_id in (select ur.role_id from GATE_USER_ROLE ur where ur.user_Id = #{userId})
             order by SORT_NO
         </where>
     </select>
@@ -40,7 +40,7 @@
         select
         <include refid="Base_Column_List"/>
         from
-        SYS_ROLE r,SYS_RESOURCE p,SYS_ROLE_RESOURCE rp
+        GATE_ROLE r,GATE_RESOURCE p,GATE_ROLE_RESOURCE rp
         <where>
             r.role_id=rp.role_id and p.RESOURCE_ID=rp.RESOURCE_ID
             and p.state = 'open' and p.RESOURCE_TYPE = 'm'
@@ -54,7 +54,7 @@
         select
         <include refid="Base_Column_List"/>
         from
-        sys_role_resource srr,sys_resource p
+        GATE_role_resource srr,GATE_resource p
         <where>
             srr.RESOURCE_ID=p.resource_id AND srr.ROLE_ID = #{roleId}
             AND p.resource_type ='b' AND p.PARENT_RESOURCE_ID = #{menuId}

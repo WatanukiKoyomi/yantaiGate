@@ -27,8 +27,9 @@
           </el-table-column>
           <el-table-column align="center" label="右相机">
             <template slot-scope="scope">
-              <span v-if="scope.row.data.rightCamera === '0'" style="color: red;">异常</span>
-              <span v-else style="color: green;">正常</span>
+<!--              <span v-if="scope.row.data.rightCamera === '0'" style="color: red;">异常</span>-->
+<!--              <span v-else style="color: green;">正常</span>-->
+              <span style="color: red;">{{scope.row.data.rightCamera}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="左验残相机">
@@ -158,10 +159,9 @@
             var that = this;
             window.setInterval(function() {
                 that.initAllGateLanesStatus(true);
-            }, 3 * 1000); // 3秒查询一次
+            }, 3 * 1000);
         },
         methods: {
-            // 获取车道设备状态
             initAllGateLanesStatus: function(flag) {
                 var that = this;
                 this.$axios.get("/hdGate/laneManagement/queryShowGateLanes").then(
@@ -169,15 +169,14 @@
                         data.map(v => {
                             v.data = that.emptyData;
                             return v;
-                        })
+                        });
                         console.log('queryShowGateLanes', data);
                         data.forEach( function(laneData) {
-                            that.$axios.get("/hdGate/monitor/queryLaneEquipmentStatus", {
-                                params: { laneCode: laneData.laneCode }
-                            })
+                            that.$axios
+                                .get("/hdGate/monitor/queryLaneEquipmentStatus",
+                                    {params: { laneCode: laneData.laneCode }})
                                 .then(
                                     d => {
-                                        // console.log('queryLaneEquipmentStatus', d)
                                         if (d === "" || d === null || d === undefined) {
                                             laneData.data = that.emptyData;
                                         } else {
@@ -190,12 +189,71 @@
                                     }
                                 );
                         });
-                        that.tableData = data;
+                        return data;
                     },
                     response => {
                         console.log("queryShowGateLanes error");
+                        return response;
                     }
-                )
+                ).then(data => {
+                    if(flag){
+                        if(!that.compareArr(that.tableData,data,true)){
+                            that.tableData = data;
+                        }
+                    }else{
+                        that.tableData = data;
+                    }
+                })
+            },
+            isObj: function(object){
+                return object && typeof object == 'object' && Object.prototype.toString.call(object).toLocaleLowerCase() == "[object object]";
+            },
+            isArray: function(object){
+                return object && typeof object == 'object' && object.constructor == Array;
+            },
+            getLength: function (object){
+                let count = 0;
+                for(let i in object) count++;
+                return count;
+            },
+            compareObj: function(objA,objB,flag){
+                let that = this;
+                for(let key in objA){
+                    if(!flag)
+                        break;
+                    if(!objB.hasOwnProperty(key)){
+                        flag = false;
+                        break;
+                    }
+                    if(!that.isObj(objA[key])){
+                        if(objB[key] !== objA[key]){
+                            flag = false;
+                            break;
+                        }
+                    } else {
+                        if(!that.isObj(objB[key])){
+                            flag = false;
+                            break;
+                        }
+                        let oA = objA[key];
+                        let oB = objB[key];
+                        for( let k in oA){
+                            if(!flag)
+                                break;
+                            flag = that.compareObj(oA[k],oB[k],flag);
+                        }
+                    }
+                }
+            },
+            compareArr: function(arrA,arrB,flag){
+                let that = this;
+                for(let key in arrA){
+                    if(!flag){
+                        break;
+                    }
+                    flag = that.compareObj(arrA[key],arrB[key],flag);
+                }
+                return flag;
             }
         }
     };

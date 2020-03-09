@@ -183,10 +183,10 @@
                 #{msg},
             </if>
             <if test="arriveTime !=null">
-                #{arriveTime},
+                to_date(#{arriveTime},'yyyy/mm/dd hh24:mi:ss'),
             </if>
             <if test="enterTime !=null">
-                #{enterTime},
+                to_date(#{enterTime},'yyyy/mm/dd hh24:mi:ss'),
             </if>
             <if test="laneCode !=null">
                 #{laneCode},
@@ -288,10 +288,10 @@
                 MSG = #{msg},
             </if>
             <if test="arriveTime !=null">
-                ARRIVE_TIME = #{arriveTime},
+                ARRIVE_TIME = to_date(#{arriveTime},'yyyy/mm/dd hh24:mi:ss'),
             </if>
             <if test="enterTime !=null">
-                ENTER_TIME = #{enterTime},
+                ENTER_TIME = to_date(#{enterTime},'yyyy/mm/dd hh24:mi:ss'),
             </if>
             <if test="laneCode !=null">
                 LANE_CODE = #{laneCode},

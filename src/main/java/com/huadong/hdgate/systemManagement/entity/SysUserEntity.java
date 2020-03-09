@@ -15,7 +15,7 @@ import java.util.List;
  * 系统使用用户
  */
 @Data
-@TableName("SYS_USER")
+@TableName("GATE_USER")
 public class SysUserEntity implements Serializable {
 
 	public static final String ACCOUNT = "ACCOUNT";

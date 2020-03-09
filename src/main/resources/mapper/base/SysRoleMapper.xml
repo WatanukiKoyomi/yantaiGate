@@ -11,7 +11,7 @@
         select
         role_id
         from
-        SYS_USER_ROLE
+        GATE_USER_ROLE
         where user_Id = #{userId}
     </select>
 
@@ -20,7 +20,7 @@
         select
         r.role_id
         from
-        SYS_ROLE r join SYS_USER_ROLE u on u.ROLE_ID=r.ROLE_ID
+        GATE_ROLE r join GATE_USER_ROLE u on u.ROLE_ID=r.ROLE_ID
         where u.USER_ID = #{userId}
         and r.IS_ADMIN='1'
     </select>
@@ -29,7 +29,7 @@
         select
         <include refid="Base_Column_List" />
         from
-        SYS_ROLE r,SYS_USER_ROLE ur
+        GATE_ROLE r,GATE_USER_ROLE ur
         where r.role_id = ur.role_id
         and ur.user_id = #{userId}
     </select>

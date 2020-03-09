@@ -13,7 +13,7 @@ import java.util.List;
  * 资源实体类
  */
 @Data
-@TableName("SYS_RESOURCE")
+@TableName("GATE_RESOURCE")
 public class SysResourceEntity implements Serializable {
 	public static final String RESOURCE_TYPE = "RESOURCE_TYPE";
 	public static final String PARENT_RESOURCE_ID = "PARENT_RESOURCE_ID";

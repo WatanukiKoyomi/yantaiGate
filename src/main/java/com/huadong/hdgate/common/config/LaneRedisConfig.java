@@ -23,8 +23,8 @@ public class LaneRedisConfig {
     private String host;
     @Value("${spring.laneredis.port}")
     private int port;
-    @Value("${spring.laneredis.password}")
-    private String password;
+//    @Value("${spring.laneredis.password}")
+//    private String password;
 
     private static final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 
@@ -39,7 +39,6 @@ public class LaneRedisConfig {
         logger.info("laneRedis地址：" + host + ":" + port);
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setJmxEnabled(true);
-        jedisPoolConfig.setMaxTotal(20);
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 10000);
         return jedisPool;
     }

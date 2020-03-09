@@ -340,13 +340,13 @@
             }
         },
         mounted () {
-            var that = this
+            let that = this;
             this.initLaneChecked()
             // 窗口大小变更重新计算高度
             window.onresize = () => {
                 return (() => {
                     that.screenHeight = document.documentElement.clientHeight
-                })()
+                })
             }
         },
         watch: {
@@ -354,11 +354,11 @@
         methods: {
             // 初始化选中的车道信息
             initLaneChecked() {
-                var that = this
-                var initLane = []
-                var username = JSON.parse(sessionStorage.user).username
+                let that = this;
+                let initLane = [];
+                let username = JSON.parse(sessionStorage.user).username;
                 this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
-                    var s = window.location.host.split(':')[0]
+                    let s = window.location.host.split(':')[0];
                     data.forEach(function (element) {
                         // begin websocket
                         var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
@@ -369,8 +369,8 @@
                             console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
                         }
                         ws.onmessage = evt => {
-                            console.log('数据已接收...' + evt.data)
-                            var data = JSON.parse(evt.data)
+                            console.log('数据已接收...' + evt.data);
+                            let data = JSON.parse(evt.data);
                             that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
                                 if (laneData.laneCode === data.generalInfo.laneCode) {
                                     laneData.data = data
@@ -382,9 +382,9 @@
                             console.log('monitor:' + username + element.laneCode + '链接已关闭...')
                         }
                         // end websocket
-                        initLane.push(element.laneCode)
+                        initLane.push(element.laneCode);
                         // begin 查询车道对应最新数据
-                        that.laneDataList = []
+                        that.laneDataList = [];
                         that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
                             {params: {'laneCode': element.laneCode}}).then(data => {
                             if (data === null || data === '') {
@@ -405,7 +405,7 @@
                         })
                         // end 查询车道对应最新数据
                     })
-                    that.laneShowList = initLane
+                    that.laneShowList = initLane;
                     // begin 查询用户选中查看的车道
                     that.$axios.get('/hdGate/laneManagement/queryGateLaneByUser',
                         {params: {'user': username}}).then(data => {
@@ -425,14 +425,14 @@
             },
             // 识别修正按钮 ，用来弹出对话框
             shibiexiuzhengClick(laneData) {
-                var data = laneData.data
-                this.clickedLaneCode = laneData.laneCode
-                this.dialogVisible = true
-                console.log('data:', data, this.clickedLaneCode)
+                let data = laneData.data;
+                this.clickedLaneCode = laneData.laneCode;
+                this.dialogVisible = true;
+                console.log('data:', data, this.clickedLaneCode);
                 // 避免绑定 JSON处理下
-                this.clickedData = JSON.parse(JSON.stringify(data))
-                this.ocrImgs = []
-                var that = this
+                this.clickedData = JSON.parse(JSON.stringify(data));
+                this.ocrImgs = [];
+                let that = this;
                 // begin 图片路径处理
                 // var path = data.ftpImages.imagePath
                 // if (path !== undefined) {
@@ -453,14 +453,14 @@
             },
 
             // 弹出框提交按钮
-            submitClick() {
-                console.log('submitClickData:', this.clickedData, this.clickedLaneCode)
-                console.log('aaaaaaaaaaa', this.clickedData.visitGuid)
+            submitClick: function () {
+                console.log('submitClickData:', this.clickedData, this.clickedLaneCode);
+                console.log('aaaaaaaaaaa', this.clickedData.visitGuid);
                 if (this.clickedData.visitGuid === undefined) { // 新增
                     console.log('fffffffffffff')
                 }
-                var todoUpdateData = JSON.stringify(this.clickedData)
-                var username = JSON.parse(sessionStorage.user).username
+                let todoUpdateData = JSON.stringify(this.clickedData);
+                let username = JSON.parse(sessionStorage.user).username;
                 this.$axios.get('/hdGate/monitor/updateBusinessData',
                     {
                         params: {
@@ -474,7 +474,7 @@
                 }, response => {
                     console.log('queryGateLaneByUser error')
                 })
-                this.dialogVisible = false // 确认后，关闭弹出框
+                this.dialogVisible = false; // 确认后，关闭弹出框
                 this.initLaneChecked() // 重新查询数据
             },
             // 弹出框取消按钮
