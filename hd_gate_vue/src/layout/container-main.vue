@@ -121,7 +121,7 @@ export default {
             .replace(/"workstation"/g, '识别工作站')
             .replace(/"comServer"/g, '串口服务器');
           console.log('更改后msg:', msg);
-          this.$notify.info({
+          this.$notify.error({
             title:'提示',
             position: 'bottom-right',
             message: msg,

@@ -3,11 +3,13 @@ package com.huadong.hdgate.jobManagement.entity.cdiEntity;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.huadong.hdgate.common.entity.BaseEntityWithPage;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 业务数据相关信息（包含车道，集卡，集装箱，图片等信息）
  */
 @Data
+@ToString
 public class BusinessEntity extends BaseEntityWithPage {
 	/**
 	 * 主键

@@ -23,8 +23,6 @@ public class LaneRedisConfig {
     private String host;
     @Value("${spring.laneredis.port}")
     private int port;
-//    @Value("${spring.laneredis.password}")
-//    private String password;
 
     private static final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 

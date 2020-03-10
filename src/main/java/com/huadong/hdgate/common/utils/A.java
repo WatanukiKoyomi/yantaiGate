@@ -11,7 +11,7 @@ public class A {
     private static String m;
     static{
         flag = 1;
-        m = "异常";
+        m = "设备不在线";
     }
 
     public static int getFlag() {

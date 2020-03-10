@@ -31,12 +31,13 @@ public class RedisUtils {
 		}
 	}
 
-	public String lpopStack(String key,int index){
+	public String lpopStackAndDel(String key,int index){
 		StringBuffer result = new StringBuffer();
 		try{
 			Jedis jedis = laneJedisPool.getResource();
 			jedis.select(index);
 			result.append(jedis.lpop(key));
+			jedis.del(key);
 			jedis.close();
 		} catch (Exception e){
 			logger.error(e.getMessage());

@@ -51,7 +51,8 @@ public class LaneMonitorController {
     @RequestMapping(value = "/testRedis", method = RequestMethod.POST)
     @ResponseBody
     public String testRedis(@RequestBody String message) {
-        return redisUtils.rpopQueue("device_data",2);
+        A.setFlag(Integer.parseInt(message));
+        return "ok";
     }
 
     @ApiOperation(value = "车道监控api", notes = "车道监控api")

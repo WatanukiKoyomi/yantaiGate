@@ -27,9 +27,9 @@
           </el-table-column>
           <el-table-column align="center" label="右相机">
             <template slot-scope="scope">
-<!--              <span v-if="scope.row.data.rightCamera === '0'" style="color: red;">异常</span>-->
-<!--              <span v-else style="color: green;">正常</span>-->
-              <span style="color: red;">{{scope.row.data.rightCamera}}</span>
+              <span v-if="scope.row.data.rightCamera === '0'" style="color: red;">异常</span>
+              <span v-else style="color: green;">正常</span>
+<!--              <span style="color: red;">{{scope.row.data.rightCamera}}</span>-->
             </template>
           </el-table-column>
           <el-table-column align="center" label="左验残相机">
