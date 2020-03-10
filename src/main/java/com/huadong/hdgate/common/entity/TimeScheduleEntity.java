@@ -121,11 +121,12 @@ public class TimeScheduleEntity {
 //		}
 //	}
 
-	@Async
-	@Scheduled(cron = "*/3 * * * * ?")
+	//@Async
+	//@Scheduled(cron = "*/3 * * * * ?")
+	@Scheduled()
 	public void deviceTask(){
 		for(int i : laneDBUtils.getAllLaneDB()) {
-			String statusEntity = redisUtils.rpopQueue("device_data", i);
+			String statusEntity = redisUtils.lpopStack("device_data", i);
 			String laneCode = laneDBUtils.getLaneCode(i);
 			if (statusEntity != null && !statusEntity.equals("null") && !statusEntity.equals("")) {
 				List<DeviceEntity> list = JSONArray.parseArray(statusEntity,DeviceEntity.class);
@@ -133,12 +134,12 @@ public class TimeScheduleEntity {
 				EquipmentStatusEntity equipmentStatusEntity = new EquipmentStatusEntity(list, laneCode);
 				String receiveStatus = redisUtils.get("receiveStatus" + laneCode);
 				EquipmentStatusEntity oldEntity = JSONObject.parseObject(receiveStatus, EquipmentStatusEntity.class);
-				if(!equipmentStatusEntity.equals(oldEntity)){
-					String equipmentStatus = JSONObject.toJSONString(equipmentStatusEntity);
+				String equipmentStatus = JSONObject.toJSONString(equipmentStatusEntity);
+				if(!equipmentStatusEntity.equals(oldEntity) && equipmentStatus.contains("设备不在线")){
 					redisUtils.set("receiveStatus" + laneCode, equipmentStatus);
 					String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
 					//String retMsg = HttpsUtils.doPost(url, equipmentStatus, "utf-8");
-					String retMsg = HttpsUtils.doPost(url, laneCode+"设备状态改变，请及时处理", "utf-8");
+					String retMsg = HttpsUtils.doPost(url, laneCode+"有设备不在线，请及时处理", "utf-8");
 					log.info("调用api：" + url + "，返回值：" + retMsg);
 				}
 			} else {

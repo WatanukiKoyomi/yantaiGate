@@ -31,6 +31,21 @@ public class RedisUtils {
 		}
 	}
 
+	public String lpopStack(String key,int index){
+		StringBuffer result = new StringBuffer();
+		try{
+			Jedis jedis = laneJedisPool.getResource();
+			jedis.select(index);
+			result.append(jedis.lpop(key));
+			jedis.close();
+		} catch (Exception e){
+			logger.error(e.getMessage());
+		} finally {
+			return result.toString();
+		}
+
+	}
+
 	public String rpopQueue(String key,int index){
 		StringBuffer result = new StringBuffer();
 		try{
@@ -43,7 +58,6 @@ public class RedisUtils {
 		} finally {
 			return result.toString();
 		}
-
 	}
 
 	public Long lpushQueue(String queueName,String dbData,int index){
