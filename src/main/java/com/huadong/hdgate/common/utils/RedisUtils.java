@@ -32,32 +32,34 @@ public class RedisUtils {
 	}
 
 	public String lpopStackAndDel(String key,int index){
-		StringBuffer result = new StringBuffer();
+		Jedis jedis = null;
 		try{
-			Jedis jedis = laneJedisPool.getResource();
+			jedis = laneJedisPool.getResource();
 			jedis.select(index);
-			result.append(jedis.lpop(key));
-			jedis.del(key);
-			jedis.close();
+			return jedis.lpop(key);
 		} catch (Exception e){
 			logger.error(e.getMessage());
+			return null;
 		} finally {
-			return result.toString();
+			if(jedis != null ){
+				jedis.close();
+			}
 		}
-
 	}
 
 	public String rpopQueue(String key,int index){
-		StringBuffer result = new StringBuffer();
+		Jedis jedis = null;
 		try{
-			Jedis jedis = laneJedisPool.getResource();
+			jedis = laneJedisPool.getResource();
 			jedis.select(index);
-			result.append(jedis.rpop(key));
-			jedis.close();
+			return jedis.rpop(key);
 		} catch (Exception e){
 			logger.error(e.getMessage());
+			return null;
 		} finally {
-			return result.toString();
+			if(jedis != null){
+				jedis.close();
+			}
 		}
 	}
 

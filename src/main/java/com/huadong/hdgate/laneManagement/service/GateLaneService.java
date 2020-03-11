@@ -5,15 +5,23 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.huadong.hdgate.common.entity.CommonsEntity;
+import com.huadong.hdgate.common.filter.MyWebsocketHandler;
 import com.huadong.hdgate.laneManagement.entity.GateLane;
 import com.huadong.hdgate.laneManagement.mapper.GateLaneMapper;
+import com.huadong.hdgate.systemManagement.entity.SysUserEntity;
+import com.huadong.hdgate.systemManagement.service.SysUserService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 @Service("gateLaneService")
 public class GateLaneService extends ServiceImpl<GateLaneMapper,GateLane> {
+
+	@Resource
+	private SysUserService sysUserService;
 
 	/**
 	 * 查询所有车道信息
@@ -72,6 +80,17 @@ public class GateLaneService extends ServiceImpl<GateLaneMapper,GateLane> {
 		Wrapper<GateLane> wrapper = new EntityWrapper<>();
 		wrapper.eq(GateLane.LANE_CODE,lane.getLaneCode());
 		return super.delete(wrapper);
+	}
+
+	public void sendData2Html(String laneCode,String laneDataStr){
+		List<SysUserEntity> userEntityList = sysUserService.queryAllUser();
+		for(SysUserEntity user: userEntityList){
+			try{
+				MyWebsocketHandler.sendMessageToHtml("equipment:"+user.getAccount()+laneCode,laneDataStr);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

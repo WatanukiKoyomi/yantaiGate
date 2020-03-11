@@ -76,10 +76,10 @@ export default {
       }
     },
     initWebsocket: function () {
-      var s = window.location.host.split(':')[0];// + ':' + window.location.port
+      let s = window.location.host.split(':')[0];// + ':' + window.location.port
       // console.log('sessionStorage.user:', sessionStorage.user)
-      var user = JSON.parse(sessionStorage.user);
-      var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/user:' + user.username);
+      let user = JSON.parse(sessionStorage.user);
+      let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/user:' + user.username);
       // const ws = new SockJS('http://localhost:8085/hdGate/webSocketServer')
       ws.onopen = () => {
         // Web Socket 已连接上，使用 send() 方法发送数据
@@ -89,7 +89,7 @@ export default {
         console.log('主页的websocket链接失败')
       };
       ws.onmessage = evt => {
-        var msg = evt.data;
+        let msg = evt.data;
         // console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkk', msg)
         if (msg === 'kickout') {
           this.$alert('该用户已在其他地方登录', '消息', {

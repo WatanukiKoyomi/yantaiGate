@@ -200,4 +200,9 @@ public class LaneController {
 		return true;
 	}
 
+	@RequestMapping(value="/getLaneEquipmentStatus",method = RequestMethod.GET)
+	public String getLaneEquipmentStatus(String laneCode){
+		return redisUtils.get("receiveStatus"+laneCode);
+	}
+
 }

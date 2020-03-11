@@ -10,6 +10,7 @@ import com.huadong.hdgate.jobManagement.entity.xijingEntity.DeviceEntity;
 import com.huadong.hdgate.jobManagement.service.BusinessService;
 import com.huadong.hdgate.laneManagement.entity.EquipmentStatusEntity;
 import com.huadong.hdgate.laneManagement.entity.GateLane;
+import com.huadong.hdgate.laneManagement.service.GateLaneService;
 import com.huadong.hdgate.systemManagement.entity.SysUserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,8 @@ public class TimeScheduleEntity {
 	private StringRedisTemplate stringRedisTemplate;
 	@Resource
 	private BusinessService businessService;
+	@Resource
+	private GateLaneService laneService;
 
 	@Scheduled(cron = "0 0 1 * * ?") //每天凌晨1点 0 0 1 * * ? 执行一次，处理缓存 // 每5秒一次 */5 * * * * ?
 	public void sendMessage(){
@@ -66,36 +69,24 @@ public class TimeScheduleEntity {
 		}
 	}
 
-	@Async
-	@Scheduled(fixedDelayString="6000")
+	@Scheduled(fixedDelayString="1000")
 	public void deviceTask(){
 		for(int i : laneDBUtils.getAllLaneDB()) {
-			String statusEntity = redisUtils.lpopStackAndDel("device_data", i);
+			String statusEntity = redisUtils.rpopQueue("device_data", i);
+			log.info(i+"statusEntity:"+statusEntity);
 			String laneCode = laneDBUtils.getLaneCode(i);
 			if (statusEntity != null && !statusEntity.equals("null") && !statusEntity.equals("")) {
 				List<DeviceEntity> list = JSONArray.parseArray(statusEntity,DeviceEntity.class);
-				log.info("device:" + list.toString());
 				EquipmentStatusEntity equipmentStatusEntity = new EquipmentStatusEntity(list, laneCode);
-				String receiveStatus = redisUtils.get("receiveStatus" + laneCode);
-				EquipmentStatusEntity oldEntity = JSONObject.parseObject(receiveStatus, EquipmentStatusEntity.class);
 				String equipmentStatus = JSONObject.toJSONString(equipmentStatusEntity);
-				if(!equipmentStatusEntity.equals(oldEntity)){
-					redisUtils.set("receiveStatus" + laneCode, equipmentStatus);
-					System.out.println("conta:"+equipmentStatus.contains("0"));
-					if(equipmentStatus.contains("0")){
-						String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
-						//String retMsg = HttpsUtils.doPost(url, equipmentStatus, "utf-8");
-						String retMsg = HttpsUtils.doPost(url, laneCode+"有设备不在线，请及时处理", "utf-8");
-						log.info("调用api：" + url + "，返回值：" + retMsg);
-					}
+				redisUtils.set("receiveStatus"+laneCode,equipmentStatus);
+				log.info("equip:"+equipmentStatus);
+				laneService.sendData2Html(laneCode,equipmentStatus);
+				if(equipmentStatus.contains("0")){
+					String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
+					String retMsg = HttpsUtils.doPost(url, laneCode+"有设备异常，请及时处理", "utf-8");
+					log.info("调用api：" + url + "，返回值：" + retMsg);
 				}
-			} else {
-				//设备异常
-				EquipmentStatusEntity entity = new EquipmentStatusEntity();
-				redisUtils.set("receiveStatus"+laneCode, JSONObject.toJSONString(entity));
-				String retData = "与车道"+laneCode+"工控机链接超时，确认后如果长时间没有弹框提示网络恢复，请联系相关人员请查看网络情况或工控机情况";
-				String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
-				String retMsg = HttpsUtils.doPost(url,retData,"utf-8");
 			}
 		}
 	}
@@ -178,148 +169,5 @@ public class TimeScheduleEntity {
 			}
 		}
 	}
-//模拟中间层信息发送
-//	@Scheduled(cron = "*/3 * * * * ?")
-//	public void getTest(){
-//		String data = "[\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:20:56\",\n" +
-//				"    \"devno\": \"frontCamera\",\n" +
-//				"    \"devname\": \"前相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.171\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:20:57\",\n" +
-//				"    \"devno\": \"backCamera\",\n" +
-//				"    \"devname\": \"后相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.172\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:20:57\",\n" +
-//				"    \"devno\": \"leftCamera\",\n" +
-//				"    \"devname\": \"左相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.173\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:20:58\",\n" +
-//				"    \"devno\": \"rightCamera\",\n" +
-//				"    \"devname\": \"右相机\",\n" +
-//				"    \"detail\": \""+A.getM()+"\",\n" +
-//				"    \"ip\": \"10.23.3.174\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:20:58\",\n" +
-//				"    \"devno\": \"leftCdiCamera\",\n" +
-//				"    \"devname\": \"左验残相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.175\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:20:59\",\n" +
-//				"    \"devno\": \"rightCdiCamera\",\n" +
-//				"    \"devname\": \"右验残相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.176\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:20:59\",\n" +
-//				"    \"devno\": \"topCdiCamera\",\n" +
-//				"    \"devname\": \"上验残相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.177\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:00\",\n" +
-//				"    \"devno\": \"truckNoCamera\",\n" +
-//				"    \"devname\": \"车牌相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.178\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:00\",\n" +
-//				"    \"devno\": \"truckCamera\",\n" +
-//				"    \"devname\": \"车架相机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.179\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:01\",\n" +
-//				"    \"devno\": \"led\",\n" +
-//				"    \"devname\": \"led\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.180\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:01\",\n" +
-//				"    \"devno\": \"plc\",\n" +
-//				"    \"devname\": \"plc\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.181\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:02\",\n" +
-//				"    \"devno\": \"printer\",\n" +
-//				"    \"devname\": \"打印机\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.182\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:02\",\n" +
-//				"    \"devno\": \"intercom\",\n" +
-//				"    \"devname\": \"对讲终端\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.183\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:03\",\n" +
-//				"    \"devno\": \"comServer\",\n" +
-//				"    \"devname\": \"串口服务器\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.184\"\n" +
-//				"  },\n" +
-//				"  {\n" +
-//				"    \"uuid\": \"\",\n" +
-//				"    \"lanecode\": \"01\",\n" +
-//				"    \"time\": \"2020-03-02 08:21:03\",\n" +
-//				"    \"devno\": \"workstation\",\n" +
-//				"    \"devname\": \"识别工作站\",\n" +
-//				"    \"detail\": \"正常\",\n" +
-//				"    \"ip\": \"10.23.3.185\"\n" +
-//				"  }\n" +
-//				"]";
-//
-//		if(A.getFlag() == 1)
-//			redisUtils.lpushQueue("device_data", data, 0);
-//	}
+
 }

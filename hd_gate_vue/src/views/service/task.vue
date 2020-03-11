@@ -364,10 +364,10 @@
                         var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
                         ws.onopen = () => {
                             console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
-                        }
+                        };
                         ws.onerror = function () {
                             console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
-                        }
+                        };
                         ws.onmessage = evt => {
                             console.log('数据已接收...' + evt.data);
                             let data = JSON.parse(evt.data);
@@ -376,11 +376,11 @@
                                     laneData.data = data
                                 }
                             })
-                        }
+                        };
                         ws.onclose = function () {
                             // 关闭 websocket
                             console.log('monitor:' + username + element.laneCode + '链接已关闭...')
-                        }
+                        };
                         // end websocket
                         initLane.push(element.laneCode);
                         // begin 查询车道对应最新数据

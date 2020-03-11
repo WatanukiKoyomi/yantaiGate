@@ -155,55 +155,47 @@
             };
         },
         created() {
-            this.initAllGateLanesStatus(false);
-            var that = this;
-            window.setInterval(function() {
-                that.initAllGateLanesStatus(true);
-            }, 3 * 1000);
+            this.initAllGateLanesStatus();
         },
         methods: {
-            initAllGateLanesStatus: function(flag) {
-                var that = this;
-                this.$axios.get("/hdGate/laneManagement/queryShowGateLanes").then(
-                    data => {
-                        data.map(v => {
-                            v.data = that.emptyData;
-                            return v;
+            initAllGateLanesStatus: function() {
+                let that = this;
+                let s = window.location.host.split(':')[0];
+                let username = JSON.parse(sessionStorage.user).username;
+                this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then( data => {
+                    data = data.map( lane => {
+                        that.$axios.get('/hdGate/laneManagement/getLaneEquipmentStatus',{params: {laneCode: lane.laneCode}
+                        }).then(data => {
+                            console.log('getLaneSt:'+data);
+                            lane.data = data;
                         });
-                        console.log('queryShowGateLanes', data);
-                        data.forEach( function(laneData) {
-                            that.$axios
-                                .get("/hdGate/monitor/queryLaneEquipmentStatus",
-                                    {params: { laneCode: laneData.laneCode }})
-                                .then(
-                                    d => {
-                                        if (d === "" || d === null || d === undefined) {
-                                            laneData.data = that.emptyData;
-                                        } else {
-                                            laneData.data = d;
-                                        }
-                                        console.log('lanedata:',laneData.data);
-                                    },
-                                    response => {
-                                        console.log("queryLaneEquipmentStatus error");
-                                    }
-                                );
-                        });
-                        return data;
-                    },
-                    response => {
-                        console.log("queryShowGateLanes error");
-                        return response;
-                    }
-                ).then(data => {
-                    if(flag){
-                        if(!that.compareArr(that.tableData,data,true)){
-                            that.tableData = data;
-                        }
-                    }else{
-                        that.tableData = data;
-                    }
-                })
+                        return lane;
+                    });
+                    that.tableData = data;
+                    console.log('data:',that.tableData);
+                    // that.tableData.forEach(function(lane){
+                    //     console.log('lane:',lane);
+                    //     let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/equipment:' + username + lane.laneCode);
+                    //     ws.onopen = () => {
+                    //         console.log('equipment:' + username + lane.laneCode + '链接webSocket equipment成功...');
+                    //     };
+                    //     ws.onerror = () => {
+                    //         console.log('equipment:' + username + lane.laneCode + '链接webSocket失败');
+                    //     };
+                    //     ws.onmessage = message => {
+                    //         console.log('数据已接收...', message);
+                    //         let dataJ = JSON.parse(message.data);
+                    //         that.tableData.forEach(function(lane){
+                    //             if(lane.laneCode === dataJ.laneCode){
+                    //                 lane.data = dataJ;
+                    //             }
+                    //         })
+                    //     };
+                    //     ws.onclose = () => {
+                    //         console.log('equipment:' + username + lane.laneCode + '链接已关闭...');
+                    //     };
+                    // })
+                });
             },
             isObj: function(object){
                 return object && typeof object == 'object' && Object.prototype.toString.call(object).toLocaleLowerCase() == "[object object]";
