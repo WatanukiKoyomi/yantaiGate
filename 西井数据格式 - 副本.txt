@@ -312,4 +312,14 @@
 
 
 
-[{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "truckNoCamera","devname": "车牌相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "leftCdiCamera","devname": "左侧验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "rightCdiCamera","devname": "右侧验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "topCdiCamera","devname": "顶部验残相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "frontLeftOcrCamera","devname": "前方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "afterLeftOcrCamera","devname": "后方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "frontRightOcrCamera","devname": "前方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "afterRightOcrCamera","devname": "后方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "backCamera","devname": "后相机","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "truckScales","devname": "地磅","detail": "异常","ip": "127.0.0.1"},{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "plc","devname": "plc","detail": "异常","ip": "127.0.0.1"}]
+[{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "truckNoCamera","devname": "车牌相机","detail": "正常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "leftCdiCamera","devname": "左侧验残相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "rightCdiCamera","devname": "右侧验残相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "topCdiCamera","devname": "顶部验残相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "frontLeftOcrCamera","devname": "前方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "afterLeftOcrCamera","devname": "后方左侧箱号相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "frontRightOcrCamera","devname": "前方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "afterRightOcrCamera","devname": "后方右侧箱号相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "backCamera","devname": "后相机","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "truckScales","devname": "地磅","detail": "异常","ip": "127.0.0.1"},
+{"uuid": "","lanecode": "JK1","time": "2020-02-24 09:43:56","devno": "plc","devname": "plc","detail": "异常","ip": "127.0.0.1"}]

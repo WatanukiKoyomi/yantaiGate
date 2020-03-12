@@ -9,13 +9,12 @@ import lombok.ToString;
  * TODO
  *
  * @author chuyz
- * @date 2020/3/4 9:18
+ * @date 2020/3/12 15:25
  */
 @Data
 @EqualsAndHashCode
 @ToString
-public class ControlEntity {
-
+public class LightSetEntity {
     @JSONField(name="lanecode")
     private String lanecode;
 
@@ -25,9 +24,9 @@ public class ControlEntity {
     @JSONField(name="detail")
     private String detail;
 
-    public ControlEntity(){
-        this.detail = "";
-        this.lanecode = "";
-        this.station = "";
-    }
+    @JSONField(name="time_on")
+    private String time_on;
+
+    @JSONField(name="time_off")
+    private String time_off;
 }

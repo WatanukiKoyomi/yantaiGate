@@ -6,6 +6,7 @@ import com.huadong.hdgate.common.utils.LaneDBUtils;
 import com.huadong.hdgate.common.utils.RedisUtils;
 import com.huadong.hdgate.laneManagement.entity.ControlEntity;
 import com.huadong.hdgate.laneManagement.entity.GateLane;
+import com.huadong.hdgate.laneManagement.entity.LightSetEntity;
 import com.huadong.hdgate.laneManagement.service.GateLaneService;
 import com.huadong.hdgate.systemManagement.entity.SysUserEntity;
 import com.huadong.hdgate.systemManagement.service.SysUserService;
@@ -143,7 +144,7 @@ public class LaneController {
 		controlEntity.setLanecode(laneCode);
 		controlEntity.setStation("light");
 		controlEntity.setDetail("1");
-		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		Long result = redisUtils.lpushQueue("device_control", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
 		if(result == null){
 			return false;
 		}
@@ -158,7 +159,7 @@ public class LaneController {
 		controlEntity.setLanecode(laneCode);
 		controlEntity.setStation("light");
 		controlEntity.setDetail("0");
-		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		Long result = redisUtils.lpushQueue("device_control", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
 		if(result == null){
 			return false;
 		}
@@ -173,7 +174,7 @@ public class LaneController {
 		controlEntity.setLanecode(laneCode);
 		controlEntity.setStation("lift");
 		controlEntity.setDetail("1");
-		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		Long result = redisUtils.lpushQueue("device_control", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
 		if(result == null){
 			return false;
 		}
@@ -186,13 +187,13 @@ public class LaneController {
 		String lightOnTime = Integer.valueOf(request.getParameter("lightOnTime").substring(0,2)).toString();
 		String lightOffTime = Integer.valueOf(request.getParameter("lightOffTime").substring(0,2)).toString();
 		String laneCode = request.getParameter("laneCode");
-		ControlEntity controlEntity = new ControlEntity();
-		controlEntity.setTime_on(lightOnTime);
-		controlEntity.setTime_off(lightOffTime);
-		controlEntity.setLanecode(laneCode);
-		controlEntity.setStation("light");
-		controlEntity.setDetail("1");
-		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(controlEntity), laneDBUtils.getLaneDB(laneCode));
+		LightSetEntity lightSetEntity = new LightSetEntity();
+		lightSetEntity.setTime_on(lightOnTime);
+		lightSetEntity.setTime_off(lightOffTime);
+		lightSetEntity.setLanecode(laneCode);
+		lightSetEntity.setStation("light");
+		lightSetEntity.setDetail("1");
+		Long result = redisUtils.lpushQueue("control_data", JSONObject.toJSONString(lightSetEntity), laneDBUtils.getLaneDB(laneCode));
 		System.out.println("result:"+result);
 		if(result == null){
 			return false;
