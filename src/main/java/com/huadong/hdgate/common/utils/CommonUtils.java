@@ -89,17 +89,17 @@ public class CommonUtils {
 				businessEntity.getOcrFrontContainer().getProperty());
 		showEntity.setOcrFrontContainer(frontCntrEntity);
 		ContainerEntity afterCntrEntity = new ContainerEntity(
-				businessEntity.getOcrFrontContainer().getOcrContainerNo(),
-				businessEntity.getOcrFrontContainer().getOcrContainerConf(),
-				businessEntity.getOcrFrontContainer().getOcrContainerDirection(),
-				businessEntity.getOcrFrontContainer().getOcrContainerISO(),
-				businessEntity.getOcrFrontContainer().getOcrIsoConf(),
-				businessEntity.getOcrFrontContainer().getOcrDamage(),
-				businessEntity.getOcrFrontContainer().getEfid(),
-				businessEntity.getOcrFrontContainer().getIsProvideForOneself(),
-				businessEntity.getOcrFrontContainer().getLeadSealState(),
-				businessEntity.getOcrFrontContainer().getLeadSealNo(),
-				businessEntity.getOcrFrontContainer().getProperty());
+				businessEntity.getOcrAfterContainer().getOcrContainerNo(),
+				businessEntity.getOcrAfterContainer().getOcrContainerConf(),
+				businessEntity.getOcrAfterContainer().getOcrContainerDirection(),
+				businessEntity.getOcrAfterContainer().getOcrContainerISO(),
+				businessEntity.getOcrAfterContainer().getOcrIsoConf(),
+				businessEntity.getOcrAfterContainer().getOcrDamage(),
+				businessEntity.getOcrAfterContainer().getEfid(),
+				businessEntity.getOcrAfterContainer().getIsProvideForOneself(),
+				businessEntity.getOcrAfterContainer().getLeadSealState(),
+				businessEntity.getOcrAfterContainer().getLeadSealNo(),
+				businessEntity.getOcrAfterContainer().getProperty());
 		showEntity.setOcrAfterContainer(afterCntrEntity);
 		FtpImagesEntity ftpEntity = new FtpImagesEntity(
 				businessEntity.getFtpImages().getFolder(),
