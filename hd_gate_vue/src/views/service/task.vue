@@ -130,194 +130,303 @@
     </el-row>
 
     <!-- 弹出窗体内容 -->
-    <el-dialog :visible.sync="dialogVisible" width="95%" top="3vh" title="">
+    <el-dialog :visible.sync="dialogVisible" width="98%" top="1vh" title="">
       <el-tabs v-model="activeName">
         <el-tab-pane label="识别内容" name="ocr">
-          <el-row>
-            <el-row>
-              <el-col :xs="1" :sm="1" :md="1" :lg="1">&nbsp;</el-col>
-              <!--车牌-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <el-tooltip content="车牌" placement="top" effect="light"><!--车牌-->
-                  <div v-if="clickedData.carPlate">
-                    <div v-if="clickedData.carPlate.ocrPlate">
-                      车牌：<el-input class="edit-input" size="small" style="width: 110px;" v-model="clickedData.carPlate.ocrPlate"></el-input>
-                    </div>
-                    <div v-else>
-                      车牌：<el-input class="edit-input" size="small" style="width: 110px;" v-model="clickedData.ocrCarPlate.ocrPlate"></el-input>
-                    </div>
-                  </div>
-                  <div v-else>车牌：<el-input class="edit-input" size="small" style="width: 110px;" v-model="clickedData.ocrCarPlate.ocrPlate"></el-input></div>
-                </el-tooltip>
-              </el-col>
-              <!--前箱号-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <el-tooltip content="前箱号" placement="top" effect="light"><!--车牌-->
-                  <div v-if="clickedData.frontContainer">
-                    <div v-if="clickedData.frontContainer.ocrContainerNo">
-                      前箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.frontContainer.ocrContainerNo"></el-input>
-                    </div>
-                    <div v-else>
-                      前箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrFrontContainer.ocrContainerNo"></el-input>
-                    </div>
-                  </div>
-                  <div v-else>前箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrFrontContainer.ocrContainerNo"></el-input></div>
-                </el-tooltip>
-              </el-col>
-              <!--前箱型-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.frontContainer">
-                  <div v-if="clickedData.frontContainer.ocrContainerISO">
-                    前箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.ocrContainerISO"></el-input>
-                  </div>
-                  <div v-else>
-                    前箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.ocrContainerISO"></el-input>
-                  </div>
-                </div>
-                <div v-else>前箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.ocrContainerISO"></el-input></div>
-              </el-col>
-              <!--前箱空重-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.ocrFrontContainer">
-                  前箱空重：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.efid"></el-input>
-                </div>
-              </el-col>
-              <!--前箱铅封状态-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.frontContainer">
-                  <div v-if="clickedData.frontContainer.leadSealState">
-                    前箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.leadSealState"></el-input>
-                  </div>
-                  <div v-else>
-                    前箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealState"></el-input>
-                  </div>
-                </div>
-                <div v-else>前箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealState"></el-input></div>
-              </el-col>
-              <!--前箱铅封号-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.frontContainer">
-                  <div v-if="clickedData.frontContainer.leadSealNo">
-                    前箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.leadSealNo"></el-input>
-                  </div>
-                  <div v-else>
-                    前箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input>
-                  </div>
-                </div>
-                <div v-else>前箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input></div>
-              </el-col>
-              <!--前箱箱属-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.frontContainer">
-                  <div v-if="clickedData.frontContainer.property">
-                    前箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.property"></el-input>
-                  </div>
-                  <div v-else>
-                    前箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.property"></el-input>
-                  </div>
-                </div>
-                <div v-else>前箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.property"></el-input></div>
-              </el-col>
-              <!--提交按钮-->
-              <el-col :xs="2" :sm="2" :md="2" :lg="2">
-                <el-button type="success" @click.stop="submitClick" size="small" icon="el-icon-circle-check-outline">提交</el-button>
-              </el-col>
-            </el-row>
-            <el-row style="margin-top: 20px">
-              <el-col :xs="1" :sm="1" :md="1" :lg="1">&nbsp;</el-col>
-              <!--重量-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                重量：
-                <el-tooltip content="重量" placement="top" effect="light"><!--重量-->
-                  <el-input class="edit-input" size="small" style="width: 100px;" v-model="clickedData.generalInfo.weight"></el-input>
-                </el-tooltip>
-              </el-col>
-              <!--后箱号-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="5">
-                <div v-if="clickedData.afterContainer">
-                  <div v-if="clickedData.afterContainer.ocrContainerNo">
-                    后箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.afterContainer.ocrContainerNo"></el-input>
-                  </div>
-                  <div v-else>
-                    后箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrAfterContainer.ocrContainerNo"></el-input>
-                  </div>
-                </div>
-                <div v-else>后箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrAfterContainer.ocrContainerNo"></el-input></div>
-              </el-col>
-              <!--后箱型-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.afterContainer">
-                  <div v-if="clickedData.afterContainer.ocrContainerISO">
-                    后箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.ocrContainerISO"></el-input>
-                  </div>
-                  <div v-else>
-                    后箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.ocrContainerISO"></el-input>
-                  </div>
-                </div>
-                <div v-else>后箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.ocrContainerISO"></el-input></div>
-              </el-col>
-              <!--后箱空重-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.ocrAfterContainer">
-                  后箱空重：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.efid"></el-input>
-                </div>
-              </el-col>
-              <!--后箱铅封状态-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.afterContainer">
-                  <div v-if="clickedData.afterContainer.leadSealState">
-                    后箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.leadSealState"></el-input>
-                  </div>
-                  <div v-else>
-                    后箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.leadSealState"></el-input>
-                  </div>
-                </div>
-                <div v-else>后箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.leadSealState"></el-input></div>
-              </el-col>
-              <!--后箱铅封号-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.afterContainer">
-                  <div v-if="clickedData.afterContainer.leadSealNo">
-                    后箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.leadSealNo"></el-input>
-                  </div>
-                  <div v-else>
-                    后箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input>
-                  </div>
-                </div>
-                <div v-else>后箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input></div>
-              </el-col>
-              <!--后箱箱属-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
-                <div v-if="clickedData.afterContainer">
-                  <div v-if="clickedData.afterContainer.property">
-                    后箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.property"></el-input>
-                  </div>
-                  <div v-else>
-                    后箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.property"></el-input>
-                  </div>
-                </div>
-                <div v-else>后箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.property"></el-input></div>
-              </el-col>
-              <!--取消按钮-->
-              <el-col :xs="2" :sm="2" :md="2" :lg="2">
-                <el-button type="warning" @click.stop="cancelClick" size="small" icon="el-icon-refresh">取消</el-button>
-              </el-col>
-            </el-row>
-          </el-row>
-          <!-- 图片展示 -->
-          <el-row style="margin-top: 10px">
-            <el-carousel indicator-position="outside" arrow="always" :autoplay="false" ref="photos" :height="screenHeight*2/3 + 10 + 'px'">
-              <el-carousel-item v-for="(item, index) in ocrImgs" :key="index" >
-                <div class="img-box" style="text-align:center;height: 100%">
-                  <img :src="item" style="height:100%;width: 80%;">
-                </div>
-              </el-carousel-item>
-            </el-carousel>
-          </el-row>
-        </el-tab-pane>
+<!--          <el-row>-->
+<!--            <el-row>-->
+<!--              <el-col :xs="1" :sm="1" :md="1" :lg="1">&nbsp;</el-col>-->
+<!--              &lt;!&ndash;车牌&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <el-tooltip content="车牌" placement="top" effect="light">&lt;!&ndash;车牌&ndash;&gt;-->
+<!--                  <div v-if="clickedData.carPlate">-->
+<!--                    <div v-if="clickedData.carPlate.ocrPlate">-->
+<!--                      车牌：<el-input  class="edit-input" size="small"  v-model="clickedData.carPlate.ocrPlate"></el-input>-->
+<!--                    </div>-->
+<!--                    <div v-else>-->
+<!--                      车牌：<el-input class="edit-input" size="small"  v-model="clickedData.ocrCarPlate.ocrPlate"></el-input>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div v-else>车牌：<el-input class="edit-input" size="small"  v-model="clickedData.ocrCarPlate.ocrPlate"></el-input></div>-->
+<!--                </el-tooltip>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;前箱号&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <el-tooltip content="前箱号" placement="top" effect="light">&lt;!&ndash;车牌&ndash;&gt;-->
+<!--                  <div v-if="clickedData.frontContainer">-->
+<!--                    <div v-if="clickedData.frontContainer.ocrContainerNo">-->
+<!--                      前箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.frontContainer.ocrContainerNo"></el-input>-->
+<!--                    </div>-->
+<!--                    <div v-else>-->
+<!--                      前箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrFrontContainer.ocrContainerNo"></el-input>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div v-else>前箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrFrontContainer.ocrContainerNo"></el-input></div>-->
+<!--                </el-tooltip>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;前箱型&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.frontContainer">-->
+<!--                  <div v-if="clickedData.frontContainer.ocrContainerISO">-->
+<!--                    前箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.ocrContainerISO"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    前箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.ocrContainerISO"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>前箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.ocrContainerISO"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;前箱空重&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.ocrFrontContainer">-->
+<!--                  前箱空重：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.efid"></el-input>-->
+<!--                </div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;前箱铅封状态&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.frontContainer">-->
+<!--                  <div v-if="clickedData.frontContainer.leadSealState">-->
+<!--                    前箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.leadSealState"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    前箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealState"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>前箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealState"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;前箱铅封号&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.frontContainer">-->
+<!--                  <div v-if="clickedData.frontContainer.leadSealNo">-->
+<!--                    前箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.leadSealNo"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    前箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>前箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;前箱箱属&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.frontContainer">-->
+<!--                  <div v-if="clickedData.frontContainer.property">-->
+<!--                    前箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.frontContainer.property"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    前箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.property"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>前箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.property"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;提交按钮&ndash;&gt;-->
+<!--              <el-col :xs="2" :sm="2" :md="2" :lg="2">-->
+<!--                <el-button type="success" @click.stop="submitClick" size="small" icon="el-icon-circle-check-outline">提交</el-button>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--            <el-row style="margin-top: 20px">-->
+<!--              <el-col :xs="1" :sm="1" :md="1" :lg="1">&nbsp;</el-col>-->
+<!--              &lt;!&ndash;重量&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                重量：-->
+<!--                <el-tooltip content="重量" placement="top" effect="light">&lt;!&ndash;重量&ndash;&gt;-->
+<!--                  <el-input class="edit-input" size="small" style="width: 100px;" v-model="clickedData.generalInfo.weight"></el-input>-->
+<!--                </el-tooltip>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;后箱号&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="5">-->
+<!--                <div v-if="clickedData.afterContainer">-->
+<!--                  <div v-if="clickedData.afterContainer.ocrContainerNo">-->
+<!--                    后箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.afterContainer.ocrContainerNo"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    后箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrAfterContainer.ocrContainerNo"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>后箱号：<el-input class="edit-input" size="small" style="width: 180px;" v-model="clickedData.ocrAfterContainer.ocrContainerNo"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;后箱型&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.afterContainer">-->
+<!--                  <div v-if="clickedData.afterContainer.ocrContainerISO">-->
+<!--                    后箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.ocrContainerISO"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    后箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.ocrContainerISO"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>后箱型：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.ocrContainerISO"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;后箱空重&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.ocrAfterContainer">-->
+<!--                  后箱空重：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.efid"></el-input>-->
+<!--                </div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;后箱铅封状态&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.afterContainer">-->
+<!--                  <div v-if="clickedData.afterContainer.leadSealState">-->
+<!--                    后箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.leadSealState"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    后箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.leadSealState"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>后箱铅封状态：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.leadSealState"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;后箱铅封号&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.afterContainer">-->
+<!--                  <div v-if="clickedData.afterContainer.leadSealNo">-->
+<!--                    后箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.leadSealNo"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    后箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>后箱铅封号：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrFrontContainer.leadSealNo"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;后箱箱属&ndash;&gt;-->
+<!--              <el-col :xs="3" :sm="3" :md="6" :lg="3">-->
+<!--                <div v-if="clickedData.afterContainer">-->
+<!--                  <div v-if="clickedData.afterContainer.property">-->
+<!--                    后箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.afterContainer.property"></el-input>-->
+<!--                  </div>-->
+<!--                  <div v-else>-->
+<!--                    后箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.property"></el-input>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>后箱箱属：<el-input class="edit-input" size="small" style="width: 90px;" v-model="clickedData.ocrAfterContainer.property"></el-input></div>-->
+<!--              </el-col>-->
+<!--              &lt;!&ndash;取消按钮&ndash;&gt;-->
+<!--              <el-col :xs="2" :sm="2" :md="2" :lg="2">-->
+<!--                <el-button type="warning" @click.stop="cancelClick" size="small" icon="el-icon-refresh">取消</el-button>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--          </el-row>-->
+<!--          &lt;!&ndash; 图片展示 &ndash;&gt;-->
+<!--          <el-row style="margin-top: 10px">-->
+<!--            <el-carousel indicator-position="outside" arrow="always" :autoplay="false" ref="photos" :height="screenHeight*2/3 + 10 + 'px'">-->
+<!--              <el-carousel-item v-for="(item, index) in ocrImgs" :key="index" >-->
+<!--                <div class="img-box" style="text-align:center;height: 100%">-->
+<!--                  <img :src="item" style="height:100%;width: 80%;">-->
+<!--                </div>-->
+<!--              </el-carousel-item>-->
+<!--            </el-carousel>-->
+<!--          </el-row>-->
 
-        <!--<el-tab-pane label="验残内容" name="cdi">
-        </el-tab-pane>-->
+          <el-form label-position="right" label-width="auto" size="mini">
+<!--            车辆信息-->
+            <el-row :gutter="10">
+              <el-col :span="3">
+                <el-form-item label="车牌">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="重量">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3" :offset="15">
+                <el-button type="primary">提交</el-button>
+                <el-button type="warning" @click="cancelClick()">取消</el-button>
+              </el-col>
+
+            </el-row>
+<!--            前箱信息-->
+            <el-row :gutter="10">
+              <el-col :span="3">
+                <el-form-item label="前箱号">
+                  <el-input ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="前箱型">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="前箱空重">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="前箱铅封状态">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="前箱铅封号">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="前箱箱属">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="前箱验残">
+                  <el-select placeholder="验残选项">
+                    <el-option
+                      v-for="item in selectData" :key="item.value" :value="item.key" :label="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+<!--            后箱信息-->
+            <el-row :gutter="10">
+              <el-col :span="3">
+                <el-form-item label="后箱号">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="后箱型">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="后箱空重">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="后箱铅封状态">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="后箱铅封号">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="后箱箱属">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="后箱验残">
+                  <el-select placeholder="验残选项">
+                    <el-option
+                      v-for="item in selectData" :key="item.value" :value="item.key" :label="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-carousel indicator-position="outside" arrow="always" :autoplay="false" ref="photos" :height="screenHeight*1/2 + 10 + 'px'">
+                <el-carousel-item v-for="(item, index) in ocrImgs" :key="index" >
+                  <div class="img-box" style="text-align:center;height: 100%">
+                    <img :src="item" style="height:100%;width: 80%;">
+                  </div>
+                </el-carousel-item>
+              </el-carousel>
+            </el-row>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
     </el-dialog>
   </div>
@@ -336,7 +445,23 @@
                 activeName: 'ocr',
                 ocrImgs: [],
                 screenHeight: document.documentElement.clientHeight,
-                clickedLaneCode: ''
+                clickedLaneCode: '',
+              selectData: [{key: 'ZYNM',value: '中远内贸'},
+                {key: 'DZ',value: '钉子'},
+                {key: 'NM',value: '正常'},
+                {key: 'NMCW',value: '内贸残污'},
+                {key: 'SPX',value: '食品箱'},
+                {key: 'DL',value: '危险品'},
+                {key: 'JZ',value: '机组'},
+                {key: 'DR',value: '污箱'},
+                {key: 'DM',value: '残损'},
+                {key: 'YW',value: '异味'},
+                {key: 'YZX',value: '退租箱'},
+                {key: 'CWX',value: '残污箱'},
+                {key: 'DMS',value: '残损大项目'},
+                {key: 'QW',value: '轻污'},
+                {key: 'ZW',value: '重污'},
+                {key: 'WBX',value: '危标箱'}]
             }
         },
         mounted () {
