@@ -315,59 +315,69 @@
 <!--            </el-carousel>-->
 <!--          </el-row>-->
 
-          <el-form label-position="right" label-width="auto" size="mini">
+          <el-form label-position="right" size="mini">
 <!--            车辆信息-->
             <el-row :gutter="10">
-              <el-col :span="3">
-                <el-form-item label="车牌">
+              <el-col :span="4">
+                <el-form-item class="flexDis">
+                  <span slot="label">车牌</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item label="重量">
+              <el-col :span="4">
+                <el-form-item class="flexDis">
+                  <span slot="label">重量</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3" :offset="15">
+              <el-col :span="2" :offset="12">
                 <el-button type="primary">提交</el-button>
+              </el-col>
+              <el-col :span="2">
                 <el-button type="warning" @click="cancelClick()">取消</el-button>
               </el-col>
-
             </el-row>
 <!--            前箱信息-->
             <el-row :gutter="10">
-              <el-col :span="3">
-                <el-form-item label="前箱号">
+              <el-col :span="4">
+                <el-form-item class="flexDis" label="前箱号">
+                  <span slot="label">前箱号</span>
                   <el-input ></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item label="前箱型">
+              <el-col :span="4">
+                <el-form-item class="flexDis" label="前箱型">
+                  <span slot="label">前箱型</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item label="前箱空重">
+              <el-col :span="5">
+                <el-form-item class="flexDis" label="前箱空重">
+                  <span slot="label">前箱空重</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item label="前箱铅封状态">
+              <el-col :span="5">
+                <el-form-item class="flexDis" label="前箱铅封状态">
+                  <span slot="label">前箱铅封状态</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item label="前箱铅封号">
+              <el-col :span="6">
+                <el-form-item class="flexDis" label="前箱铅封号">
+                  <span slot="label">前箱铅封号</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item label="前箱箱属">
+              <el-col :span="4">
+                <el-form-item class="flexDis" label="前箱箱属">
+                  <span slot="label">前箱箱属</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item label="前箱验残">
+              <el-col :span="4">
+                <el-form-item class="flexDis" label="前箱验残">
+                  <span slot="label">前箱验残</span>
                   <el-select placeholder="验残选项">
                     <el-option
                       v-for="item in selectData" :key="item.value" :value="item.key" :label="item.value"></el-option>
@@ -378,37 +388,44 @@
 <!--            后箱信息-->
             <el-row :gutter="10">
               <el-col :span="3">
-                <el-form-item label="后箱号">
+                <el-form-item class="flexDis" label="后箱号">
+                  <span slot="label">后箱号</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="3">
-                <el-form-item label="后箱型">
+                <el-form-item class="flexDis" label="后箱型">
+                  <span slot="label">后箱型</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="3">
-                <el-form-item label="后箱空重">
+                <el-form-item class="flexDis" label="后箱空重">
+                  <span slot="label">后箱空重</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="3">
-                <el-form-item label="后箱铅封状态">
+                <el-form-item class="flexDis" label="后箱铅封状态">
+                  <span slot="label">后箱铅封状态</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="3">
-                <el-form-item label="后箱铅封号">
+                <el-form-item class="flexDis" label="后箱铅封号">
+                  <span slot="label">后箱铅封号</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="3">
-                <el-form-item label="后箱箱属">
+                <el-form-item class="flexDis" label="后箱箱属">
+                  <span slot="label">后箱箱属</span>
                   <el-input></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="3">
-                <el-form-item label="后箱验残">
+                <el-form-item class="flexDis" label="后箱验残">
+                  <span slot="label">后箱验残</span>
                   <el-select placeholder="验残选项">
                     <el-option
                       v-for="item in selectData" :key="item.value" :value="item.key" :label="item.value"></el-option>
@@ -417,7 +434,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-carousel indicator-position="outside" arrow="always" :autoplay="false" ref="photos" :height="screenHeight*1/2 + 10 + 'px'">
+              <el-carousel indicator-position="outside" arrow="always" :autoplay="false" ref="photos" :height="screenHeight*2/3 + 10 + 'px'">
                 <el-carousel-item v-for="(item, index) in ocrImgs" :key="index" >
                   <div class="img-box" style="text-align:center;height: 100%">
                     <img :src="item" style="height:100%;width: 80%;">
@@ -614,6 +631,9 @@
 <style rel="stylesheet/scss" scoped>
   .ocrErrorFontColor {
     color: red;
+  }
+  .flexDis {
+    display: flex;
   }
 </style>
 <style>

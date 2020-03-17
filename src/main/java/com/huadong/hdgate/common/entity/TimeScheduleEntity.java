@@ -73,14 +73,12 @@ public class TimeScheduleEntity {
 	public void deviceTask(){
 		for(int i : laneDBUtils.getAllLaneDB()) {
 			String statusEntity = redisUtils.rpopQueue("device_data", i);
-			log.info(i+"statusEntity:"+statusEntity);
 			String laneCode = laneDBUtils.getLaneCode(i);
 			if (statusEntity != null && !statusEntity.equals("null") && !statusEntity.equals("")) {
 				List<DeviceEntity> list = JSONArray.parseArray(statusEntity,DeviceEntity.class);
 				EquipmentStatusEntity equipmentStatusEntity = new EquipmentStatusEntity(list, laneCode);
 				String equipmentStatus = JSONObject.toJSONString(equipmentStatusEntity);
 				redisUtils.set("receiveStatus"+laneCode,equipmentStatus);
-				log.info("equip:"+equipmentStatus);
 				laneService.sendData2Html(laneCode,equipmentStatus);
 				if(equipmentStatus.contains("0")){
 					String url = "http://localhost:8085/hdGate/sys/showErrorMsg";
@@ -157,11 +155,7 @@ public class TimeScheduleEntity {
 			String autoGateBusiness = redisUtils.rpopQueue("web_data",i);
 			if(autoGateBusiness!=null && !autoGateBusiness.equals("null") && !autoGateBusiness.equals("")){
 				Map<String,Object> maps = (Map) JSON.parse(autoGateBusiness);
-				log.info("laneMonitorApi接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",autoGateBusiness);
-
 				BusinessEntity businessEntity = packageOcrData(maps);
-				log.info("businessEntity:"+businessEntity.toString());
-
 				autoGateBusiness = CommonUtils.cdiEntity2ShowEntityStr(businessEntity);
 				stringRedisTemplate.convertAndSend("hd_gate_business_data_db",autoGateBusiness);// redis频道
 				businessService.sendData2Html(businessEntity.getGeneralInfo().getLaneCode(),autoGateBusiness); // 推送数据到页面
