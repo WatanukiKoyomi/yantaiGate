@@ -151,7 +151,7 @@
                 </el-tooltip>
               </el-col>
               <!--前箱号-->
-              <el-col :xs="3" :sm="3" :md="6" :lg="3">
+              <el-col :xs="3" :sm="3" :md="6" :lg="5">
                 <el-tooltip content="前箱号" placement="top" effect="light"><!--车牌-->
                   <div v-if="clickedData.frontContainer">
                     <div v-if="clickedData.frontContainer.ocrContainerNo">
@@ -405,19 +405,6 @@
                         })
                         // end 查询车道对应最新数据
                     })
-                    that.laneShowList = initLane;
-                    // begin 查询用户选中查看的车道
-                    that.$axios.get('/hdGate/laneManagement/queryGateLaneByUser',
-                        {params: {'user': username}}).then(data => {
-                        if (data === null || data === '') {
-                            that.laneCheckedList = initLane
-                        } else {
-                            that.laneCheckedList = data
-                        }
-                    }, response => {
-                        console.log('queryGateLaneByUser error')
-                    })
-                    // end 查询用户选中查看的车道
                 }, response => {
                     console.log('queryShowGateLanes error')
                 })
@@ -456,9 +443,10 @@
             submitClick: function () {
                 console.log('submitClickData:', this.clickedData, this.clickedLaneCode);
                 console.log('aaaaaaaaaaa', this.clickedData.visitGuid);
-                if (this.clickedData.visitGuid === undefined) { // 新增
-                    console.log('fffffffffffff')
-                }
+                // if (this.clickedData.ocrFrontContainer.ocrContainerNo === undefined || this.clickedData.ocrFrontContainer.ocrContainerNo === '') { // 新增
+                //   console.log('fffffffffffff');
+                //   this.clickedData.ocrFrontContainer.ocrContainerNo = ' ';
+                // }
                 let todoUpdateData = JSON.stringify(this.clickedData);
                 let username = JSON.parse(sessionStorage.user).username;
                 this.$axios.get('/hdGate/monitor/updateBusinessData',

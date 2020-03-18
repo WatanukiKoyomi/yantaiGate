@@ -73,14 +73,12 @@ public class TimeScheduleEntity {
 	public void deviceTask(){
 		for(int i : laneDBUtils.getAllLaneDB()) {
 			String statusEntity = redisUtils.rpopQueue("device_data", i);
-			log.info(i+"statusEntity:"+statusEntity);
 			String laneCode = laneDBUtils.getLaneCode(i);
 			if (statusEntity != null && !statusEntity.equals("null") && !statusEntity.equals("")) {
 				List<DeviceEntity> list = JSONArray.parseArray(statusEntity,DeviceEntity.class);
 				EquipmentStatusEntity equipmentStatusEntity = new EquipmentStatusEntity(list, laneCode);
 				String equipmentStatus = JSONObject.toJSONString(equipmentStatusEntity);
 				redisUtils.set("receiveStatus"+laneCode,equipmentStatus);
-				log.info("equip:"+equipmentStatus);
 				laneService.sendData2Html(laneCode,equipmentStatus);
 				if(equipmentStatus.contains("0")){
 					String url = "http://localhost:8085/hdGate/sys/showErrorMsg";

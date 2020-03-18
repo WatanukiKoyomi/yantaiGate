@@ -157,75 +157,122 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 	 */
 	public String updateBusinessData(String laneCode,String account,String todoUpdateDataStr){
 		BusinessEntity newBusinessData = JSONObject.parseObject(todoUpdateDataStr,BusinessEntity.class);
+		System.out.println("newB:"+newBusinessData.toString());
 		BusinessEntity oldBusinessData = queryBusinessDataByLaneCode(laneCode);
 		// 修改人赋值
 		oldBusinessData.setAccount(account);
 		// 重量赋值
 		oldBusinessData.getGeneralInfo().setWeight(newBusinessData.getGeneralInfo().getWeight());
 		// 集卡号赋值
-		if(newBusinessData.getCarPlate().getOcrPlate() != null){
+		if(newBusinessData.getCarPlate().getOcrPlate() != null && !newBusinessData.getCarPlate().getOcrPlate().equals("")){
 			oldBusinessData.getCarPlate().setOcrPlate(newBusinessData.getCarPlate().getOcrPlate().toUpperCase());
 		}else{
-			// 再次判断，如果值没有变化不需要更新，有变化说明修改过
-			if(!newBusinessData.getOcrCarPlate().getOcrPlate().toUpperCase().equals(oldBusinessData.getOcrCarPlate().getOcrPlate().toUpperCase())){
+			if(newBusinessData.getOcrCarPlate().getOcrPlate() != null && !newBusinessData.getOcrCarPlate().getOcrPlate().equals(oldBusinessData.getOcrCarPlate().getOcrPlate())){
 				oldBusinessData.getCarPlate().setOcrPlate(newBusinessData.getOcrCarPlate().getOcrPlate().toUpperCase());
 			}
 		}
 		// 前箱号赋值
-		if(newBusinessData.getFrontContainer().getOcrContainerNo() != null){
+		if(newBusinessData.getFrontContainer().getOcrContainerNo() != null && !newBusinessData.getFrontContainer().getOcrContainerNo().equals("")){
 			oldBusinessData.getFrontContainer().setOcrContainerNo(newBusinessData.getFrontContainer().getOcrContainerNo().toUpperCase());
 		}else{
-			// 再次判断，如果值没有变化不需要更新，有变化说明修改过
-			if(!newBusinessData.getOcrFrontContainer().getOcrContainerNo().toUpperCase().equals(oldBusinessData.getOcrFrontContainer().getOcrContainerNo().toUpperCase())){
+			if(newBusinessData.getOcrFrontContainer().getOcrContainerNo() != null && !newBusinessData.getOcrFrontContainer().getOcrContainerNo().equals(oldBusinessData.getOcrFrontContainer().getOcrContainerNo())){
 				oldBusinessData.getFrontContainer().setOcrContainerNo(newBusinessData.getOcrFrontContainer().getOcrContainerNo().toUpperCase());
 			}
 		}
 		// 前箱型赋值
-		if(newBusinessData.getFrontContainer().getOcrContainerISO() != null){
+		if(newBusinessData.getFrontContainer().getOcrContainerISO() != null && !newBusinessData.getFrontContainer().getOcrContainerISO().equals("")){
 			oldBusinessData.getFrontContainer().setOcrContainerISO(newBusinessData.getFrontContainer().getOcrContainerISO().toUpperCase());
 		}else{
-			// 再次判断，如果值没有变化不需要更新，有变化说明修改过
-			if(!newBusinessData.getOcrFrontContainer().getOcrContainerISO().toUpperCase().equals(oldBusinessData.getOcrFrontContainer().getOcrContainerISO().toUpperCase())){
+			if(newBusinessData.getOcrFrontContainer().getOcrContainerISO() != null && !newBusinessData.getOcrFrontContainer().getOcrContainerISO().equals(oldBusinessData.getOcrFrontContainer().getOcrContainerISO())){
 				oldBusinessData.getFrontContainer().setOcrContainerISO(newBusinessData.getOcrFrontContainer().getOcrContainerISO().toUpperCase());
 			}
 		}
 		// 前箱型空重
-		if(newBusinessData.getFrontContainer().getEfid() != null){
+		if(newBusinessData.getFrontContainer().getEfid() != null && !newBusinessData.getFrontContainer().getEfid().equals("")){
 			oldBusinessData.getFrontContainer().setEfid(newBusinessData.getFrontContainer().getEfid().toUpperCase());
 		}else{
 			// 再次判断，如果值没有变化不需要更新，有变化说明修改过
-			if(!newBusinessData.getOcrFrontContainer().getEfid().toUpperCase().equals(oldBusinessData.getOcrFrontContainer().getEfid().toUpperCase())){
+			if(newBusinessData.getOcrFrontContainer().getEfid() != null && !newBusinessData.getOcrFrontContainer().getEfid().equals(oldBusinessData.getOcrFrontContainer().getEfid())){
 				oldBusinessData.getOcrFrontContainer().setEfid(newBusinessData.getOcrFrontContainer().getEfid().toUpperCase());
 			}
 		}
+		//前箱铅封状态
+		if(newBusinessData.getFrontContainer().getLeadSealState() != null && !newBusinessData.getFrontContainer().getLeadSealState().equals("")){
+			oldBusinessData.getFrontContainer().setLeadSealState(newBusinessData.getFrontContainer().getLeadSealState());
+		}else{
+			if(newBusinessData.getOcrFrontContainer().getLeadSealState() != null && !newBusinessData.getOcrFrontContainer().getLeadSealState().equals(oldBusinessData.getOcrFrontContainer().getLeadSealState())){
+				oldBusinessData.getOcrFrontContainer().setLeadSealState(newBusinessData.getOcrFrontContainer().getLeadSealState());
+			}
+		}
+		//前箱铅封号
+		if(newBusinessData.getFrontContainer().getLeadSealNo() != null && !newBusinessData.getFrontContainer().getLeadSealNo().equals("")){
+			oldBusinessData.getFrontContainer().setLeadSealNo(newBusinessData.getFrontContainer().getLeadSealNo());
+		}else{
+			if(newBusinessData.getOcrFrontContainer().getLeadSealNo() != null && !newBusinessData.getOcrFrontContainer().getLeadSealNo().equals(oldBusinessData.getOcrFrontContainer().getLeadSealNo())){
+				oldBusinessData.getOcrFrontContainer().setLeadSealNo(newBusinessData.getOcrFrontContainer().getLeadSealNo());
+			}
+		}
+		//前箱箱属
+		if(newBusinessData.getFrontContainer().getProperty() != null && !newBusinessData.getFrontContainer().getProperty().equals("")){
+			oldBusinessData.getFrontContainer().setProperty(newBusinessData.getFrontContainer().getProperty());
+		}else{
+			if(newBusinessData.getOcrFrontContainer().getProperty() != null && !newBusinessData.getOcrFrontContainer().getProperty().equals(oldBusinessData.getOcrFrontContainer().getProperty())){
+				oldBusinessData.getOcrFrontContainer().setProperty(newBusinessData.getOcrFrontContainer().getProperty());
+			}
+		}
 		// 后箱号赋值
-		if(newBusinessData.getAfterContainer().getOcrContainerNo() != null){
+		if(newBusinessData.getAfterContainer().getOcrContainerNo() != null && !newBusinessData.getAfterContainer().getOcrContainerNo().equals("")){
 			oldBusinessData.getAfterContainer().setOcrContainerNo(newBusinessData.getAfterContainer().getOcrContainerNo().toUpperCase());
 		}else{
 			// 再次判断，如果值没有变化不需要更新，有变化说明修改过
-			if(!newBusinessData.getOcrAfterContainer().getOcrContainerNo().toUpperCase().equals(oldBusinessData.getOcrAfterContainer().getOcrContainerNo().toUpperCase())){
+			if(newBusinessData.getOcrAfterContainer().getOcrContainerNo() != null && !newBusinessData.getOcrAfterContainer().getOcrContainerNo().equals(oldBusinessData.getOcrAfterContainer().getOcrContainerNo())){
 				oldBusinessData.getAfterContainer().setOcrContainerNo(newBusinessData.getOcrAfterContainer().getOcrContainerNo().toUpperCase());
 			}
 		}
 		// 后箱型赋值
-		if(newBusinessData.getAfterContainer().getOcrContainerISO() != null){
+		if(newBusinessData.getAfterContainer().getOcrContainerISO() != null && !newBusinessData.getAfterContainer().getOcrContainerISO().equals("")){
 			oldBusinessData.getAfterContainer().setOcrContainerISO(newBusinessData.getAfterContainer().getOcrContainerISO().toUpperCase());
 		}else{
 			// 再次判断，如果值没有变化不需要更新，有变化说明修改过
-			if(!newBusinessData.getOcrAfterContainer().getOcrContainerISO().toUpperCase().equals(oldBusinessData.getOcrAfterContainer().getOcrContainerISO().toUpperCase())){
+			if(newBusinessData.getOcrAfterContainer().getOcrContainerISO() != null && !newBusinessData.getOcrAfterContainer().getOcrContainerISO().equals(oldBusinessData.getOcrAfterContainer().getOcrContainerISO())){
 				oldBusinessData.getAfterContainer().setOcrContainerISO(newBusinessData.getOcrAfterContainer().getOcrContainerISO().toUpperCase());
 			}
 		}
 		// 后箱空重
-		if(newBusinessData.getAfterContainer().getEfid() != null){
+		if(newBusinessData.getAfterContainer().getEfid() != null && !newBusinessData.getAfterContainer().getEfid().equals("")){
 			oldBusinessData.getAfterContainer().setEfid(newBusinessData.getAfterContainer().getEfid().toUpperCase());
 		}else{
 			// 再次判断，如果值没有变化不需要更新，有变化说明修改过
-			if(!newBusinessData.getOcrAfterContainer().getEfid().toUpperCase().equals(oldBusinessData.getOcrAfterContainer().getEfid().toUpperCase())){
+			if(newBusinessData.getOcrAfterContainer().getEfid() != null && !newBusinessData.getOcrAfterContainer().getEfid().equals(oldBusinessData.getOcrAfterContainer().getEfid())){
 				oldBusinessData.getOcrAfterContainer().setEfid(newBusinessData.getOcrAfterContainer().getEfid().toUpperCase());
 			}
 		}
+		//后箱铅封状态
+		if(newBusinessData.getAfterContainer().getLeadSealState() != null && !newBusinessData.getAfterContainer().getLeadSealState().equals("")){
+			oldBusinessData.getAfterContainer().setLeadSealState(newBusinessData.getAfterContainer().getLeadSealState());
+		}else{
+			if(newBusinessData.getOcrAfterContainer().getLeadSealState() != null && !newBusinessData.getOcrAfterContainer().getLeadSealState().equals(oldBusinessData.getOcrAfterContainer().getLeadSealState())){
+				oldBusinessData.getOcrAfterContainer().setLeadSealState(newBusinessData.getOcrAfterContainer().getLeadSealState());
+			}
+		}
+		//后箱铅封号
+		if(newBusinessData.getAfterContainer().getLeadSealNo() != null && !newBusinessData.getAfterContainer().getLeadSealNo().equals("")){
+			oldBusinessData.getAfterContainer().setLeadSealNo(newBusinessData.getAfterContainer().getLeadSealNo());
+		}else{
+			if(newBusinessData.getOcrAfterContainer().getLeadSealNo() != null && !newBusinessData.getOcrAfterContainer().getLeadSealNo().equals(oldBusinessData.getOcrAfterContainer().getLeadSealNo())){
+				oldBusinessData.getOcrAfterContainer().setLeadSealNo(newBusinessData.getOcrAfterContainer().getLeadSealNo());
+			}
+		}
+		//后箱箱属
+		if(newBusinessData.getAfterContainer().getProperty() != null && !newBusinessData.getAfterContainer().getProperty().equals("")){
+			oldBusinessData.getAfterContainer().setProperty(newBusinessData.getAfterContainer().getProperty());
+		}else{
+			if(newBusinessData.getOcrAfterContainer().getProperty() != null && !newBusinessData.getOcrAfterContainer().getProperty().equals(oldBusinessData.getOcrAfterContainer().getProperty())){
+				oldBusinessData.getOcrAfterContainer().setProperty(newBusinessData.getOcrAfterContainer().getProperty());
+			}
+		}
 		String finalBusinessDataStr = JSONObject.toJSONString(oldBusinessData);
+		System.out.println("finalB:"+finalBusinessDataStr);
 		redisUtils.set(laneCode,finalBusinessDataStr);
 
 		redisUtils.lpushQueue("ocr_data",BusinessDataToJson(oldBusinessData,laneCode), laneDBUtils.getLaneDB(laneCode));
