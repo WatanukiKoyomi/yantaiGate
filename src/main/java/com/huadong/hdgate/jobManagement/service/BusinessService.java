@@ -230,9 +230,6 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 
 		redisUtils.lpushQueue("ocr_data",BusinessDataToJson(oldBusinessData,laneCode), laneDBUtils.getLaneDB(laneCode));
 
-//		String url = "http://"+xijingParamsEntity.getIp()+":"+xijingParamsEntity.getPort()+"/xijing/monitor/sendUpdateData";
-//		log.info("车道{}，操作员人工识别修正后，调用西井接收端口，url:{},data:{}",laneCode,url,finalBusinessDataStr);
-//		HttpsUtils.doPost(url,finalBusinessDataStr,"urf-8");
 		return finalBusinessDataStr;
 	}
 

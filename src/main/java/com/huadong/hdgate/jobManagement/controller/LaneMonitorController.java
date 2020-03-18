@@ -80,7 +80,9 @@ public class LaneMonitorController {
     public BusinessEntity queryLatestDataByLane(HttpServletRequest request) {
         String laneCode = request.getParameter("laneCode");
         // 根据车道查询该车道最新业务数据
-        return businessService.queryBusinessDataByLaneCode(laneCode);
+        BusinessEntity businessEntity = businessService.queryBusinessDataByLaneCode(laneCode);
+
+        return businessEntity;
     }
 
     /**
