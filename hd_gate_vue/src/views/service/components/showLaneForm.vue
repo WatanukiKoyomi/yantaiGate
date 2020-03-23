@@ -40,9 +40,14 @@
         this.laneCheckedList = laneCheckedList
       },
       submit () {
-        var username = JSON.parse(sessionStorage.user).username
+        let username = JSON.parse(sessionStorage.user).username
         // 提交后台，进行数据更新
-        var laneCheckedListParam = this.laneCheckedList.sort().toString()
+        let laneCheckedListParam ;
+        if(Object.prototype.toString.call(this.laneCheckedList) == '[object Array]'){
+          laneCheckedListParam = this.laneCheckedList.sort().toString();
+        }else{
+          laneCheckedListParam = this.laneCheckedList.toString();
+        }
         this.$axios.get('/hdGate/laneManagement/changeUserCheckedShowLane',
           {params: { 'user': username, 'laneCheckedList': laneCheckedListParam }}).then(data => {
           console.log('updateUserCheckedShowLane success')

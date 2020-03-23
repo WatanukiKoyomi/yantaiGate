@@ -2,6 +2,8 @@ server:
   port: 8085
   servlet:
     context-path: /hdGate/
+    session:
+      timeout: 0
 #  ssl:
 #    key-store: server.keystore
 #    key-alias: tomcat

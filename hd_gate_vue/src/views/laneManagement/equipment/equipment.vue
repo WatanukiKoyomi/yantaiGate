@@ -210,7 +210,8 @@ export default {
                 }
               });
             };
-            ws.onclose = () => {
+            ws.onclose = (e) => {
+              console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
               console.log(
                 "equipment:" + username + lane.laneCode + "链接已关闭..."
               );

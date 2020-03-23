@@ -437,8 +437,9 @@
                 }
               })
             };
-            ws.onclose = function () {
+            ws.onclose = function (e) {
               // 关闭 websocket
+              console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
               console.log('monitor:' + username + element.laneCode + '链接已关闭...')
             };
             // end websocket

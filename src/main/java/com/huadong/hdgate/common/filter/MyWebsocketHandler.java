@@ -8,14 +8,13 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MyWebsocketHandler extends TextWebSocketHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(MyWebsocketHandler.class);
 
-	public static Map<String, WebSocketSession> socketSessionMap = new HashMap<String, WebSocketSession>();
+	public static ConcurrentHashMap<String, WebSocketSession> socketSessionMap = new ConcurrentHashMap<>();
 
 	/**
 	 * 建立连接后
@@ -44,13 +43,14 @@ public class MyWebsocketHandler extends TextWebSocketHandler {
 	 * 关闭连接后
 	 */
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+		logger.info("Websocket已经关闭"+session+"  "+closeStatus+"  "+socketSessionMap.toString());
 		//System.out.println("Websocket已经关闭"+session+"  "+closeStatus+"   "+socketSessionMap);
 		//System.out.println(socketSessionMap.keySet());
 		for (String key : socketSessionMap.keySet()) {
 			//value = socketSessionMap.get(key);
 			//System.out.println("trueOrFalse:"+(socketSessionMap.get(key)==session));
 			if(socketSessionMap.get(key)==session){
-				socketSessionMap.put(key,null);//不移除，赋值null，为了避免删除导致长度变化而同时其他也在循环map
+				socketSessionMap.remove(key);//不移除，赋值null，为了避免删除导致长度变化而同时其他也在循环map
 			}
 		}
 

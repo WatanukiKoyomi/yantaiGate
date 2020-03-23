@@ -187,22 +187,22 @@
       // 监听重新选中车道后的车道信息
       bus.$on('changeUserCheckedShowLane', function (msg) {
         that.initLaneChecked();
-        that.pickPlateImage()
       });
       this.initLaneChecked();
-      this.pickPlateImage()
     },
     watch: {
     },
     methods: {
       //给出车牌图片地址方法
       pickPlateImage(lane){
-        lane.data.ftpImages.imageName.split(',').forEach(function (imgName) {
+        let plate;
+        lane.ftpImages.imageName.split(',').forEach(function (imgName) {
           console.log('imgName:'+imgName)
           if(imgName.indexOf('plate.jpg') != -1){
-            this.plateImage = imgName
+            plate = imgName;
           }
         })
+        return plate;
       },
       // 弹出窗口选择要查看的车道
       showMonitorLaneDialog () {
@@ -210,14 +210,14 @@
       },
       // 初始化选中的车道信息，并查询数据
       initLaneChecked () {
-        var that = this
-        var initLane = []
-        var username = JSON.parse(sessionStorage.user).username
+        let that = this
+        let initLane = []
+        let username = JSON.parse(sessionStorage.user).username
         this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
-          var s = window.location.host.split(':')[0]
+          let s = window.location.host.split(':')[0]
           data.forEach(function (element) {
             // begin websocket
-            var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
+            let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
             ws.onopen = () => {
               console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
             }
@@ -226,16 +226,25 @@
             }
             ws.onmessage = evt => {
               console.log('数据已接收...' + evt.data)
-              var data = JSON.parse(evt.data)
+              let data = JSON.parse(evt.data)
+              let plate;
+              data.ftpImages.imageName.split(',').forEach(function (imgName) {
+                console.log('imgName:'+imgName)
+                if(imgName.indexOf('plate.jpg') != -1){
+                  plate = imgName;
+                }
+              })
               that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
                 if (laneData.laneCode === data.generalInfo.laneCode) {
-                  laneData.data = data
+                  laneData.plate = plate;
+                  laneData.data = data;
                 }
               })
             }
-            ws.onclose = function () {
+            ws.onclose = function (e) {
               // 关闭 websocket
-              console.log('monitor:' + username + element.laneCode + '链接已关闭...')
+              console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
+              console.log('monitor:' + username + element.laneCode + '链接已关闭...');
             }
             // end websocket
             initLane.push(element.laneCode)
@@ -243,15 +252,14 @@
             that.laneDataList = []
             that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
               {params: { 'laneCode': element.laneCode }}).then(data => {
-              if (data === null || data === '') {
+              if (data === null) {
                 that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
               } else {
-                var plate;
+                let plate;
                 data.ftpImages.imageName.split(',').forEach(function (imgName) {
                   console.log('imgName:'+imgName)
                   if(imgName.indexOf('plate.jpg') != -1){
                     plate = imgName;
-                    console.log('plate:'+plate)
                   }
                 })
                 that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
@@ -265,7 +273,7 @@
           // begin 查询用户选中查看的车道
           that.$axios.get('/hdGate/laneManagement/queryGateLaneByUser',
             {params: { 'user': username }}).then(data => {
-            if (data === null || data === '') {
+            if (data === null) {
               that.laneCheckedList = initLane
             } else {
               that.laneCheckedList = data
@@ -290,7 +298,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          var laneData = this.laneDataList[index]
+          let laneData = this.laneDataList[index]
           this.$axios.get('/hdGate/monitor/receiptClick', {params: {laneCode: laneData.laneCode}}).then(response => {
             this.$message({ message: '补打小票成功' })
           }, response => {
@@ -310,7 +318,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          var laneData = this.laneDataList[index]
+          let laneData = this.laneDataList[index]
           this.$axios.get('/hdGate/monitor/rodClick', {params: {laneCode: laneData.laneCode}}).then(response => {
             this.$message({ message: '抬杆操作成功' })
           }, response => {
