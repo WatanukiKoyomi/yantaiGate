@@ -157,7 +157,6 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 	 */
 	public String updateBusinessData(String laneCode,String account,String todoUpdateDataStr){
 		BusinessEntity newBusinessData = JSONObject.parseObject(todoUpdateDataStr,BusinessEntity.class);
-		System.out.println("newB:"+newBusinessData.toString());
 		BusinessEntity oldBusinessData = queryBusinessDataByLaneCode(laneCode);
 		// 修改人赋值
 		oldBusinessData.setAccount(account);
@@ -165,10 +164,10 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		oldBusinessData.getGeneralInfo().setWeight(newBusinessData.getGeneralInfo().getWeight());
 		// 集卡号赋值
 		if(newBusinessData.getCarPlate().getOcrPlate() != null && !newBusinessData.getCarPlate().getOcrPlate().equals("")){
-			oldBusinessData.getCarPlate().setOcrPlate(newBusinessData.getCarPlate().getOcrPlate().toUpperCase());
+			oldBusinessData.getCarPlate().setOcrPlate(newBusinessData.getCarPlate().getOcrPlate());
 		}else{
 			if(newBusinessData.getOcrCarPlate().getOcrPlate() != null && !newBusinessData.getOcrCarPlate().getOcrPlate().equals(oldBusinessData.getOcrCarPlate().getOcrPlate())){
-				oldBusinessData.getCarPlate().setOcrPlate(newBusinessData.getOcrCarPlate().getOcrPlate().toUpperCase());
+				oldBusinessData.getCarPlate().setOcrPlate(newBusinessData.getOcrCarPlate().getOcrPlate());
 			}
 		}
 		// 前箱号赋值
@@ -218,6 +217,14 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		}else{
 			if(newBusinessData.getOcrFrontContainer().getProperty() != null && !newBusinessData.getOcrFrontContainer().getProperty().equals(oldBusinessData.getOcrFrontContainer().getProperty())){
 				oldBusinessData.getOcrFrontContainer().setProperty(newBusinessData.getOcrFrontContainer().getProperty());
+			}
+		}
+		//前箱残损
+		if(newBusinessData.getFrontContainer().getOcrDamage() != null && !newBusinessData.getFrontContainer().getOcrDamage().equals("")){
+			oldBusinessData.getFrontContainer().setOcrDamage(newBusinessData.getFrontContainer().getOcrDamage());
+		}else{
+			if(newBusinessData.getOcrFrontContainer().getOcrDamage() != null && !newBusinessData.getOcrFrontContainer().getOcrDamage().equals(oldBusinessData.getOcrFrontContainer().getOcrDamage())){
+				oldBusinessData.getOcrFrontContainer().setOcrDamage(newBusinessData.getOcrFrontContainer().getOcrDamage());
 			}
 		}
 		// 后箱号赋值
@@ -271,15 +278,20 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 				oldBusinessData.getOcrAfterContainer().setProperty(newBusinessData.getOcrAfterContainer().getProperty());
 			}
 		}
+		//后箱残损
+		if(newBusinessData.getAfterContainer().getOcrDamage() != null && !newBusinessData.getAfterContainer().getOcrDamage().equals("")){
+			oldBusinessData.getAfterContainer().setOcrDamage(newBusinessData.getAfterContainer().getOcrDamage());
+		}else{
+			if(newBusinessData.getOcrAfterContainer().getOcrDamage() != null && !newBusinessData.getOcrAfterContainer().getOcrDamage().equals(oldBusinessData.getOcrAfterContainer().getOcrDamage())){
+				oldBusinessData.getOcrAfterContainer().setOcrDamage(newBusinessData.getOcrAfterContainer().getOcrDamage());
+			}
+		}
 		String finalBusinessDataStr = JSONObject.toJSONString(oldBusinessData);
-		System.out.println("finalB:"+finalBusinessDataStr);
+		System.out.println("finalBStr:"+finalBusinessDataStr);
 		redisUtils.set(laneCode,finalBusinessDataStr);
 
 		redisUtils.lpushQueue("ocr_data",BusinessDataToJson(oldBusinessData,laneCode), laneDBUtils.getLaneDB(laneCode));
 
-//		String url = "http://"+xijingParamsEntity.getIp()+":"+xijingParamsEntity.getPort()+"/xijing/monitor/sendUpdateData";
-//		log.info("车道{}，操作员人工识别修正后，调用西井接收端口，url:{},data:{}",laneCode,url,finalBusinessDataStr);
-//		HttpsUtils.doPost(url,finalBusinessDataStr,"urf-8");
 		return finalBusinessDataStr;
 	}
 
@@ -302,9 +314,17 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		redisData.append("\", \"weight\": \"");
 		redisData.append(oldBusinessData.getGeneralInfo().getWeight());
 		redisData.append("\", \"lorry\": { \"Plate\": \"");
-		redisData.append(oldBusinessData.getCarPlate().getOcrPlate());
+		if(oldBusinessData.getCarPlate().getOcrPlate() == null || oldBusinessData.getCarPlate().getOcrPlate().isEmpty()){
+			redisData.append(oldBusinessData.getOcrCarPlate().getOcrPlate());
+		}else{
+			redisData.append(oldBusinessData.getCarPlate().getOcrPlate());
+		}
 		redisData.append("\", \"Color\": \"");
-		redisData.append(oldBusinessData.getCarPlate().getPlateColor());
+		if(oldBusinessData.getCarPlate().getPlateColor() == null || oldBusinessData.getCarPlate().getPlateColor().isEmpty()){
+			redisData.append(oldBusinessData.getOcrCarPlate().getPlateColor());
+		}else{
+			redisData.append(oldBusinessData.getCarPlate().getPlateColor());
+		}
 		redisData.append("\"}, \"containerahead\": { \"number\": \"");
 		if(oldBusinessData.getFrontContainer().getOcrContainerNo() == null || oldBusinessData.getFrontContainer().getOcrContainerNo().isEmpty()){
 			redisData.append(oldBusinessData.getOcrFrontContainer().getOcrContainerNo());
@@ -334,6 +354,12 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 			redisData.append(oldBusinessData.getOcrFrontContainer().getLeadSealNo());
 		}else{
 			redisData.append(oldBusinessData.getFrontContainer().getLeadSealNo());
+		}
+		redisData.append("\", \"damage_code\": \"");
+		if(oldBusinessData.getFrontContainer().getOcrDamage() == null || oldBusinessData.getFrontContainer().getOcrDamage().isEmpty()){
+			redisData.append(oldBusinessData.getOcrFrontContainer().getOcrDamage());
+		}else{
+			redisData.append(oldBusinessData.getFrontContainer().getOcrDamage());
 		}
 		redisData.append("\", \"property\": \"");
 		if(oldBusinessData.getFrontContainer().getProperty() == null || oldBusinessData.getFrontContainer().getProperty().isEmpty()){
@@ -377,6 +403,12 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		}else{
 			redisData.append(oldBusinessData.getAfterContainer().getLeadSealNo());
 		}
+		redisData.append("\", \"damage_code\": \"");
+		if(oldBusinessData.getAfterContainer().getOcrDamage() == null || oldBusinessData.getAfterContainer().getOcrDamage().isEmpty()){
+			redisData.append(oldBusinessData.getOcrAfterContainer().getOcrDamage());
+		}else{
+			redisData.append(oldBusinessData.getAfterContainer().getOcrDamage());
+		}
 		redisData.append("\", \"property\": \"");
 		if(oldBusinessData.getAfterContainer().getProperty() == null || oldBusinessData.getAfterContainer().getProperty().isEmpty()){
 			redisData.append(oldBusinessData.getOcrAfterContainer().getProperty());
@@ -397,6 +429,7 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		}
 		redisData.deleteCharAt(redisData.length()-1);
 		redisData.append("} }");
+		System.out.println("redisData:"+redisData.toString());
 		return redisData.toString();
 	}
 

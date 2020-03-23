@@ -121,6 +121,7 @@ public class TimeScheduleEntity {
 		ocrFrontContainer.setProperty(((Map) maps.get("containerahead")).get("property").toString());
 		ocrFrontContainer.setLeadSealState(((Map) maps.get("containerahead")).get("leadsealstate").toString());
 		ocrFrontContainer.setEfid(((Map) maps.get("containerahead")).get("efid").toString());
+		ocrFrontContainer.setOcrDamage(((Map) maps.get("containerahead")).get("damage_code").toString());
 		businessEntity.setOcrFrontContainer(ocrFrontContainer);
 
 		ContainerEntity ocrAfterContainer = new ContainerEntity();
@@ -130,7 +131,8 @@ public class TimeScheduleEntity {
 		ocrAfterContainer.setLeadSealNo(((Map) maps.get("containerbehind")).get("leadsealno").toString());
 		ocrAfterContainer.setProperty(((Map) maps.get("containerbehind")).get("property").toString());
 		ocrAfterContainer.setLeadSealState(((Map) maps.get("containerbehind")).get("leadsealstate").toString());
-		ocrFrontContainer.setEfid(((Map) maps.get("containerbehind")).get("efid").toString());
+		ocrAfterContainer.setEfid(((Map) maps.get("containerbehind")).get("efid").toString());
+		ocrAfterContainer.setOcrDamage(((Map) maps.get("containerbehind")).get("damage_code").toString());
 		businessEntity.setOcrAfterContainer(ocrAfterContainer);
 
 		FtpImagesEntity ftpImagesEntity = new FtpImagesEntity();
@@ -158,9 +160,10 @@ public class TimeScheduleEntity {
 				log.info("laneMonitorApi接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",autoGateBusiness);
 
 				BusinessEntity businessEntity = packageOcrData(maps);
-				log.info("businessEntity:"+businessEntity.toString());
+				log.info("businessEntity:"+JSONObject.toJSONString(businessEntity));
 
 				autoGateBusiness = CommonUtils.cdiEntity2ShowEntityStr(businessEntity);
+				log.info("autoGate:"+autoGateBusiness);
 				stringRedisTemplate.convertAndSend("hd_gate_business_data_db",autoGateBusiness);// redis频道
 				businessService.sendData2Html(businessEntity.getGeneralInfo().getLaneCode(),autoGateBusiness); // 推送数据到页面
 

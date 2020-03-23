@@ -18,7 +18,7 @@
               <div class="box-panel-text"><span>{{lane.laneCode}}</span></div><!-- {{lane.laneName}}:{{lane.laneCode}} -->
             </div>
             <div class="box-panel-icon-image icon-box" v-if="lane.data">
-<!--              <img v-if="lane.data.ftpImages.imagePath" src="lane.data.ftpImages.imagePath + '/Plate.jpg?random=' + Math.random()" style="width: 124px;height:46px;" />-->
+              <!--              <img v-if="lane.data.ftpImages.imagePath" src="lane.data.ftpImages.imagePath + '/Plate.jpg?random=' + Math.random()" style="width: 124px;height:46px;" />-->
               <img v-if="lane.plate" :src="lane.plate" style="width: 124px;height:46px;" />
             </div>
           </div>
@@ -108,21 +108,26 @@
           <!--下方按钮-->
           <div id="app" class='box-panel' style="border-top: 1px dashed #97a8be; padding-top: 10px;margint-right: 15px;">
             <!--详情-->
-            <el-col :xs="8" :sm="8" :md="8" :lg="8" class="text-center" style="padding: 0;margin-bottom: 10px;">
+            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
               <el-tooltip content="跳转车道作业界面查看详细信息" placement="bottom" effect="light">
                 <el-button name="monitorDetailsBtnName" type="primary" @click="taskClick(index)" icon="el-icon-document">详情</el-button>
               </el-tooltip>
             </el-col>
             <!--小票-->
-            <el-col :xs="8" :sm="8" :md="8" :lg="8" class="text-center" style="padding: 0;margin-bottom: 10px;">
+            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
               <el-tooltip content="打印小票" placement="bottom" effect="light"><!--打印小票-->
                 <el-button name="monitorPrintBtnName" type="primary" @click="receiptClick(index)" style="width: 85px;" icon="el-icon-document">小票</el-button>
               </el-tooltip>
             </el-col>
             <!--抬杆-->
-            <el-col :xs="8" :sm="8" :md="8" :lg="8" class="text-center" style="padding: 0;margin-bottom: 10px;">
+            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
               <el-tooltip content="抬杆" placement="bottom" effect="light"><!--抬杆-->
                 <el-button name="monitorRodBtnName" type="primary" @click="rodClick(index)" style="width: 85px;" icon="el-icon-document">抬杆</el-button>
+              </el-tooltip>
+            </el-col>
+            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
+              <el-tooltip content="提交" placement="bottom" effect="light"><!--抬杆-->
+                <el-button name="monitorRodBtnName" type="primary" @click="quickSubmit(lane)" style="width: 85px;" icon="el-icon-document">提交</el-button>
               </el-tooltip>
             </el-col>
           </div>
@@ -133,193 +138,231 @@
 </template>
 
 <script>
-    import bus from '@/assets/eventBus'
-    import showLaneForm from './components/showLaneForm'
-    export default {
-        components: {
-            showLaneForm
+  import bus from '@/assets/eventBus'
+  import showLaneForm from './components/showLaneForm'
+  export default {
+    components: {
+      showLaneForm
+    },
+    data () {
+      return {
+        mathRandom: Math.random(),
+        emptyData: {
+          laneCode: '',
+          msg: '',
+          arriveTime: '',
+          enterTime: '',
+          generalInfo: {
+            laneCode: '',
+            weight: ''
+          },
+          ocrCarPlate: {
+            ocrPlate: '',
+            plateColor: ''
+          },
+          ocrFrontContainer: {
+            ocrContainerNo: '',
+            ocrContainerDirection: '',
+            ocrContainerISO: '',
+            efId: ''
+          },
+          ocrAfterContainer: {
+            ocrContainerNo: '',
+            ocrContainerDirection: '',
+            ocrContainerISO: '',
+            efId: ''
+          },
+          ftpImages: {
+            folder: '',
+            imageName: ''
+          }
         },
-        data () {
-            return {
-                mathRandom: Math.random(),
-                emptyData: {
-                    laneCode: '',
-                    msg: '',
-                    arriveTime: '',
-                    enterTime: '',
-                    generalInfo: {
-                        laneCode: '',
-                        weight: ''
-                    },
-                    ocrCarPlate: {
-                        ocrPlate: '',
-                        plateColor: ''
-                    },
-                    ocrFrontContainer: {
-                        ocrContainerNo: '',
-                        ocrContainerDirection: '',
-                        ocrContainerISO: '',
-                        efId: ''
-                    },
-                    ocrAfterContainer: {
-                        ocrContainerNo: '',
-                        ocrContainerDirection: '',
-                        ocrContainerISO: '',
-                        efId: ''
-                    },
-                    ftpImages: {
-                        folder: '',
-                        imageName: ''
-                    }
-                },
-                laneDataList: [],
-                laneCheckedList: [],
-                plateImage: ''
+        laneDataList: [],
+        laneCheckedList: [],
+        plateImage: ''
+      }
+    },
+    mounted: function () {
+      var that = this;
+      // 监听重新选中车道后的车道信息
+      bus.$on('changeUserCheckedShowLane', function (msg) {
+        that.initLaneChecked();
+        that.pickPlateImage()
+      });
+      this.initLaneChecked();
+      this.pickPlateImage()
+    },
+    watch: {
+    },
+    methods: {
+      //给出车牌图片地址方法
+      pickPlateImage(lane){
+        lane.data.ftpImages.imageName.split(',').forEach(function (imgName) {
+          console.log('imgName:'+imgName)
+          if(imgName.indexOf('plate.jpg') != -1){
+            this.plateImage = imgName
+          }
+        })
+      },
+      // 弹出窗口选择要查看的车道
+      showMonitorLaneDialog () {
+        this.$refs['showLaneForm'].show(this.laneShowList, this.laneCheckedList)
+      },
+      // 初始化选中的车道信息，并查询数据
+      initLaneChecked () {
+        var that = this
+        var initLane = []
+        var username = JSON.parse(sessionStorage.user).username
+        this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
+          var s = window.location.host.split(':')[0]
+          data.forEach(function (element) {
+            // begin websocket
+            var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
+            ws.onopen = () => {
+              console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
             }
-        },
-        mounted: function () {
-            var that = this;
-            // 监听重新选中车道后的车道信息
-            bus.$on('changeUserCheckedShowLane', function (msg) {
-                that.initLaneChecked();
-                that.pickPlateImage()
-            });
-            this.initLaneChecked();
-            this.pickPlateImage()
-        },
-        watch: {
-        },
-        methods: {
-            //给出车牌图片地址方法
-            pickPlateImage(lane){
-                lane.data.ftpImages.imageName.split(',').forEach(function (imgName) {
-                    console.log('imgName:'+imgName)
-                    if(imgName.indexOf('plate.jpg') != -1){
-                        this.plateImage = imgName
-                    }
-                })
-            },
-            // 弹出窗口选择要查看的车道
-            showMonitorLaneDialog () {
-                this.$refs['showLaneForm'].show(this.laneShowList, this.laneCheckedList)
-            },
-            // 初始化选中的车道信息，并查询数据
-            initLaneChecked () {
-                var that = this
-                var initLane = []
-                var username = JSON.parse(sessionStorage.user).username
-                this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
-                    var s = window.location.host.split(':')[0]
-                    data.forEach(function (element) {
-                        // begin websocket
-                        var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
-                        ws.onopen = () => {
-                            console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
-                        }
-                        ws.onerror = function () {
-                            console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
-                        }
-                        ws.onmessage = evt => {
-                            console.log('数据已接收...' + evt.data)
-                            var data = JSON.parse(evt.data)
-                            that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
-                                if (laneData.laneCode === data.generalInfo.laneCode) {
-                                    laneData.data = data
-                                }
-                            })
-                        }
-                        ws.onclose = function () {
-                            // 关闭 websocket
-                            console.log('monitor:' + username + element.laneCode + '链接已关闭...')
-                        }
-                        // end websocket
-                        initLane.push(element.laneCode)
-                        // begin 查询车道对应最新数据（初始化）
-                        that.laneDataList = []
-                        that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
-                            {params: { 'laneCode': element.laneCode }}).then(data => {
-                            if (data === null || data === '') {
-                                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
-                            } else {
-                                var plate;
-                                data.ftpImages.imageName.split(',').forEach(function (imgName) {
-                                    console.log('imgName:'+imgName)
-                                    if(imgName.indexOf('plate.jpg') != -1){
-                                        plate = imgName;
-                                        console.log('plate:'+plate)
-                                    }
-                                })
-                                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
-                            }
-                        }, response => {
-                            console.log('queryLatestDataByLane error')
-                        })
-                        // end 查询车道对应最新数据
-                    })
-                    that.laneShowList = initLane
-                    // begin 查询用户选中查看的车道
-                    that.$axios.get('/hdGate/laneManagement/queryGateLaneByUser',
-                        {params: { 'user': username }}).then(data => {
-                        if (data === null || data === '') {
-                            that.laneCheckedList = initLane
-                        } else {
-                            that.laneCheckedList = data
-                        }
-                    }, response => {
-                        console.log('queryGateLaneByUser error')
-                    })
-                    // end 查询用户选中查看的车道
-                }, response => {
-                    console.log('queryShowGateLanes error')
-                })
-            },
-            // 详情按钮
-            taskClick (index) {
-                this.$message({ message: '车道作业页面跳转', type: 'success' })
-                this.$router.push({ path: '/task' })
-            },
-            // 打印小票按钮
-            receiptClick (index) {
-                this.$confirm('确认“' + this.laneDataList[index].laneCode + '”车道重新补打小票的操作？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    var laneData = this.laneDataList[index]
-                    this.$axios.get('/hdGate/monitor/receiptClick', {params: {laneCode: laneData.laneCode}}).then(response => {
-                        this.$message({ message: '补打小票成功' })
-                    }, response => {
-                        console.log('receipt error')
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消操作'
-                    })
-                })
-            },
-            // 抬杆按钮
-            rodClick (index) {
-                this.$confirm('确认“' + this.laneDataList[index].laneCode + '”车道抬杆操作？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    var laneData = this.laneDataList[index]
-                    this.$axios.get('/hdGate/monitor/rodClick', {params: {laneCode: laneData.laneCode}}).then(response => {
-                        this.$message({ message: '抬杆操作成功' })
-                    }, response => {
-                        console.log('rod error')
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消操作'
-                    })
-                })
+            ws.onerror = function () {
+              console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
             }
+            ws.onmessage = evt => {
+              console.log('数据已接收...' + evt.data)
+              var data = JSON.parse(evt.data)
+              that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
+                if (laneData.laneCode === data.generalInfo.laneCode) {
+                  laneData.data = data
+                }
+              })
+            }
+            ws.onclose = function () {
+              // 关闭 websocket
+              console.log('monitor:' + username + element.laneCode + '链接已关闭...')
+            }
+            // end websocket
+            initLane.push(element.laneCode)
+            // begin 查询车道对应最新数据（初始化）
+            that.laneDataList = []
+            that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
+              {params: { 'laneCode': element.laneCode }}).then(data => {
+              if (data === null || data === '') {
+                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
+              } else {
+                var plate;
+                data.ftpImages.imageName.split(',').forEach(function (imgName) {
+                  console.log('imgName:'+imgName)
+                  if(imgName.indexOf('plate.jpg') != -1){
+                    plate = imgName;
+                    console.log('plate:'+plate)
+                  }
+                })
+                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
+              }
+            }, response => {
+              console.log('queryLatestDataByLane error')
+            })
+            // end 查询车道对应最新数据
+          })
+          that.laneShowList = initLane
+          // begin 查询用户选中查看的车道
+          that.$axios.get('/hdGate/laneManagement/queryGateLaneByUser',
+            {params: { 'user': username }}).then(data => {
+            if (data === null || data === '') {
+              that.laneCheckedList = initLane
+            } else {
+              that.laneCheckedList = data
+            }
+          }, response => {
+            console.log('queryGateLaneByUser error')
+          })
+          // end 查询用户选中查看的车道
+        }, response => {
+          console.log('queryShowGateLanes error')
+        })
+      },
+      // 详情按钮
+      taskClick (index) {
+        this.$message({ message: '车道作业页面跳转', type: 'success' })
+        this.$router.push({ path: '/task' })
+      },
+      // 打印小票按钮
+      receiptClick (index) {
+        this.$confirm('确认“' + this.laneDataList[index].laneCode + '”车道重新补打小票的操作？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var laneData = this.laneDataList[index]
+          this.$axios.get('/hdGate/monitor/receiptClick', {params: {laneCode: laneData.laneCode}}).then(response => {
+            this.$message({ message: '补打小票成功' })
+          }, response => {
+            console.log('receipt error')
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消操作'
+          })
+        })
+      },
+      // 抬杆按钮
+      rodClick (index) {
+        this.$confirm('确认“' + this.laneDataList[index].laneCode + '”车道抬杆操作？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var laneData = this.laneDataList[index]
+          this.$axios.get('/hdGate/monitor/rodClick', {params: {laneCode: laneData.laneCode}}).then(response => {
+            this.$message({ message: '抬杆操作成功' })
+          }, response => {
+            console.log('rod error')
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消操作'
+          })
+        })
+      },
+      quickSubmit(laneData){
+        let data = laneData.data;
+        let clickedLaneCode = laneData.laneCode;
+        let clickedData = JSON.parse(JSON.stringify(data));
+        let username = JSON.parse(sessionStorage.user).username;
+        if(clickedData.ocrFrontContainer.ocrContainerNo != null
+          && clickedData.ocrFrontContainer.ocrContainerNo != ''
+          && clickedData.ocrFrontContainer.ocrContainerNo != undefined){
+          clickedData.ocrFrontContainer.ocrDamage = 'NM'
         }
+        if(clickedData.ocrAfterContainer.ocrContainerNo != null
+          && clickedData.ocrAfterContainer.ocrContainerNo != ''
+          && clickedData.ocrAfterContainer.ocrContainerNo != undefined){
+          clickedData.ocrAfterContainer.ocrDamage = 'NM'
+        }
+        let todoUpdateData = JSON.stringify(clickedData);
+        console.log('todoUpdateData',todoUpdateData);
+        this.$axios.get('/hdGate/monitor/updateBusinessData',
+          {
+            params: {
+              'account': username,
+              laneCode: clickedLaneCode,
+              visitGuid: clickedData.visitGuid,
+              todoUpdateData: todoUpdateData
+            }
+          }).then(data => {
+          this.$message({
+            message: '提交成功',
+            type: 'success'
+          });
+        }, response => {
+          console.log('queryGateLaneByUser error');
+          this.$message({
+            message: '提交失败',
+            type: 'warning'
+          });
+        })
+      }
     }
+  }
 </script>
 <style rel="stylesheet/scss" scoped>
   .dashboard-editor-container {
