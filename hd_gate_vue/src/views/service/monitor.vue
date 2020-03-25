@@ -216,42 +216,125 @@
         this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
           let s = window.location.host.split(':')[0]
           data.forEach(function (element) {
-            // begin websocket
-            let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
-            ws.onopen = () => {
-              console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
+
+
+            let ws;
+            let wsUrl = 'ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode;
+            let lockReconnect = false;
+            let heartCheck = {
+              timeout: 30000,
+              timeoutObj: null,
+              serverTimeoutObj: null,
+              start: function(){
+                let self = this;
+                this.timeoutObj && clearTimeout(this.timeoutObj);
+                this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
+                this.timeoutObj = setTimeout(function(){
+                  ws.send("HeartBeat");
+                  self.serverTimeoutObj = setTimeout(function(){
+                    ws.close();
+                  }, self.timeout)
+                },this.timeout)
+              },
+            };
+            function createWebSocket(){
+              try{
+                ws = new WebSocket(wsUrl);
+                websocketInit();
+              } catch (e){
+                console.log('catch');
+                websocketReconnect(wsUrl);
+              }
             }
-            ws.onerror = function () {
-              console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
-            }
-            ws.onmessage = evt => {
-              console.log('数据已接收...' + evt.data)
-              let data = JSON.parse(evt.data)
-              let plate;
-              data.ftpImages.imageName.split(',').forEach(function (imgName) {
-                console.log('imgName:'+imgName)
-                if(imgName.indexOf('plate.jpg') != -1){
-                  plate = imgName;
+            createWebSocket();
+
+            function websocketInit(){
+              ws.onopen = function(evt){
+                console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
+                heartCheck.start();
+              };
+              ws.onclose = function(evt){
+                console.log('websocket 断开: ' + evt.code + ' ' + evt.reason + ' ' + evt.wasClean);
+                console.log('monitor:' + username + element.laneCode + '链接已关闭...');
+
+                websocketReconnect(wsUrl);
+              };
+              ws.onmessage = function(evt){
+                heartCheck.start();
+                if(evt.data == 'alive'){
+                  return;
                 }
-              })
-              that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
-                if (laneData.laneCode === data.generalInfo.laneCode) {
-                  laneData.plate = plate;
-                  laneData.data = data;
-                }
-              })
+                let data = JSON.parse(evt.data)
+                let plate;
+                data.ftpImages.imageName.split(',').forEach(function (imgName) {
+                  console.log('imgName:'+imgName)
+                  if(imgName.indexOf('plate.jpg') != -1){
+                    plate = imgName;
+                  }
+                })
+                that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
+                  if (laneData.laneCode === data.generalInfo.laneCode) {
+                    laneData.plate = plate;
+                    laneData.data = data;
+                  }
+                })
+              };
+              ws.onerror = function(evt){
+                console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
+              }
             }
-            ws.onclose = function (e) {
-              // 关闭 websocket
-              console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
-              console.log('monitor:' + username + element.laneCode + '链接已关闭...');
+
+            function websocketReconnect(url){
+              if(lockReconnect){
+                return;
+              }
+              lockReconnect = true;
+              tt && clearTimeout(tt);
+              let tt = setTimeout(function(){
+                createWebSocket(url);
+                lockReconnect = false;
+              }, 5000);
             }
-            // end websocket
+
+
+
+
+            // // begin websocket
+            // let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
+            // ws.onopen = () => {
+            //   console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
+            // }
+            // ws.onerror = function () {
+            //   console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
+            // }
+            // ws.onmessage = evt => {
+            //   console.log('数据已接收...' + evt.data)
+            //   let data = JSON.parse(evt.data)
+            //   let plate;
+            //   data.ftpImages.imageName.split(',').forEach(function (imgName) {
+            //     console.log('imgName:'+imgName)
+            //     if(imgName.indexOf('plate.jpg') != -1){
+            //       plate = imgName;
+            //     }
+            //   })
+            //   that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
+            //     if (laneData.laneCode === data.generalInfo.laneCode) {
+            //       laneData.plate = plate;
+            //       laneData.data = data;
+            //     }
+            //   })
+            // }
+            // ws.onclose = function () {
+            //   // 关闭 websocket
+            //   console.log('monitor:' + username + element.laneCode + '链接已关闭...')
+            // }
+            // // end websocket
             initLane.push(element.laneCode)
             // begin 查询车道对应最新数据（初始化）
             that.laneDataList = []
             that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
               {params: { 'laneCode': element.laneCode }}).then(data => {
+              console.log('data:',data);
               if (data === null) {
                 that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
               } else {

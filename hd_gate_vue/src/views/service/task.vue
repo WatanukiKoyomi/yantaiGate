@@ -420,8 +420,9 @@
         this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
           let s = window.location.host.split(':')[0];
           data.forEach(function (element) {
-            // begin websocket
-            var ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
+
+            let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode);
+
             ws.onopen = () => {
               console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
             };
@@ -431,6 +432,16 @@
             ws.onmessage = evt => {
               console.log('数据已接收...' + evt.data);
               let data = JSON.parse(evt.data);
+              if(data.ocrFrontContainer.ocrContainerNo != null
+                && data.ocrFrontContainer.ocrContainerNo != ''
+                && data.ocrFrontContainer.ocrContainerNo != undefined){
+                data.ocrFrontContainer.ocrDamage = 'NM'
+              }
+              if(data.ocrAfterContainer.ocrContainerNo != null
+                && data.ocrAfterContainer.ocrContainerNo != ''
+                && data.ocrAfterContainer.ocrContainerNo != undefined){
+                data.ocrAfterContainer.ocrDamage = 'NM'
+              }
               that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
                 if (laneData.laneCode === data.generalInfo.laneCode) {
                   laneData.data = data
@@ -441,6 +452,7 @@
               // 关闭 websocket
               console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
               console.log('monitor:' + username + element.laneCode + '链接已关闭...')
+
             };
             // end websocket
             initLane.push(element.laneCode);

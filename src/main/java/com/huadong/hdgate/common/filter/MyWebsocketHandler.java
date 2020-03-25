@@ -37,6 +37,9 @@ public class MyWebsocketHandler extends TextWebSocketHandler {
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String messageStr = message.getPayload();//获取传过来的数据   暂时不用获取前端传递数据
 		System.out.println("handleTextMessage");
+		if(messageStr.equals("HeartBeat")){
+			session.sendMessage(new TextMessage("alive"));
+		}
 	}
 
 	/**

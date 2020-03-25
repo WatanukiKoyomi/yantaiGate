@@ -1,0 +1,47 @@
+{
+  "lanecode": "JK1",
+  "uuid": "517bfc156e544767968c1eacb0d2ec6d",
+  "station": "huadong",
+  "message": "该车没有预约记录,不能进闸!",
+  "starttime": "2020/03/25 14:32:37",
+  "endtime": "2020/03/25 14:32:48",
+  "containersize": "1",
+  "weight": "0",
+  "lorry": {
+    "plate": "鲁FAT382",
+    "color": ""
+  },
+  "containerahead": {
+    "number": "CICU9942535",
+    "iso": "22G1",
+    "direction": "",
+    "leadsealstate": "",
+    "leadsealno": "",
+    "property": "",
+    "efid": "E",
+    "damage_code": ""
+  },
+  "containerbehind": {
+    "number": "",
+    "iso": "",
+    "direction": "",
+    "leadsealstate": "",
+    "leadsealno": "",
+    "property": "",
+    "efid": "",
+    "damage_code": ""
+  },
+  "images": {
+    "lorry": "http://10.23.3.185/JK1/2020/202003/20200325/143237/lorry.jpg",
+    "plate": "http://10.23.3.185/JK1/2020/202003/20200325/143237/plate.jpg",
+    "ahead": "http://10.23.3.185/JK1/2020/202003/20200325/143237/ahead.jpg",
+    "behind": "http://10.23.3.185/JK1/2020/202003/20200325/143237/behind.jpg",
+    "left1": "http://10.23.3.185/JK1/2020/202003/20200325/143237/left1.jpg",
+    "left2": "http://10.23.3.185/JK1/2020/202003/20200325/143237/left2.jpg",
+    "right1": "http://10.23.3.185/JK1/2020/202003/20200325/143237/right1.jpg",
+    "right2": "http://10.23.3.185/JK1/2020/202003/20200325/143237/right2.jpg",
+    "top": "http://10.23.3.185/JK1/2020/202003/20200325/143237/top.jpg",
+    "left": "http://10.23.3.185/JK1/2020/202003/20200325/143237/left.jpg",
+    "right": "http://10.23.3.185/JK1/2020/202003/20200325/143237/right.jpg"
+  }
+}
