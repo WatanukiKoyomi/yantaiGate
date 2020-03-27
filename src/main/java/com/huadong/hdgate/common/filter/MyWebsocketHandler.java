@@ -36,7 +36,6 @@ public class MyWebsocketHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String messageStr = message.getPayload();//获取传过来的数据   暂时不用获取前端传递数据
-		System.out.println("handleTextMessage");
 		if(messageStr.equals("HeartBeat")){
 			session.sendMessage(new TextMessage("alive"));
 		}
@@ -56,7 +55,6 @@ public class MyWebsocketHandler extends TextWebSocketHandler {
 				socketSessionMap.remove(key);//不移除，赋值null，为了避免删除导致长度变化而同时其他也在循环map
 			}
 		}
-
 	}
 
 	/**
