@@ -393,4 +393,8 @@
         where VISIT_GUID = #{visitGuid}
     </update>
 
+    <update id="updateMessage">
+        update GATE_BUSINESS
+        set MSG = #{msg} where VISIT_GUID = #{uuid}
+    </update>
 </mapper>

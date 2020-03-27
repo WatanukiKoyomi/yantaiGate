@@ -457,10 +457,10 @@
               };
               ws.onmessage = function(evt){
                 heartCheck.start();
+                let data = JSON.parse(evt.data)
                 if(evt.data == 'alive'){
                   return;
                 }
-                let data = JSON.parse(evt.data)
                 if(data.ocrFrontContainer.ocrContainerNo != null
                   && data.ocrFrontContainer.ocrContainerNo != ''
                   && data.ocrFrontContainer.ocrContainerNo != undefined){

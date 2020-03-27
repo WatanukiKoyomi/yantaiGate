@@ -295,6 +295,9 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		return finalBusinessDataStr;
 	}
 
+	public void updateMessage(String uuid,String msg){
+		businessMapper.updateMessage(uuid,msg);
+	}
 	private String BusinessDataToJson(BusinessEntity oldBusinessData, String laneCode){
 		StringBuffer redisData = new StringBuffer();
 		redisData.append("{\"lanecode\": \"");

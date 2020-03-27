@@ -90,6 +90,33 @@ public class TimeScheduleEntity {
 	}
 
 	/**
+	 * 接收识别数据
+	 */
+	@Async
+	@Scheduled(cron = "*/3 * * * * ?")
+	public void getOcrTask() {
+		for(int i:laneDBUtils.getAllLaneDB()){
+			String autoGateBusiness = redisUtils.rpopQueue("web_data",i);
+			if(autoGateBusiness!=null && !autoGateBusiness.equals("null") && !autoGateBusiness.equals("")){
+				Map<String,Object> maps = (Map) JSON.parse(autoGateBusiness);
+				if(maps.get("station").toString().equals("web")){
+					businessService.updateMessage(maps.get("uuid").toString(),maps.get("message").toString());
+					String str = "{'update': '1','uuid': '" + maps.get("uuid").toString() + "','message': '" + maps.get("message").toString() + "'}";
+					businessService.sendData2Html(maps.get("lanecode").toString(),str);
+					continue;
+				}
+				log.info("laneMonitorApi接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",autoGateBusiness);
+				BusinessEntity businessEntity = packageOcrData(maps);
+				log.info("businessEntity:"+JSONObject.toJSONString(businessEntity));
+				autoGateBusiness = CommonUtils.cdiEntity2ShowEntityStr(businessEntity);
+				log.info("autoGate:"+autoGateBusiness);
+				stringRedisTemplate.convertAndSend("hd_gate_business_data_db",autoGateBusiness);// redis频道
+				businessService.sendData2Html(businessEntity.getGeneralInfo().getLaneCode(),autoGateBusiness); // 推送数据到页面
+			}
+		}
+	}
+
+	/**
 	 * 识别数据对应封装
 	 * @param maps
 	 * @return
@@ -145,30 +172,6 @@ public class TimeScheduleEntity {
 		ftpImagesEntity.setImageName(images.toString());
 		businessEntity.setFtpImages(ftpImagesEntity);
 		return businessEntity;
-	}
-
-	/**
-	 * 接收识别数据
-	 */
-	@Async
-	@Scheduled(cron = "*/3 * * * * ?")
-	public void getOcrTask() {
-		for(int i:laneDBUtils.getAllLaneDB()){
-			String autoGateBusiness = redisUtils.rpopQueue("web_data",i);
-			if(autoGateBusiness!=null && !autoGateBusiness.equals("null") && !autoGateBusiness.equals("")){
-				Map<String,Object> maps = (Map) JSON.parse(autoGateBusiness);
-				log.info("laneMonitorApi接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",autoGateBusiness);
-
-				BusinessEntity businessEntity = packageOcrData(maps);
-				log.info("businessEntity:"+JSONObject.toJSONString(businessEntity));
-
-				autoGateBusiness = CommonUtils.cdiEntity2ShowEntityStr(businessEntity);
-				log.info("autoGate:"+autoGateBusiness);
-				stringRedisTemplate.convertAndSend("hd_gate_business_data_db",autoGateBusiness);// redis频道
-				businessService.sendData2Html(businessEntity.getGeneralInfo().getLaneCode(),autoGateBusiness); // 推送数据到页面
-
-			}
-		}
 	}
 
 }

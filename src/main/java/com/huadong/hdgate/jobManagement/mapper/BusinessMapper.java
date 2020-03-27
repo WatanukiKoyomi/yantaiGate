@@ -89,5 +89,5 @@ public interface BusinessMapper extends BaseMapper<BusinessEntity>{
 														@Param("cntrNo")String cntrNo,
 														@Param("beginTime")Timestamp beginTime,
 														@Param("endTime")Timestamp endTime);
-
+	public void updateMessage(@Param("uuid") String uuid,@Param("MSG")String msg);
 }

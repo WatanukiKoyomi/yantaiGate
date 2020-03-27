@@ -10,7 +10,7 @@
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="cancle">取消</el-button><!--取消-->
+      <el-button @click="cancel">取消</el-button><!--取消-->
       <el-button type="primary" @click="submit" :loading="loading">确定</el-button><!--确定-->
     </div>
   </el-dialog>
@@ -57,7 +57,7 @@
           console.log('changeUserCheckedShowLane error')
         })
       },
-      cancle () {
+      cancel () {
         this.visible = false
         this.laneForm = {}
       }

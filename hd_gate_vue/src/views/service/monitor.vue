@@ -265,6 +265,9 @@
                   return;
                 }
                 let data = JSON.parse(evt.data)
+                if(data.update == '1'){
+                  
+                }
                 let plate;
                 data.ftpImages.imageName.split(',').forEach(function (imgName) {
                   console.log('imgName:'+imgName)

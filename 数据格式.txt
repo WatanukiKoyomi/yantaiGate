@@ -3,16 +3,16 @@
   "uuid": "517bfc156e544767968c1eacb0d2ec6d",
   "station": "huadong",
   "message": "该车没有预约记录,不能进闸!",
-  "starttime": "2020/03/25 14:32:37",
-  "endtime": "2020/03/25 14:32:48",
+  "starttime": "2020/03/27 14:32:37",
+  "endtime": "2020/03/27 14:32:48",
   "containersize": "1",
   "weight": "0",
   "lorry": {
-    "plate": "鲁FAT382",
+    "plate": "鲁FAT381",
     "color": ""
   },
   "containerahead": {
-    "number": "CICU9942535",
+    "number": "CICU9942531",
     "iso": "22G1",
     "direction": "",
     "leadsealstate": "",
