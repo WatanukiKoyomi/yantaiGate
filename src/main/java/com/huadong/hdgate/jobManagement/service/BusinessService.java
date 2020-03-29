@@ -38,7 +38,7 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 
 	public boolean insertOrUpdateBusinessData(String businessDataStr){
 		BusinessEntity businessEntity = JSONObject.parseObject(businessDataStr,BusinessEntity.class);
-		redisUtils.setex(businessEntity.getGeneralInfo().getLaneCode(),3600*5,businessDataStr);// 每次接收到数据存储到redis中，保证redis中对应每条车道都是最新数据
+		redisUtils.set(businessEntity.getGeneralInfo().getLaneCode(),businessDataStr);// 每次接收到数据存储到redis中，保证redis中对应每条车道都是最新数据
 		log.info("laneMonitorApi接收到数据：{},\n转换对象后{}",businessDataStr,businessEntity);
 
 		String redisData = redisUtils.get(businessEntity.getVisitGuid());
@@ -79,7 +79,7 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 					businessEntity.getOcrAfterContainer().getLeadSealNo(),
 					businessEntity.getOcrAfterContainer().getProperty()
 			);
-			redisUtils.setex(businessEntity.getVisitGuid(),3600*5,businessDataStr);
+			redisUtils.set(businessEntity.getVisitGuid(),businessDataStr);
 		}else{
 			businessMapper.updateBusiness(
 					businessEntity.getVisitGuid(),
@@ -304,6 +304,8 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		redisData.append(laneCode);
 		redisData.append("\", \"uuid\": \"");
 		redisData.append(oldBusinessData.getVisitGuid());
+		redisData.append("\", \"login_user\": \"");
+		redisData.append(oldBusinessData.getAccount());
 		redisData.append("\", \"station\": \"");
 		redisData.append("web");
 		redisData.append("\", \"message\": \"");
@@ -316,13 +318,13 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		redisData.append(oldBusinessData.getGeneralInfo().getCntrSize());
 		redisData.append("\", \"weight\": \"");
 		redisData.append(oldBusinessData.getGeneralInfo().getWeight());
-		redisData.append("\", \"lorry\": { \"Plate\": \"");
+		redisData.append("\", \"lorry\": { \"plate\": \"");
 		if(oldBusinessData.getCarPlate().getOcrPlate() == null || oldBusinessData.getCarPlate().getOcrPlate().isEmpty()){
 			redisData.append(oldBusinessData.getOcrCarPlate().getOcrPlate());
 		}else{
 			redisData.append(oldBusinessData.getCarPlate().getOcrPlate());
 		}
-		redisData.append("\", \"Color\": \"");
+		redisData.append("\", \"color\": \"");
 		if(oldBusinessData.getCarPlate().getPlateColor() == null || oldBusinessData.getCarPlate().getPlateColor().isEmpty()){
 			redisData.append(oldBusinessData.getOcrCarPlate().getPlateColor());
 		}else{

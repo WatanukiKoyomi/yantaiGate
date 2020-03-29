@@ -122,6 +122,56 @@ public class LaneController {
 	@RequestMapping(value = "/insertOrUpdateLane",method = RequestMethod.GET)
 	public boolean insertOrUpdateLane(HttpServletRequest request) {
 		String laneFormStr = request.getParameter("laneForm");
+		GateLane lane = JSONObject.parseObject(laneFormStr,GateLane.class);
+		String str = "{\n" +
+				"  \"afterContainer\": {\n" +
+				"\n" +
+				"  },\n" +
+				"  \"arriveTime\": \"\",\n" +
+				"  \"carPlate\": {\n" +
+				"\n" +
+				"  },\n" +
+				"  \"enterTime\": \"\",\n" +
+				"  \"frontContainer\": {\n" +
+				"\n" +
+				"  },\n" +
+				"  \"ftpImages\": {\n" +
+				"    \"imageName\": \"\"\n" +
+				"  },\n" +
+				"  \"generalInfo\": {\n" +
+				"    \"cntrSize\": \"1\",\n" +
+				"    \"laneCode\": \""+lane.getLaneCode()+"\",\n" +
+				"    \"weight\": \"\"\n" +
+				"  },\n" +
+				"  \"msg\": \"\",\n" +
+				"  \"ocrAfterContainer\": {\n" +
+				"    \"efid\": \"\",\n" +
+				"    \"leadSealNo\": \"\",\n" +
+				"    \"leadSealState\": \"\",\n" +
+				"    \"ocrContainerDirection\": \"\",\n" +
+				"    \"ocrContainerISO\": \"\",\n" +
+				"    \"ocrContainerNo\": \"\",\n" +
+				"    \"ocrDamage\": \"\",\n" +
+				"    \"property\": \"\"\n" +
+				"  },\n" +
+				"  \"ocrCarPlate\": {\n" +
+				"    \"ocrPlate\": \"\",\n" +
+				"    \"plateColor\": \"\"\n" +
+				"  },\n" +
+				"  \"ocrFrontContainer\": {\n" +
+				"    \"efid\": \"\",\n" +
+				"    \"leadSealNo\": \"\",\n" +
+				"    \"leadSealState\": \"\",\n" +
+				"    \"ocrContainerDirection\": \"\",\n" +
+				"    \"ocrContainerISO\": \"\",\n" +
+				"    \"ocrContainerNo\": \"\",\n" +
+				"    \"ocrDamage\": \"\",\n" +
+				"    \"property\": \"\"\n" +
+				"  },\n" +
+				"  \"station\": \"\",\n" +
+				"  \"visitGuid\": \"\"\n" +
+				"}";
+		redisUtils.set(lane.getLaneCode(),str);
 		return gateLaneService.insertOrUpdateLane(laneFormStr);
 	}
 

@@ -9,7 +9,7 @@
               <!--车道表格数据-->
               <el-col :lg="24" style="margin-top: 0">
                 <div>
-                  <el-table :data="laneDataList" stripe style="width: 100%" highlight-current-row>
+                  <el-table :data="laneDataList" stripe style="width: 100%" highlight-current-row default-sort="{prop:laneCode}">
                     <el-table-column align="center" prop="laneCode" width="75px" label="车道"></el-table-column>
                     <el-table-column align="center" prop="laneDirection" width="50px" label="方向"></el-table-column>
                     <!--车牌-->
@@ -457,10 +457,10 @@
               };
               ws.onmessage = function(evt){
                 heartCheck.start();
-                let data = JSON.parse(evt.data)
                 if(evt.data == 'alive'){
                   return;
                 }
+                let data = JSON.parse(evt.data)
                 if(data.ocrFrontContainer.ocrContainerNo != null
                   && data.ocrFrontContainer.ocrContainerNo != ''
                   && data.ocrFrontContainer.ocrContainerNo != undefined){

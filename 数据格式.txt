@@ -1,14 +1,14 @@
 {
   "lanecode": "JK1",
-  "uuid": "517bfc156e544767968c1eacb0d2ec6d",
+  "uuid": "517bfc156e544767968c14acb4d2ec6d",
   "station": "huadong",
-  "message": "该车没有预约记录,不能进闸!",
+  "message": "msg1",
   "starttime": "2020/03/27 14:32:37",
   "endtime": "2020/03/27 14:32:48",
   "containersize": "1",
   "weight": "0",
   "lorry": {
-    "plate": "鲁FAT381",
+    "plate": "鲁ASD111",
     "color": ""
   },
   "containerahead": {
@@ -45,3 +45,5 @@
     "right": "http://10.23.3.185/JK1/2020/202003/20200325/143237/right.jpg"
   }
 }
+
+

@@ -93,7 +93,7 @@ public class TimeScheduleEntity {
 	 * 接收识别数据
 	 */
 	@Async
-	@Scheduled(cron = "*/3 * * * * ?")
+	@Scheduled(cron = "*/2 * * * * ?")
 	public void getOcrTask() {
 		for(int i:laneDBUtils.getAllLaneDB()){
 			String autoGateBusiness = redisUtils.rpopQueue("web_data",i);
@@ -101,7 +101,7 @@ public class TimeScheduleEntity {
 				Map<String,Object> maps = (Map) JSON.parse(autoGateBusiness);
 				if(maps.get("station").toString().equals("web")){
 					businessService.updateMessage(maps.get("uuid").toString(),maps.get("message").toString());
-					String str = "{'update': '1','uuid': '" + maps.get("uuid").toString() + "','message': '" + maps.get("message").toString() + "'}";
+					String str = "{\"update\": \"1\",\"laneCode\": \"" + maps.get("lanecode").toString() + "\",\"message\": \"" + maps.get("message").toString() + "\"}";
 					businessService.sendData2Html(maps.get("lanecode").toString(),str);
 					continue;
 				}

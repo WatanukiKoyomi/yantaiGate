@@ -114,11 +114,11 @@
               </el-tooltip>
             </el-col>
             <!--小票-->
-            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
-              <el-tooltip content="打印小票" placement="bottom" effect="light"><!--打印小票-->
-                <el-button name="monitorPrintBtnName" type="primary" @click="receiptClick(index)" style="width: 85px;" icon="el-icon-document">小票</el-button>
-              </el-tooltip>
-            </el-col>
+<!--            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">-->
+<!--              <el-tooltip content="打印小票" placement="bottom" effect="light">&lt;!&ndash;打印小票&ndash;&gt;-->
+<!--                <el-button name="monitorPrintBtnName" type="primary" @click="receiptClick(index)" style="width: 85px;" icon="el-icon-document">小票</el-button>-->
+<!--              </el-tooltip>-->
+<!--            </el-col>-->
             <!--抬杆-->
             <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
               <el-tooltip content="抬杆" placement="bottom" effect="light"><!--抬杆-->
@@ -126,7 +126,7 @@
               </el-tooltip>
             </el-col>
             <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
-              <el-tooltip content="提交" placement="bottom" effect="light"><!--抬杆-->
+              <el-tooltip content="提交" placement="bottom" effect="light">
                 <el-button name="monitorRodBtnName" type="primary" @click="quickSubmit(lane)" style="width: 85px;" icon="el-icon-document">提交</el-button>
               </el-tooltip>
             </el-col>
@@ -215,9 +215,10 @@
         let username = JSON.parse(sessionStorage.user).username
         this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
           let s = window.location.host.split(':')[0]
-          data.forEach(function (element) {
-
-
+          console.log('showGateLanems:',data);
+          initSingleLane(0,data.length,that);
+          function initSingleLane(i,length,that){
+            let element = data[i];
             let ws;
             let wsUrl = 'ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode;
             let lockReconnect = false;
@@ -247,7 +248,6 @@
               }
             }
             createWebSocket();
-
             function websocketInit(){
               ws.onopen = function(evt){
                 console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
@@ -261,12 +261,18 @@
               };
               ws.onmessage = function(evt){
                 heartCheck.start();
+                console.log('onmessage data:'+evt.data);
                 if(evt.data == 'alive'){
                   return;
                 }
                 let data = JSON.parse(evt.data)
                 if(data.update == '1'){
-                  
+                  that.laneDataList.forEach(function(laneData){
+                    if(laneData.laneCode == data.laneCode){
+                      laneData.data.msg = data.message;
+                    }
+                  })
+                  return;
                 }
                 let plate;
                 data.ftpImages.imageName.split(',').forEach(function (imgName) {
@@ -281,12 +287,12 @@
                     laneData.data = data;
                   }
                 })
+                console.log('onmessage laneDataList:'+that.laneDataList);
               };
               ws.onerror = function(evt){
                 console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
               }
             }
-
             function websocketReconnect(url){
               if(lockReconnect){
                 return;
@@ -298,40 +304,6 @@
                 lockReconnect = false;
               }, 5000);
             }
-
-
-
-
-            // // begin websocket
-            // let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
-            // ws.onopen = () => {
-            //   console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
-            // }
-            // ws.onerror = function () {
-            //   console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
-            // }
-            // ws.onmessage = evt => {
-            //   console.log('数据已接收...' + evt.data)
-            //   let data = JSON.parse(evt.data)
-            //   let plate;
-            //   data.ftpImages.imageName.split(',').forEach(function (imgName) {
-            //     console.log('imgName:'+imgName)
-            //     if(imgName.indexOf('plate.jpg') != -1){
-            //       plate = imgName;
-            //     }
-            //   })
-            //   that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
-            //     if (laneData.laneCode === data.generalInfo.laneCode) {
-            //       laneData.plate = plate;
-            //       laneData.data = data;
-            //     }
-            //   })
-            // }
-            // ws.onclose = function () {
-            //   // 关闭 websocket
-            //   console.log('monitor:' + username + element.laneCode + '链接已关闭...')
-            // }
-            // // end websocket
             initLane.push(element.laneCode)
             // begin 查询车道对应最新数据（初始化）
             that.laneDataList = []
@@ -343,18 +315,73 @@
               } else {
                 let plate;
                 data.ftpImages.imageName.split(',').forEach(function (imgName) {
-                  console.log('imgName:'+imgName)
                   if(imgName.indexOf('plate.jpg') != -1){
                     plate = imgName;
                   }
                 })
                 that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
               }
+              if(++i<length){
+                initSingleLane(i,length,that);
+              }
             }, response => {
               console.log('queryLatestDataByLane error')
             })
-            // end 查询车道对应最新数据
-          })
+          }
+          // data.forEach(function (element) {
+          //
+          //   // // begin websocket
+          //   // let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
+          //   // ws.onopen = () => {
+          //   //   console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
+          //   // }
+          //   // ws.onerror = function () {
+          //   //   console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
+          //   // }
+          //   // ws.onmessage = evt => {
+          //   //   console.log('数据已接收...' + evt.data)
+          //   //   let data = JSON.parse(evt.data)
+          //   //   let plate;
+          //   //   data.ftpImages.imageName.split(',').forEach(function (imgName) {
+          //   //     console.log('imgName:'+imgName)
+          //   //     if(imgName.indexOf('plate.jpg') != -1){
+          //   //       plate = imgName;
+          //   //     }
+          //   //   })
+          //   //   that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
+          //   //     if (laneData.laneCode === data.generalInfo.laneCode) {
+          //   //       laneData.plate = plate;
+          //   //       laneData.data = data;
+          //   //     }
+          //   //   })
+          //   // }
+          //   // ws.onclose = function () {
+          //   //   // 关闭 websocket
+          //   //   console.log('monitor:' + username + element.laneCode + '链接已关闭...')
+          //   // }
+          //   // // end websocket
+          //   initLane.push(element.laneCode)
+          //   // begin 查询车道对应最新数据（初始化）
+          //   that.laneDataList = []
+          //   that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
+          //     {params: { 'laneCode': element.laneCode }}).then(data => {
+          //     console.log('data:',data);
+          //     if (data === null) {
+          //       that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
+          //     } else {
+          //       let plate;
+          //       data.ftpImages.imageName.split(',').forEach(function (imgName) {
+          //         if(imgName.indexOf('plate.jpg') != -1){
+          //           plate = imgName;
+          //         }
+          //       })
+          //       that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
+          //     }
+          //   }, response => {
+          //     console.log('queryLatestDataByLane error')
+          //   })
+          //   // end 查询车道对应最新数据
+          // })
           that.laneShowList = initLane
           // begin 查询用户选中查看的车道
           that.$axios.get('/hdGate/laneManagement/queryGateLaneByUser',
