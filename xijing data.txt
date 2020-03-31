@@ -1,0 +1,47 @@
+{
+  "lanecode": "CK1",
+  "uuid": "2c377c62-989f-413e-a7c3-34328b8b1ee5",
+  "station": "web",
+  "message": "鲁FV9075\r\n拖车所提箱号与系统不符-CCIU3550867",
+  "starttime": "2020-03-30 13:06:39",
+  "endtime": "2020-03-30 13:06:46",
+  "containersize": "1",
+  "weight": "0",
+  "lorry": {
+    "plate": "鲁FV9071",
+    "color": ""
+  },
+  "containerahead": {
+    "number": "CCIU3550867",
+    "iso": "22G1",
+    "direction": "",
+    "leadsealstate": "N",
+    "leadsealno": "",
+    "property": "",
+    "efid": "",
+    "damage_code": ""
+  },
+  "containerbehind": {
+    "number": "",
+    "iso": "",
+    "direction": "",
+    "leadsealstate": "N",
+    "leadsealno": "",
+    "property": "",
+    "efid": "",
+    "damage_code": ""
+  },
+  "images": {
+    "lorry": "http://10.23.0.68/imsave/yantai/channelCK1/20200330/158554479758200CK1 front AAAA 0000000 0000 False.jpg",
+    "plate": "http://10.23.0.68/imsave/yantai/channelCK1/20200330/158554479758200CK1 plate SD-FV9075.jpg",
+    "ahead": "http://10.23.0.68/imsave/yantai/channelCK1/20200330/158554479758200CK1 front AAAA 0000000 0000 False.jpg",
+    "behind": "http://10.23.0.68/imsave/yantai/channelCK1/20200330/158554479758200CK1 back CCIU 3550867 22G1 False.jpg",
+    "left1": "",
+    "left2": "",
+    "right1": "http://10.23.0.68/imsave/yantai/channelCK1/right_CK1/1585544794630/1585544794683.jpg",
+    "right2": "http://10.23.0.68/imsave/yantai/channelCK1/right_CK1/1585544794630/1585544796853.jpg",
+    "top": "",
+    "left": "",
+    "right": "http://10.23.0.68/imsave/yantai/channelCK1/right_CK1/1585544794630/1585544795708.jpg"
+  }
+}

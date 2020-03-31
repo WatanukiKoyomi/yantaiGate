@@ -1,6 +1,6 @@
 {
   "lanecode": "JK1",
-  "uuid": "517bfc156e544767968c14acb4d2ec6d",
+  "uuid": "517bfc156e544767968c13acb4d2ec6d",
   "station": "huadong",
   "message": "msg1",
   "starttime": "2020/03/27 14:32:37",
@@ -8,7 +8,7 @@
   "containersize": "1",
   "weight": "0",
   "lorry": {
-    "plate": "鲁ASD111",
+    "plate": "鲁ASD123",
     "color": ""
   },
   "containerahead": {
@@ -17,7 +17,7 @@
     "direction": "",
     "leadsealstate": "",
     "leadsealno": "",
-    "property": "",
+    "property": "危品",
     "efid": "E",
     "damage_code": ""
   },

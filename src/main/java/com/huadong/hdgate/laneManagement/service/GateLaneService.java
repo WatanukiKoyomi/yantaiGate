@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.huadong.hdgate.common.entity.CommonsEntity;
 import com.huadong.hdgate.common.filter.MyWebsocketHandler;
 import com.huadong.hdgate.laneManagement.entity.GateLane;
 import com.huadong.hdgate.laneManagement.mapper.GateLaneMapper;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service("gateLaneService")
 public class GateLaneService extends ServiceImpl<GateLaneMapper,GateLane> {
@@ -29,7 +27,7 @@ public class GateLaneService extends ServiceImpl<GateLaneMapper,GateLane> {
 	 */
 	public List<GateLane> queryAllGateLanes(){
 		Wrapper<GateLane> wrapper = new EntityWrapper<>();
-		return super.selectList(wrapper);
+		return super.selectList(wrapper.orderBy("LANE_DB"));
 	}
 
 	/**
@@ -48,7 +46,7 @@ public class GateLaneService extends ServiceImpl<GateLaneMapper,GateLane> {
 	 */
 	public List<GateLane> queryShowGateLanes(String showFlag){
 		Wrapper<GateLane> wrapper = new EntityWrapper<>();
-		wrapper.eq(GateLane.SHOW_FLAG, showFlag);
+		wrapper.eq(GateLane.SHOW_FLAG, showFlag).orderBy("LANE_DB");
 		return super.selectList(wrapper);
 	}
 

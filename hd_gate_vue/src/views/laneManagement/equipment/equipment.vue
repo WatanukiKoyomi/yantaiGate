@@ -187,35 +187,96 @@ export default {
                   console.log("queryLaneEquipmentStatus error");
                 }
               );
-            let ws = new WebSocket("ws://" + s + ":8085/hdGate/ws/equipment:" + username + laneData.laneCode );
-            ws.onopen = () => {
-              console.log(
-                "equipment:" +
-                  username +
-                  laneData.laneCode +
-                  "链接webSocket equipment成功..."
-              );
+            let lockReconnect = false;
+            let heartCheck = {
+              timeout: 30000,
+              timeoutObj: null,
+              serverTimeoutObj: null,
+              start: function(){
+                let self = this;
+                this.timeoutObj && clearTimeout(this.timeoutObj);
+                this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
+                this.timeoutObj = setTimeout(function(){
+                  ws.send("HeartBeat");
+                  self.serverTimeoutObj = setTimeout(function(){
+                    ws.close();
+                  }, self.timeout)
+                },this.timeout)
+              },
             };
-            ws.onerror = () => {
-              console.log(
-                "equipment:" + username + lane.laneCode + "链接webSocket失败"
-              );
-            };
-            ws.onmessage = message => {
-              console.log("数据已接收...", message);
-              let dataJ = JSON.parse(message.data);
-              that.tableData.forEach(function(lane) {
-                if (lane.laneCode === dataJ.laneCode) {
-                  lane.data = dataJ;
-                }
-              });
-            };
-            ws.onclose = (e) => {
-              console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
-              console.log(
-                "equipment:" + username + lane.laneCode + "链接已关闭..."
-              );
-            };
+            let ws;
+            let wsUrl = 'ws://' + s + ':8085/hdGate/ws/equipment:' + username + laneData.laneCode;
+            createWebSocket();
+            function createWebSocket(){
+              try{
+                ws = new WebSocket(wsUrl);
+                websocketInit();
+              } catch (e){
+                websocketReconnect(wsUrl);
+              }
+            }
+            function websocketInit(){
+              ws.onopen = function(evt){
+                console.log("equipment:" + username + laneData.laneCode + "链接webSocket equipment成功...");
+                heartCheck.start();
+              };
+              ws.onerror = function(evt){
+                console.log(
+                  "equipment:" + username + lane.laneCode + "链接webSocket失败"
+                );
+              };
+              ws.onclose = function(evt){
+                console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
+                console.log("equipment:" + username + lane.laneCode + "链接已关闭...");
+              };
+              ws.onmessage = function(evt){
+                console.log("数据已接收...", message);
+                let dataJ = JSON.parse(message.data);
+                that.tableData.forEach(function(lane) {
+                  if (lane.laneCode === dataJ.laneCode) {
+                    lane.data = dataJ;
+                  }
+                });
+              }
+            }
+            function websocketReconnect(url){
+              if(lockReconnect){
+                return;
+              }
+              lockReconnect = true;
+              tt && clearTimeout(tt);
+              let tt = setTimeout(function(){
+                createWebSocket(url);
+                lockReconnect = false;
+              }, 5000);
+            }
+            // let ws = new WebSocket("ws://" + s + ":8085/hdGate/ws/equipment:" + username + laneData.laneCode );
+            // ws.onopen = () => {
+            //   console.log(
+            //     "equipment:" +
+            //       username +
+            //       laneData.laneCode +
+            //       "链接webSocket equipment成功..."
+            //   );
+            // };
+            // ws.onerror = () => {
+            //   console.log(
+            //     "equipment:" + username + lane.laneCode + "链接webSocket失败"
+            //   );
+            // };
+            // ws.onmessage = message => {
+            //   console.log("数据已接收...", message);
+            //   let dataJ = JSON.parse(message.data);
+            //   that.tableData.forEach(function(lane) {
+            //     if (lane.laneCode === dataJ.laneCode) {
+            //       lane.data = dataJ;
+            //     }
+            //   });
+            // };
+            // ws.onclose = (e) => {
+            //   console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
+            //   console.log("equipment:" + username + lane.laneCode + "链接已关闭...");
+            // };
           });
           that.tableData = data;
         },

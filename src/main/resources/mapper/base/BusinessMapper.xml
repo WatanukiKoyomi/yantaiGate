@@ -3,11 +3,11 @@
 
 <mapper namespace="com.huadong.hdgate.jobManagement.mapper.BusinessMapper">
     <sql id="Base_Column_List" >
-        VISIT_GUID,STATION,MSG,ARRIVE_TIME,ENTER_TIME,LANE_CODE,RFID,WEIGHT,CNTR_SIZE,OCR_PLATE_NO,PLATE_COLOR,PLATE_NO,
-        OCR_FRONT_CNTR_NO,OCR_FRONT_CONF,OCR_FRONT_DIRECTION,OCR_FRONT_ISO,OCR_FRONT_ISO_CONF,OCR_FRONT_DAMAGE,OCR_FRONT_EFID,
-        OCR_BACK_CNTR_NO,OCR_BACK_CONF,OCR_BACK_DIRECTION,OCR_BACK_ISO,OCR_BACK_ISO_CONF,OCR_BACK_DAMAGE,OCR_BACK_EFID,
-        FRONT_CNTR_NO,BACK_CNTR_NO,IMG_FOLDER,IMG_PATH,IMG_NAMES,UPDATE_USER,OCR_FRONT_LEADSEALSTATE,OCR_FRONT_LEADSEALNO,
-        OCR_FRONT_PROPERTY,OCR_BACK_LEADSEALSTATE,OCR_BACK_LEADSEALNO,OCR_BACK_PROPERTY
+VISIT_GUID,STATION,MSG,ARRIVE_TIME,ENTER_TIME,LANE_CODE,RFID,WEIGHT,CNTR_SIZE,OCR_PLATE_NO,PLATE_COLOR,PLATE_NO,
+OCR_FRONT_CNTR_NO,OCR_FRONT_CONF,OCR_FRONT_DIRECTION,OCR_FRONT_ISO,OCR_FRONT_ISO_CONF,OCR_FRONT_DAMAGE,
+OCR_FRONT_EFID,OCR_BACK_CNTR_NO,OCR_BACK_CONF,OCR_BACK_DIRECTION,OCR_BACK_ISO,OCR_BACK_ISO_CONF,OCR_BACK_DAMAGE,
+OCR_BACK_EFID,FRONT_CNTR_NO,BACK_CNTR_NO,IMG_FOLDER,IMG_PATH,IMG_NAMES,UPDATE_USER,OCR_FRONT_LEADSEALSTATE,
+OCR_FRONT_LEADSEALNO,OCR_FRONT_PROPERTY,OCR_BACK_LEADSEALSTATE,OCR_BACK_LEADSEALNO,OCR_BACK_PROPERTY
     </sql>
 
     <resultMap id="GateLaneBusinessMap" type="com.huadong.hdgate.jobManagement.entity.cdiEntity.BusinessEntity">
@@ -61,10 +61,10 @@
             and LANE_CODE like '%${laneCode}%'
         </if>
         <if test="truckNo != null and truckNo.length()>0">
-            and ( PLATE_NO like '%${truckNo}%' || OCR_PLATE_NO like '%${truckNo}%' )
+             and ( PLATE_NO like '%${truckNo}%' or OCR_PLATE_NO like '%${truckNo}%' )
         </if>
         <if test="cntrNo != null and cntrNo.length()>0">
-            and ( OCR_FRONT_CNTR_NO like '%${cntrNo}%' || OCR_BACK_CNTR_NO like '%${cntrNo}%' || FRONT_CNTR_NO like '%${cntrNo}%' || BACK_CNTR_NO like '%${cntrNo}%' )
+        and ( OCR_FRONT_CNTR_NO like '%${cntrNo}%' or OCR_BACK_CNTR_NO like '%${cntrNo}%' or FRONT_CNTR_NO like '%${cntrNo}%' or BACK_CNTR_NO like '%${cntrNo}%' )
         </if>
     </select>
 

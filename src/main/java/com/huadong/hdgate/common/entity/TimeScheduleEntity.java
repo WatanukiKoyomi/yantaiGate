@@ -100,12 +100,11 @@ public class TimeScheduleEntity {
 			if(autoGateBusiness!=null && !autoGateBusiness.equals("null") && !autoGateBusiness.equals("")){
 				Map<String,Object> maps = (Map) JSON.parse(autoGateBusiness);
 				if(maps.get("station").toString().equals("web")){
-					businessService.updateMessage(maps.get("uuid").toString(),maps.get("message").toString());
-					String str = "{\"update\": \"1\",\"laneCode\": \"" + maps.get("lanecode").toString() + "\",\"message\": \"" + maps.get("message").toString() + "\"}";
+					businessService.updateMessage(maps.get("uuid").toString(),maps.get("message").toString().replaceAll("\\r\\n",","));
+					String str = "{\"update\": \"1\",\"laneCode\": \"" + maps.get("lanecode").toString() + "\",\"message\": \"" + maps.get("message").toString().replaceAll("\\r\\n",",") + "\"}";
 					businessService.sendData2Html(maps.get("lanecode").toString(),str);
 					continue;
 				}
-				log.info("laneMonitorApi接收到数据：{}，转发到redis的hd_gate_business_data_db频道中",autoGateBusiness);
 				BusinessEntity businessEntity = packageOcrData(maps);
 				log.info("businessEntity:"+JSONObject.toJSONString(businessEntity));
 				autoGateBusiness = CommonUtils.cdiEntity2ShowEntityStr(businessEntity);
@@ -127,7 +126,7 @@ public class TimeScheduleEntity {
 		businessEntity.setStation(maps.get("station").toString());
 		businessEntity.setArriveTime(maps.get("starttime").toString());
 		businessEntity.setEnterTime(maps.get("endtime").toString());
-		businessEntity.setMsg(maps.get("message").toString());
+		businessEntity.setMsg(maps.get("message").toString().replaceAll("\\r\\n",","));
 
 		GeneralInfoEntity generalInfoEntity = new GeneralInfoEntity();
 		generalInfoEntity.setWeight(maps.get("weight").toString());

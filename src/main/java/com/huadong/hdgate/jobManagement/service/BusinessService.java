@@ -426,14 +426,21 @@ public class BusinessService extends ServiceImpl<BusinessMapper,BusinessEntity> 
 		}else{
 			redisData.append(oldBusinessData.getAfterContainer().getEfid());
 		}
-		redisData.append("\"}, \"images\": {");
-		for(String s:oldBusinessData.getFtpImages().getImageName().split(",")){
-			redisData.append("\"")
-					.append(s, s.lastIndexOf("/")+1, s.length()-4)
-					.append("\": \"").append(s).append("\",");
-		}
-		redisData.deleteCharAt(redisData.length()-1);
-		redisData.append("} }");
+		redisData.append("\"}, ");
+		redisData.append("\"images\": {\n" +
+				"    \"lorry\": \"\",\n" +
+				"    \"plate\": \"\",\n" +
+				"    \"ahead\": \"\",\n" +
+				"    \"behind\": \"\",\n" +
+				"    \"left1\": \"\",\n" +
+				"    \"left2\": \"\",\n" +
+				"    \"right1\": \"\",\n" +
+				"    \"right2\": \"\",\n" +
+				"    \"top\": \"\",\n" +
+				"    \"left\": \"\",\n" +
+				"    \"right\": \"\"\n" +
+				"  }");
+		redisData.append(" }");
 		System.out.println("redisData:"+redisData.toString());
 		return redisData.toString();
 	}

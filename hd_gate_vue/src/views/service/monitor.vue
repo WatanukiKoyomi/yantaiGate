@@ -25,11 +25,12 @@
           <!--中间业务数据-->
           <div class='box-panel' style="border-top: 1px dashed #97a8be; padding-top: 10px;padding-right: 15px;">
             <div style="padding-left: 0px;padding-right: 10px;">
-              <el-col :span="24" style="padding: 10px 0px;">
+              <el-col :span="24" style="padding: 10px 10px;">
                 <!--车牌-->
-                <el-col :xs="10" :sm="10" :md="12" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>车牌:</div></el-col>
-                <el-col :xs="14" :sm="14" :md="12" :lg="14" style="padding-bottom: 5px;">
-                  <div class='box-font'>
+                <el-row>
+                  <el-col :xs="10" :sm="10" :md="12" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>车牌:</div></el-col>
+                  <el-col :xs="14" :sm="14" :md="12" :lg="14" style="padding-bottom: 5px;">
+                    <div class='box-font'>
                     <span v-if="lane.data.ocrCarPlate">
                       <span v-if="lane.data.carPlate">
                         <span v-if="lane.data.carPlate.ocrPlate">{{lane.data.carPlate.ocrPlate}}&nbsp;</span>
@@ -37,10 +38,12 @@
                       </span>
                       <span v-else>{{lane.data.ocrCarPlate.ocrPlate}}&nbsp;</span>
                     </span>
-                    <span v-else>&nbsp;</span>
-                  </div>
-                </el-col>
+                      <span v-else>&nbsp;</span>
+                    </div>
+                  </el-col>
+                </el-row>
                 <!--地磅-->
+                <el-row>
                 <el-col :xs="6" :sm="11" :md="12" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>地磅数:</div></el-col><!--地磅数-->
                 <el-col :xs="6" :sm="13" :md="12" :lg="14" style="padding-bottom: 5px;">
                   <div class='box-font'>
@@ -51,10 +54,13 @@
                     <span v-else>&nbsp;</span>
                   </div>
                 </el-col>
+                </el-row>
                 <!--前集装箱-->
+                <el-row>
                 <el-col :xs="8" :sm="24" :md="12" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>前集装箱:</div></el-col><!--前集装箱号-->
                 <el-col :xs="12" :sm="24" :md="12" :lg="14" style="padding-bottom: 5px;">
                   <div class='box-font'>
+                    <span v-if="lane.data.ocrFrontContainer.property && lane.data.ocrFrontContainer.property == '危品'" style="color: red">危险品:</span>
                     <span v-if="lane.data.ocrFrontContainer">
                       <span v-if="lane.data.frontContainer">
                         <span v-if="lane.data.frontContainer.ocrContainerNo">{{lane.data.frontContainer.ocrContainerNo}} / {{lane.data.frontContainer.ocrContainerISO}} / {{lane.data.frontContainer.efId}}&nbsp;</span>
@@ -65,10 +71,13 @@
                     <span v-else>&nbsp;</span>
                   </div>
                 </el-col>
-                <!--后集装箱-->
+                </el-row>
+                  <!--后集装箱-->
+                <el-row>
                 <el-col :xs="8" :sm="24" :md="12" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>后集装箱:</div></el-col><!--后集装箱号-->
                 <el-col :xs="12" :sm="24" :md="12" :lg="14" style="padding-bottom: 5px;">
                   <div class='box-font'>
+                    <span v-if="lane.data.ocrAfterContainer.property && lane.data.ocrAfterContainer.property == '危品'" style="color: red">危险品:</span>
                     <span v-if="lane.data.ocrAfterContainer">
                       <span v-if="lane.data.afterContainer">
                         <span v-if="lane.data.afterContainer.ocrContainerNo">{{lane.data.afterContainer.ocrContainerNo}} / {{lane.data.afterContainer.ocrContainerISO}} / {{lane.data.afterContainer.efId}}&nbsp;</span>
@@ -79,7 +88,9 @@
                     <span v-else>&nbsp;</span>
                   </div>
                 </el-col>
-                <!--开始时间-->
+                  </el-row>
+                  <!--开始时间-->
+                <el-row>
                 <el-col :xs="6" :sm="11" :md="12" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>开始时间:</div></el-col>
                 <el-col :xs="6" :sm="13" :md="12" :lg="14" style="padding-bottom: 5px;">
                   <div class='box-font'>
@@ -87,7 +98,9 @@
                     <span v-else>&nbsp;</span>
                   </div>
                 </el-col>
-                <!--结束时间-->
+                  </el-row>
+                  <!--结束时间-->
+                <el-row>
                 <el-col :xs="6" :sm="11" :md="12" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>结束时间:</div></el-col>
                 <el-col :xs="6" :sm="13" :md="12" :lg="14" style="padding-bottom: 5px;">
                   <div class='box-font'>
@@ -95,20 +108,23 @@
                     <span v-else>&nbsp;</span>
                   </div>
                 </el-col>
-                <!--消息反馈-->
+                  </el-row>
+                  <!--消息反馈-->
+                <el-row>
                 <el-col :xs="8" :sm="12" :md="8" :lg="10" style="padding-bottom: 5px;"><div class='box-font'>消息反馈:</div></el-col>
                 <el-col :xs="12" :sm="12" :md="12" :lg="14" style="padding-bottom: 5px;">
                   <div class='box-font'>
                     <textarea :rows="3" v-model="lane.data.msg" readonly />
                   </div>
                 </el-col>
+                  </el-row>
               </el-col>
             </div>
           </div>
           <!--下方按钮-->
           <div id="app" class='box-panel' style="border-top: 1px dashed #97a8be; padding-top: 10px;margint-right: 15px;">
             <!--详情-->
-            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
+            <el-col :xs="8" :sm="8" :md="8" :lg="8" class="text-center" style="padding: 0;margin-bottom: 10px;">
               <el-tooltip content="跳转车道作业界面查看详细信息" placement="bottom" effect="light">
                 <el-button name="monitorDetailsBtnName" type="primary" @click="taskClick(index)" icon="el-icon-document">详情</el-button>
               </el-tooltip>
@@ -120,12 +136,12 @@
 <!--              </el-tooltip>-->
 <!--            </el-col>-->
             <!--抬杆-->
-            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
+            <el-col :xs="8" :sm="8" :md="8" :lg="8" class="text-center" style="padding: 0;margin-bottom: 10px;">
               <el-tooltip content="抬杆" placement="bottom" effect="light"><!--抬杆-->
                 <el-button name="monitorRodBtnName" type="primary" @click="rodClick(index)" style="width: 85px;" icon="el-icon-document">抬杆</el-button>
               </el-tooltip>
             </el-col>
-            <el-col :xs="6" :sm="6" :md="6" :lg="6" class="text-center" style="padding: 0;margin-bottom: 10px;">
+            <el-col :xs="8" :sm="8" :md="8" :lg="8" class="text-center" style="padding: 0;margin-bottom: 10px;">
               <el-tooltip content="提交" placement="bottom" effect="light">
                 <el-button name="monitorRodBtnName" type="primary" @click="quickSubmit(lane)" style="width: 85px;" icon="el-icon-document">提交</el-button>
               </el-tooltip>
@@ -184,7 +200,6 @@
     },
     mounted: function () {
       var that = this;
-      // 监听重新选中车道后的车道信息
       bus.$on('changeUserCheckedShowLane', function (msg) {
         that.initLaneChecked();
       });
@@ -193,32 +208,30 @@
     watch: {
     },
     methods: {
-      //给出车牌图片地址方法
       pickPlateImage(lane){
         let plate;
         lane.ftpImages.imageName.split(',').forEach(function (imgName) {
-          console.log('imgName:'+imgName)
           if(imgName.indexOf('plate.jpg') != -1){
             plate = imgName;
           }
         })
         return plate;
       },
-      // 弹出窗口选择要查看的车道
       showMonitorLaneDialog () {
         this.$refs['showLaneForm'].show(this.laneShowList, this.laneCheckedList)
       },
-      // 初始化选中的车道信息，并查询数据
       initLaneChecked () {
         let that = this
         let initLane = []
         let username = JSON.parse(sessionStorage.user).username
+        let result = that.laneDataList;
         this.$axios.get('/hdGate/laneManagement/queryShowGateLanes').then(data => {
+          console.log('initLaneChecked:',data);
           let s = window.location.host.split(':')[0]
-          console.log('showGateLanems:',data);
-          initSingleLane(0,data.length,that);
-          function initSingleLane(i,length,that){
-            let element = data[i];
+          initShowLane(0,data.length,data);
+          function initShowLane(i,length,res){
+            let element = res[i];
+            initLane.push(element.laneCode);
             let ws;
             let wsUrl = 'ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode;
             let lockReconnect = false;
@@ -243,7 +256,6 @@
                 ws = new WebSocket(wsUrl);
                 websocketInit();
               } catch (e){
-                console.log('catch');
                 websocketReconnect(wsUrl);
               }
             }
@@ -261,7 +273,6 @@
               };
               ws.onmessage = function(evt){
                 heartCheck.start();
-                console.log('onmessage data:'+evt.data);
                 if(evt.data == 'alive'){
                   return;
                 }
@@ -276,8 +287,7 @@
                 }
                 let plate;
                 data.ftpImages.imageName.split(',').forEach(function (imgName) {
-                  console.log('imgName:'+imgName)
-                  if(imgName.indexOf('plate.jpg') != -1){
+                  if(imgName.indexOf('plate') != -1){
                     plate = imgName;
                   }
                 })
@@ -287,7 +297,6 @@
                     laneData.data = data;
                   }
                 })
-                console.log('onmessage laneDataList:'+that.laneDataList);
               };
               ws.onerror = function(evt){
                 console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
@@ -304,31 +313,107 @@
                 lockReconnect = false;
               }, 5000);
             }
-            initLane.push(element.laneCode)
-            // begin 查询车道对应最新数据（初始化）
-            that.laneDataList = []
             that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
               {params: { 'laneCode': element.laneCode }}).then(data => {
-              console.log('data:',data);
-              if (data === null) {
-                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
-              } else {
-                let plate;
-                data.ftpImages.imageName.split(',').forEach(function (imgName) {
-                  if(imgName.indexOf('plate.jpg') != -1){
-                    plate = imgName;
-                  }
-                })
-                that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
-              }
-              if(++i<length){
-                initSingleLane(i,length,that);
-              }
-            }, response => {
-              console.log('queryLatestDataByLane error')
+                if(data === null){
+                  result.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''})
+                }else{
+                  let plate;
+                  data.ftpImages.imageName.split(',').forEach(function (imgName) {
+                    if(imgName.indexOf('plate') != -1){
+                      plate = imgName;
+                    }
+                  })
+                  result.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate})
+                }
+                if(++i<length){
+                  initShowLane(i,length,res);
+                }
             })
           }
           // data.forEach(function (element) {
+          //   let ws;
+          //   let wsUrl = 'ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode;
+          //   let lockReconnect = false;
+          //   let heartCheck = {
+          //     timeout: 30000,
+          //     timeoutObj: null,
+          //     serverTimeoutObj: null,
+          //     start: function(){
+          //       let self = this;
+          //       this.timeoutObj && clearTimeout(this.timeoutObj);
+          //       this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
+          //       this.timeoutObj = setTimeout(function(){
+          //         ws.send("HeartBeat");
+          //         self.serverTimeoutObj = setTimeout(function(){
+          //           ws.close();
+          //         }, self.timeout)
+          //       },this.timeout)
+          //     },
+          //   };
+          //   function createWebSocket(){
+          //     try{
+          //       ws = new WebSocket(wsUrl);
+          //       websocketInit();
+          //     } catch (e){
+          //       websocketReconnect(wsUrl);
+          //     }
+          //   }
+          //   createWebSocket();
+          //   function websocketInit(){
+          //     ws.onopen = function(evt){
+          //       console.log('monitor:' + username + element.laneCode + '链接webSocket成功...')
+          //       heartCheck.start();
+          //     };
+          //     ws.onclose = function(evt){
+          //       console.log('websocket 断开: ' + evt.code + ' ' + evt.reason + ' ' + evt.wasClean);
+          //       console.log('monitor:' + username + element.laneCode + '链接已关闭...');
+          //
+          //       websocketReconnect(wsUrl);
+          //     };
+          //     ws.onmessage = function(evt){
+          //       heartCheck.start();
+          //       console.log('onmessage data:'+evt.data);
+          //       if(evt.data == 'alive'){
+          //         return;
+          //       }
+          //       let data = JSON.parse(evt.data)
+          //       if(data.update == '1'){
+          //         that.laneDataList.forEach(function(laneData){
+          //           if(laneData.laneCode == data.laneCode){
+          //             laneData.data.msg = data.message;
+          //           }
+          //         })
+          //         return;
+          //       }
+          //       let plate;
+          //       data.ftpImages.imageName.split(',').forEach(function (imgName) {
+          //         if(imgName.indexOf('plate') != -1){
+          //           plate = imgName;
+          //         }
+          //       })
+          //       that.laneDataList.forEach(function (laneData) { // 循环现有数据，重新赋值对应车道数据
+          //         if (laneData.laneCode === data.generalInfo.laneCode) {
+          //           laneData.plate = plate;
+          //           laneData.data = data;
+          //         }
+          //       })
+          //     };
+          //     ws.onerror = function(evt){
+          //       console.log('monitor:' + username + element.laneCode + '链接webSocket失败')
+          //     }
+          //   }
+          //   function websocketReconnect(url){
+          //     if(lockReconnect){
+          //       return;
+          //     }
+          //     lockReconnect = true;
+          //     tt && clearTimeout(tt);
+          //     let tt = setTimeout(function(){
+          //       createWebSocket(url);
+          //       lockReconnect = false;
+          //     }, 5000);
+          //   }
           //
           //   // // begin websocket
           //   // let ws = new WebSocket('ws://' + s + ':8085/hdGate/ws/monitor:' + username + element.laneCode)
@@ -365,25 +450,22 @@
           //   that.laneDataList = []
           //   that.$axios.get('/hdGate/monitor/queryLatestDataByLane',
           //     {params: { 'laneCode': element.laneCode }}).then(data => {
-          //     console.log('data:',data);
           //     if (data === null) {
           //       that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: that.emptyData, plate:''}) // 查询到最新数据赋值到对应车道上
           //     } else {
           //       let plate;
           //       data.ftpImages.imageName.split(',').forEach(function (imgName) {
-          //         if(imgName.indexOf('plate.jpg') != -1){
+          //         if(imgName.indexOf('plate') != -1){
           //           plate = imgName;
           //         }
           //       })
           //       that.laneDataList.push({laneCode: element.laneCode, laneName: element.laneName, laneDirection: element.laneDirection, data: data, plate: plate}) // 查询到最新数据赋值到对应车道上
           //     }
           //   }, response => {
-          //     console.log('queryLatestDataByLane error')
           //   })
           //   // end 查询车道对应最新数据
           // })
           that.laneShowList = initLane
-          // begin 查询用户选中查看的车道
           that.$axios.get('/hdGate/laneManagement/queryGateLaneByUser',
             {params: { 'user': username }}).then(data => {
             if (data === null) {
@@ -394,12 +476,11 @@
           }, response => {
             console.log('queryGateLaneByUser error')
           })
-          // end 查询用户选中查看的车道
+
         }, response => {
           console.log('queryShowGateLanes error')
         })
       },
-      // 详情按钮
       taskClick (index) {
         this.$message({ message: '车道作业页面跳转', type: 'success' })
         this.$router.push({ path: '/task' })
@@ -432,7 +513,7 @@
           type: 'warning'
         }).then(() => {
           let laneData = this.laneDataList[index]
-          this.$axios.get('/hdGate/monitor/rodClick', {params: {laneCode: laneData.laneCode}}).then(response => {
+          this.$axios.get('/hdGate/laneManagement/liftRod', {params: {laneCode: laneData.laneCode}}).then(response => {
             this.$message({ message: '抬杆操作成功' })
           }, response => {
             console.log('rod error')
@@ -460,7 +541,6 @@
           clickedData.ocrAfterContainer.ocrDamage = 'NM'
         }
         let todoUpdateData = JSON.stringify(clickedData);
-        console.log('todoUpdateData',todoUpdateData);
         this.$axios.get('/hdGate/monitor/updateBusinessData',
           {
             params: {
